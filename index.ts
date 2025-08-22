@@ -1,13 +1,52 @@
 import * as fs from "fs";
 import { TBinaryProtocol, TBufferedTransport } from "thrift";
 import * as path from "path";
-import assert = require("assert");
+import { pathToFileURL } from "url";
 
-// Parse command line arguments
 const args = process.argv.slice(2);
 const dirIndex = args.findIndex((arg) => arg === "--dir");
 const configDirArg =
   dirIndex !== -1 && dirIndex + 1 < args.length ? args[dirIndex + 1] : null;
+const outputArg = ((): "stdout" | "file" => {
+  if (args.includes("file")) return "file";
+  return "stdout";
+})();
+const protocolArg = ((): "binary" | "json" | "json-binary" => {
+  if (args.includes("json-binary")) return "json-binary";
+  if (args.includes("json")) return "json";
+  return "binary";
+})();
+
+const initialCwd = process.env.INIT_CWD || process.cwd();
+
+try {
+  process.chdir(initialCwd);
+} catch {}
+
+function resolveAbsolutePath(p: string): string {
+  if (path.isAbsolute(p)) return p;
+  return path.resolve(initialCwd, p);
+}
+
+function findConfigDir(startDir: string): string | null {
+  const candidates = ["config", path.join("src", "config")];
+  let current: string | null = path.resolve(startDir);
+
+  while (current) {
+    for (const rel of candidates) {
+      const candidate = path.join(current, rel);
+      if (fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()) {
+        if (fs.existsSync(path.join(candidate, "index.ts"))) {
+          return candidate;
+        }
+      }
+    }
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return null;
+}
 
 /**
  * Generates a Thrift configuration in various output formats and protocols.
@@ -44,17 +83,37 @@ async function generateConfig(
   output: "stdout" | "file",
   protocol: "binary" | "json" | "json-binary"
 ) {
-  assert(configDirArg, "config directory not specified");
-
-  const configDir = path.resolve(configDirArg);
-  if (!fs.existsSync(configDir) || !fs.statSync(configDir).isDirectory()) {
-    throw new Error(`Specified config directory not found: ${configDir}`);
+  let resolvedConfigDir: string | null = null;
+  if (configDirArg) {
+    resolvedConfigDir = resolveAbsolutePath(configDirArg);
+    if (
+      !fs.existsSync(resolvedConfigDir) ||
+      !fs.statSync(resolvedConfigDir).isDirectory()
+    ) {
+      throw new Error(
+        `Specified config directory not found: ${resolvedConfigDir}`
+      );
+    }
+  } else {
+    resolvedConfigDir = findConfigDir(initialCwd);
+    if (!resolvedConfigDir) {
+      throw new Error(
+        "Config directory not specified and could not be auto-detected (looked for 'config/' or 'src/config/'). Use --dir <path>."
+      );
+    }
   }
 
-  const config = await import(path.join(configDir, "index.ts"));
-  const { Config } = await import(
-    "generated/thrift/gen-nodejs/config_types.js"
+  const configModulePath = path.join(resolvedConfigDir, "index.ts");
+  const config = await import(pathToFileURL(configModulePath).href);
+
+  const generatedTypesPath = path.resolve(
+    __dirname,
+    "generated",
+    "thrift",
+    "gen-nodejs",
+    "config_types.js"
   );
+  const { Config } = await import(pathToFileURL(generatedTypesPath).href);
 
   const configInstance = new Config(config.default || config);
   let binaryData: Buffer = Buffer.alloc(0);
@@ -92,4 +151,6 @@ async function generateConfig(
   }
 }
 
-generateConfig("stdout", "binary").catch(console.error);
+export { generateConfig };
+
+generateConfig(outputArg, protocolArg).catch(console.error);
