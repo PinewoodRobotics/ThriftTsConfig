@@ -35,6 +35,8 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
   this.name = null;
   this.camera_type = null;
   this.video_file_path = null;
+  this.do_compression = null;
+  this.compression_quality = null;
   if (args) {
     if (args.pi_to_run_on !== undefined && args.pi_to_run_on !== null) {
       this.pi_to_run_on = args.pi_to_run_on;
@@ -93,6 +95,12 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
     }
     if (args.video_file_path !== undefined && args.video_file_path !== null) {
       this.video_file_path = args.video_file_path;
+    }
+    if (args.do_compression !== undefined && args.do_compression !== null) {
+      this.do_compression = args.do_compression;
+    }
+    if (args.compression_quality !== undefined && args.compression_quality !== null) {
+      this.compression_quality = args.compression_quality;
     }
   }
 };
@@ -193,6 +201,20 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 13:
+      if (ftype == Thrift.Type.BOOL) {
+        this.do_compression = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 14:
+      if (ftype == Thrift.Type.I32) {
+        this.compression_quality = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -262,6 +284,16 @@ CameraParameters.prototype[Symbol.for("write")] = function(output) {
   if (this.video_file_path !== null && this.video_file_path !== undefined) {
     output.writeFieldBegin('video_file_path', Thrift.Type.STRING, 12);
     output.writeString(this.video_file_path);
+    output.writeFieldEnd();
+  }
+  if (this.do_compression !== null && this.do_compression !== undefined) {
+    output.writeFieldBegin('do_compression', Thrift.Type.BOOL, 13);
+    output.writeBool(this.do_compression);
+    output.writeFieldEnd();
+  }
+  if (this.compression_quality !== null && this.compression_quality !== undefined) {
+    output.writeFieldBegin('compression_quality', Thrift.Type.I32, 14);
+    output.writeI32(this.compression_quality);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

@@ -10,10 +10,10 @@ import Int64 = require('node-int64');
 
 
 declare class AprilDetectionMessageConfig {
-  public post_camera_output_topic: string;
-  public post_tag_output_topic: string;
+  public post_camera_output_topic?: string;
+  public post_tag_output_topic?: string;
 
-    constructor(args?: { post_camera_output_topic: string; post_tag_output_topic: string; });
+    constructor(args?: { post_camera_output_topic?: string; post_tag_output_topic?: string; });
 }
 
 declare class AprilDetectionConfig {

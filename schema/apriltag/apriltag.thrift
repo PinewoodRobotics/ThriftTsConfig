@@ -1,8 +1,8 @@
 namespace py config.apriltag
 
 struct AprilDetectionMessageConfig {
-    1: required string post_camera_output_topic,
-    2: required string post_tag_output_topic,
+    1: optional string post_camera_output_topic,
+    2: optional string post_tag_output_topic,
 }
 
 struct AprilDetectionConfig {

@@ -30,6 +30,8 @@ declare class CameraParameters {
   public name: string;
   public camera_type: CameraType;
   public video_file_path?: string;
+  public do_compression?: boolean;
+  public compression_quality?: number;
 
-    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.Matrix3x3; dist_coeff: common_ttypes.Vector5D; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; });
+    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.Matrix3x3; dist_coeff: common_ttypes.Vector5D; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; do_compression?: boolean; compression_quality?: number; });
 }

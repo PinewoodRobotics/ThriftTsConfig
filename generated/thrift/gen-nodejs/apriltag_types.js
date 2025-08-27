@@ -18,13 +18,9 @@ var AprilDetectionMessageConfig = module.exports.AprilDetectionMessageConfig = f
   if (args) {
     if (args.post_camera_output_topic !== undefined && args.post_camera_output_topic !== null) {
       this.post_camera_output_topic = args.post_camera_output_topic;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field post_camera_output_topic is unset!');
     }
     if (args.post_tag_output_topic !== undefined && args.post_tag_output_topic !== null) {
       this.post_tag_output_topic = args.post_tag_output_topic;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field post_tag_output_topic is unset!');
     }
   }
 };

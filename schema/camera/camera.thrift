@@ -21,4 +21,6 @@ struct CameraParameters {
     10: required string name,
     11: required CameraType camera_type,
     12: optional string video_file_path,
+    13: optional bool do_compression,
+    14: optional i32 compression_quality,
 }
