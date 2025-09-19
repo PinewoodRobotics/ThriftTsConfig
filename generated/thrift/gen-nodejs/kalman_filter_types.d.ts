@@ -18,20 +18,20 @@ declare enum KalmanFilterSensorType {
 }
 
 declare class KalmanFilterSensorConfig {
-  public measurement_noise_matrix: common_ttypes.Matrix6x6;
-  public measurement_conversion_matrix: common_ttypes.Matrix6x6;
+  public measurement_noise_matrix: common_ttypes.GenericMatrix;
+  public measurement_conversion_matrix: common_ttypes.GenericMatrix;
 
-    constructor(args?: { measurement_noise_matrix: common_ttypes.Matrix6x6; measurement_conversion_matrix: common_ttypes.Matrix6x6; });
+    constructor(args?: { measurement_noise_matrix: common_ttypes.GenericMatrix; measurement_conversion_matrix: common_ttypes.GenericMatrix; });
 }
 
 declare class KalmanFilterConfig {
-  public state_vector: common_ttypes.Vector6D;
-  public state_transition_matrix: common_ttypes.Matrix6x6;
-  public uncertainty_matrix: common_ttypes.Matrix6x6;
-  public process_noise_matrix: common_ttypes.Matrix6x6;
+  public state_vector: common_ttypes.GenericVector;
+  public state_transition_matrix: common_ttypes.GenericMatrix;
+  public uncertainty_matrix: common_ttypes.GenericMatrix;
+  public process_noise_matrix: common_ttypes.GenericMatrix;
   public time_step_initial: number;
   public sensors: { [k: number /*KalmanFilterSensorType*/]: { [k: string]: KalmanFilterSensorConfig; }; };
   public dim_x_z: number[];
 
-    constructor(args?: { state_vector: common_ttypes.Vector6D; state_transition_matrix: common_ttypes.Matrix6x6; uncertainty_matrix: common_ttypes.Matrix6x6; process_noise_matrix: common_ttypes.Matrix6x6; time_step_initial: number; sensors: { [k: number /*KalmanFilterSensorType*/]: { [k: string]: KalmanFilterSensorConfig; }; }; dim_x_z: number[]; });
+    constructor(args?: { state_vector: common_ttypes.GenericVector; state_transition_matrix: common_ttypes.GenericMatrix; uncertainty_matrix: common_ttypes.GenericMatrix; process_noise_matrix: common_ttypes.GenericMatrix; time_step_initial: number; sensors: { [k: number /*KalmanFilterSensorType*/]: { [k: string]: KalmanFilterSensorConfig; }; }; dim_x_z: number[]; });
 }

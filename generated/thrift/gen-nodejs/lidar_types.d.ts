@@ -19,8 +19,8 @@ declare class LidarConfig {
   public min_distance_meters: number;
   public max_distance_meters: number;
   public cloud_scan_num: number;
-  public position_in_robot: common_ttypes.Vector3D;
-  public rotation_in_robot: common_ttypes.Matrix3x3;
+  public position_in_robot: common_ttypes.GenericVector;
+  public rotation_in_robot: common_ttypes.GenericMatrix;
 
-    constructor(args?: { pi_to_run_on: string; port: string; baudrate: number; is_2d: boolean; min_distance_meters: number; max_distance_meters: number; cloud_scan_num: number; position_in_robot: common_ttypes.Vector3D; rotation_in_robot: common_ttypes.Matrix3x3; });
+    constructor(args?: { pi_to_run_on: string; port: string; baudrate: number; is_2d: boolean; min_distance_meters: number; max_distance_meters: number; cloud_scan_num: number; position_in_robot: common_ttypes.GenericVector; rotation_in_robot: common_ttypes.GenericMatrix; });
 }

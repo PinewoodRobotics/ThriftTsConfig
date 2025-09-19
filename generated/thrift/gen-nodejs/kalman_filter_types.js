@@ -27,12 +27,12 @@ var KalmanFilterSensorConfig = module.exports.KalmanFilterSensorConfig = functio
   this.measurement_conversion_matrix = null;
   if (args) {
     if (args.measurement_noise_matrix !== undefined && args.measurement_noise_matrix !== null) {
-      this.measurement_noise_matrix = new common_ttypes.Matrix6x6(args.measurement_noise_matrix);
+      this.measurement_noise_matrix = new common_ttypes.GenericMatrix(args.measurement_noise_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field measurement_noise_matrix is unset!');
     }
     if (args.measurement_conversion_matrix !== undefined && args.measurement_conversion_matrix !== null) {
-      this.measurement_conversion_matrix = new common_ttypes.Matrix6x6(args.measurement_conversion_matrix);
+      this.measurement_conversion_matrix = new common_ttypes.GenericMatrix(args.measurement_conversion_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field measurement_conversion_matrix is unset!');
     }
@@ -51,7 +51,7 @@ KalmanFilterSensorConfig.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.measurement_noise_matrix = new common_ttypes.Matrix6x6();
+        this.measurement_noise_matrix = new common_ttypes.GenericMatrix();
         this.measurement_noise_matrix[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -59,7 +59,7 @@ KalmanFilterSensorConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRUCT) {
-        this.measurement_conversion_matrix = new common_ttypes.Matrix6x6();
+        this.measurement_conversion_matrix = new common_ttypes.GenericMatrix();
         this.measurement_conversion_matrix[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -101,22 +101,22 @@ var KalmanFilterConfig = module.exports.KalmanFilterConfig = function(args) {
   this.dim_x_z = null;
   if (args) {
     if (args.state_vector !== undefined && args.state_vector !== null) {
-      this.state_vector = new common_ttypes.Vector6D(args.state_vector);
+      this.state_vector = new common_ttypes.GenericVector(args.state_vector);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field state_vector is unset!');
     }
     if (args.state_transition_matrix !== undefined && args.state_transition_matrix !== null) {
-      this.state_transition_matrix = new common_ttypes.Matrix6x6(args.state_transition_matrix);
+      this.state_transition_matrix = new common_ttypes.GenericMatrix(args.state_transition_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field state_transition_matrix is unset!');
     }
     if (args.uncertainty_matrix !== undefined && args.uncertainty_matrix !== null) {
-      this.uncertainty_matrix = new common_ttypes.Matrix6x6(args.uncertainty_matrix);
+      this.uncertainty_matrix = new common_ttypes.GenericMatrix(args.uncertainty_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field uncertainty_matrix is unset!');
     }
     if (args.process_noise_matrix !== undefined && args.process_noise_matrix !== null) {
-      this.process_noise_matrix = new common_ttypes.Matrix6x6(args.process_noise_matrix);
+      this.process_noise_matrix = new common_ttypes.GenericMatrix(args.process_noise_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field process_noise_matrix is unset!');
     }
@@ -150,7 +150,7 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.state_vector = new common_ttypes.Vector6D();
+        this.state_vector = new common_ttypes.GenericVector();
         this.state_vector[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -158,7 +158,7 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRUCT) {
-        this.state_transition_matrix = new common_ttypes.Matrix6x6();
+        this.state_transition_matrix = new common_ttypes.GenericMatrix();
         this.state_transition_matrix[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -166,7 +166,7 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.STRUCT) {
-        this.uncertainty_matrix = new common_ttypes.Matrix6x6();
+        this.uncertainty_matrix = new common_ttypes.GenericMatrix();
         this.uncertainty_matrix[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -174,7 +174,7 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.STRUCT) {
-        this.process_noise_matrix = new common_ttypes.Matrix6x6();
+        this.process_noise_matrix = new common_ttypes.GenericMatrix();
         this.process_noise_matrix[Symbol.for("read")](input);
       } else {
         input.skip(ftype);

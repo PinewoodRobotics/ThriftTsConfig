@@ -12,24 +12,24 @@ var Int64 = require('node-int64');
 
 
 var ttypes = module.exports = {};
-var Vector2D = module.exports.Vector2D = function(args) {
-  this.k1 = null;
-  this.k2 = null;
+var GenericVector = module.exports.GenericVector = function(args) {
+  this.values = null;
+  this.size = null;
   if (args) {
-    if (args.k1 !== undefined && args.k1 !== null) {
-      this.k1 = args.k1;
+    if (args.values !== undefined && args.values !== null) {
+      this.values = Thrift.copyList(args.values, [null]);
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k1 is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field values is unset!');
     }
-    if (args.k2 !== undefined && args.k2 !== null) {
-      this.k2 = args.k2;
+    if (args.size !== undefined && args.size !== null) {
+      this.size = args.size;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k2 is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field size is unset!');
     }
   }
 };
-Vector2D.prototype = {};
-Vector2D.prototype[Symbol.for("read")] = function(input) {
+GenericVector.prototype = {};
+GenericVector.prototype[Symbol.for("read")] = function(input) {
   input.readStructBegin();
   while (true) {
     var ret = input.readFieldBegin();
@@ -40,15 +40,23 @@ Vector2D.prototype[Symbol.for("read")] = function(input) {
     }
     switch (fid) {
       case 1:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k1 = input.readDouble();
+      if (ftype == Thrift.Type.LIST) {
+        this.values = [];
+        var _rtmp31 = input.readListBegin();
+        var _size0 = _rtmp31.size || 0;
+        for (var _i2 = 0; _i2 < _size0; ++_i2) {
+          var elem3 = null;
+          elem3 = input.readDouble();
+          this.values.push(elem3);
+        }
+        input.readListEnd();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k2 = input.readDouble();
+      if (ftype == Thrift.Type.I32) {
+        this.size = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -62,16 +70,23 @@ Vector2D.prototype[Symbol.for("read")] = function(input) {
   return;
 };
 
-Vector2D.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Vector2D');
-  if (this.k1 !== null && this.k1 !== undefined) {
-    output.writeFieldBegin('k1', Thrift.Type.DOUBLE, 1);
-    output.writeDouble(this.k1);
+GenericVector.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('GenericVector');
+  if (this.values !== null && this.values !== undefined) {
+    output.writeFieldBegin('values', Thrift.Type.LIST, 1);
+    output.writeListBegin(Thrift.Type.DOUBLE, this.values.length);
+    for (var iter4 in this.values) {
+      if (this.values.hasOwnProperty(iter4)) {
+        iter4 = this.values[iter4];
+        output.writeDouble(iter4);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
-  if (this.k2 !== null && this.k2 !== undefined) {
-    output.writeFieldBegin('k2', Thrift.Type.DOUBLE, 2);
-    output.writeDouble(this.k2);
+  if (this.size !== null && this.size !== undefined) {
+    output.writeFieldBegin('size', Thrift.Type.I32, 2);
+    output.writeI32(this.size);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -79,30 +94,30 @@ Vector2D.prototype[Symbol.for("write")] = function(output) {
   return;
 };
 
-var Vector3D = module.exports.Vector3D = function(args) {
-  this.k1 = null;
-  this.k2 = null;
-  this.k3 = null;
+var GenericMatrix = module.exports.GenericMatrix = function(args) {
+  this.values = null;
+  this.rows = null;
+  this.cols = null;
   if (args) {
-    if (args.k1 !== undefined && args.k1 !== null) {
-      this.k1 = args.k1;
+    if (args.values !== undefined && args.values !== null) {
+      this.values = Thrift.copyList(args.values, [Thrift.copyList, null]);
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k1 is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field values is unset!');
     }
-    if (args.k2 !== undefined && args.k2 !== null) {
-      this.k2 = args.k2;
+    if (args.rows !== undefined && args.rows !== null) {
+      this.rows = args.rows;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k2 is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field rows is unset!');
     }
-    if (args.k3 !== undefined && args.k3 !== null) {
-      this.k3 = args.k3;
+    if (args.cols !== undefined && args.cols !== null) {
+      this.cols = args.cols;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k3 is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field cols is unset!');
     }
   }
 };
-Vector3D.prototype = {};
-Vector3D.prototype[Symbol.for("read")] = function(input) {
+GenericMatrix.prototype = {};
+GenericMatrix.prototype[Symbol.for("read")] = function(input) {
   input.readStructBegin();
   while (true) {
     var ret = input.readFieldBegin();
@@ -113,22 +128,38 @@ Vector3D.prototype[Symbol.for("read")] = function(input) {
     }
     switch (fid) {
       case 1:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k1 = input.readDouble();
+      if (ftype == Thrift.Type.LIST) {
+        this.values = [];
+        var _rtmp36 = input.readListBegin();
+        var _size5 = _rtmp36.size || 0;
+        for (var _i7 = 0; _i7 < _size5; ++_i7) {
+          var elem8 = null;
+          elem8 = [];
+          var _rtmp310 = input.readListBegin();
+          var _size9 = _rtmp310.size || 0;
+          for (var _i11 = 0; _i11 < _size9; ++_i11) {
+            var elem12 = null;
+            elem12 = input.readDouble();
+            elem8.push(elem12);
+          }
+          input.readListEnd();
+          this.values.push(elem8);
+        }
+        input.readListEnd();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k2 = input.readDouble();
+      if (ftype == Thrift.Type.I32) {
+        this.rows = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 3:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k3 = input.readDouble();
+      if (ftype == Thrift.Type.I32) {
+        this.cols = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -142,384 +173,35 @@ Vector3D.prototype[Symbol.for("read")] = function(input) {
   return;
 };
 
-Vector3D.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Vector3D');
-  if (this.k1 !== null && this.k1 !== undefined) {
-    output.writeFieldBegin('k1', Thrift.Type.DOUBLE, 1);
-    output.writeDouble(this.k1);
-    output.writeFieldEnd();
-  }
-  if (this.k2 !== null && this.k2 !== undefined) {
-    output.writeFieldBegin('k2', Thrift.Type.DOUBLE, 2);
-    output.writeDouble(this.k2);
-    output.writeFieldEnd();
-  }
-  if (this.k3 !== null && this.k3 !== undefined) {
-    output.writeFieldBegin('k3', Thrift.Type.DOUBLE, 3);
-    output.writeDouble(this.k3);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var Vector4D = module.exports.Vector4D = function(args) {
-  this.k1 = null;
-  this.k2 = null;
-  this.k3 = null;
-  this.k4 = null;
-  if (args) {
-    if (args.k1 !== undefined && args.k1 !== null) {
-      this.k1 = args.k1;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k1 is unset!');
-    }
-    if (args.k2 !== undefined && args.k2 !== null) {
-      this.k2 = args.k2;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k2 is unset!');
-    }
-    if (args.k3 !== undefined && args.k3 !== null) {
-      this.k3 = args.k3;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k3 is unset!');
-    }
-    if (args.k4 !== undefined && args.k4 !== null) {
-      this.k4 = args.k4;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k4 is unset!');
-    }
-  }
-};
-Vector4D.prototype = {};
-Vector4D.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k1 = input.readDouble();
-      } else {
-        input.skip(ftype);
+GenericMatrix.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('GenericMatrix');
+  if (this.values !== null && this.values !== undefined) {
+    output.writeFieldBegin('values', Thrift.Type.LIST, 1);
+    output.writeListBegin(Thrift.Type.LIST, this.values.length);
+    for (var iter13 in this.values) {
+      if (this.values.hasOwnProperty(iter13)) {
+        iter13 = this.values[iter13];
+        output.writeListBegin(Thrift.Type.DOUBLE, iter13.length);
+        for (var iter14 in iter13) {
+          if (iter13.hasOwnProperty(iter14)) {
+            iter14 = iter13[iter14];
+            output.writeDouble(iter14);
+          }
+        }
+        output.writeListEnd();
       }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k2 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k3 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k4 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
     }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Vector4D.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Vector4D');
-  if (this.k1 !== null && this.k1 !== undefined) {
-    output.writeFieldBegin('k1', Thrift.Type.DOUBLE, 1);
-    output.writeDouble(this.k1);
+    output.writeListEnd();
     output.writeFieldEnd();
   }
-  if (this.k2 !== null && this.k2 !== undefined) {
-    output.writeFieldBegin('k2', Thrift.Type.DOUBLE, 2);
-    output.writeDouble(this.k2);
+  if (this.rows !== null && this.rows !== undefined) {
+    output.writeFieldBegin('rows', Thrift.Type.I32, 2);
+    output.writeI32(this.rows);
     output.writeFieldEnd();
   }
-  if (this.k3 !== null && this.k3 !== undefined) {
-    output.writeFieldBegin('k3', Thrift.Type.DOUBLE, 3);
-    output.writeDouble(this.k3);
-    output.writeFieldEnd();
-  }
-  if (this.k4 !== null && this.k4 !== undefined) {
-    output.writeFieldBegin('k4', Thrift.Type.DOUBLE, 4);
-    output.writeDouble(this.k4);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var Vector5D = module.exports.Vector5D = function(args) {
-  this.k1 = null;
-  this.k2 = null;
-  this.k3 = null;
-  this.k4 = null;
-  this.k5 = null;
-  if (args) {
-    if (args.k1 !== undefined && args.k1 !== null) {
-      this.k1 = args.k1;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k1 is unset!');
-    }
-    if (args.k2 !== undefined && args.k2 !== null) {
-      this.k2 = args.k2;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k2 is unset!');
-    }
-    if (args.k3 !== undefined && args.k3 !== null) {
-      this.k3 = args.k3;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k3 is unset!');
-    }
-    if (args.k4 !== undefined && args.k4 !== null) {
-      this.k4 = args.k4;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k4 is unset!');
-    }
-    if (args.k5 !== undefined && args.k5 !== null) {
-      this.k5 = args.k5;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k5 is unset!');
-    }
-  }
-};
-Vector5D.prototype = {};
-Vector5D.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k1 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k2 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k3 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k4 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k5 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Vector5D.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Vector5D');
-  if (this.k1 !== null && this.k1 !== undefined) {
-    output.writeFieldBegin('k1', Thrift.Type.DOUBLE, 1);
-    output.writeDouble(this.k1);
-    output.writeFieldEnd();
-  }
-  if (this.k2 !== null && this.k2 !== undefined) {
-    output.writeFieldBegin('k2', Thrift.Type.DOUBLE, 2);
-    output.writeDouble(this.k2);
-    output.writeFieldEnd();
-  }
-  if (this.k3 !== null && this.k3 !== undefined) {
-    output.writeFieldBegin('k3', Thrift.Type.DOUBLE, 3);
-    output.writeDouble(this.k3);
-    output.writeFieldEnd();
-  }
-  if (this.k4 !== null && this.k4 !== undefined) {
-    output.writeFieldBegin('k4', Thrift.Type.DOUBLE, 4);
-    output.writeDouble(this.k4);
-    output.writeFieldEnd();
-  }
-  if (this.k5 !== null && this.k5 !== undefined) {
-    output.writeFieldBegin('k5', Thrift.Type.DOUBLE, 5);
-    output.writeDouble(this.k5);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var Vector6D = module.exports.Vector6D = function(args) {
-  this.k1 = null;
-  this.k2 = null;
-  this.k3 = null;
-  this.k4 = null;
-  this.k5 = null;
-  this.k6 = null;
-  if (args) {
-    if (args.k1 !== undefined && args.k1 !== null) {
-      this.k1 = args.k1;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k1 is unset!');
-    }
-    if (args.k2 !== undefined && args.k2 !== null) {
-      this.k2 = args.k2;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k2 is unset!');
-    }
-    if (args.k3 !== undefined && args.k3 !== null) {
-      this.k3 = args.k3;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k3 is unset!');
-    }
-    if (args.k4 !== undefined && args.k4 !== null) {
-      this.k4 = args.k4;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k4 is unset!');
-    }
-    if (args.k5 !== undefined && args.k5 !== null) {
-      this.k5 = args.k5;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k5 is unset!');
-    }
-    if (args.k6 !== undefined && args.k6 !== null) {
-      this.k6 = args.k6;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field k6 is unset!');
-    }
-  }
-};
-Vector6D.prototype = {};
-Vector6D.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k1 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k2 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k3 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k4 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k5 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.k6 = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Vector6D.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Vector6D');
-  if (this.k1 !== null && this.k1 !== undefined) {
-    output.writeFieldBegin('k1', Thrift.Type.DOUBLE, 1);
-    output.writeDouble(this.k1);
-    output.writeFieldEnd();
-  }
-  if (this.k2 !== null && this.k2 !== undefined) {
-    output.writeFieldBegin('k2', Thrift.Type.DOUBLE, 2);
-    output.writeDouble(this.k2);
-    output.writeFieldEnd();
-  }
-  if (this.k3 !== null && this.k3 !== undefined) {
-    output.writeFieldBegin('k3', Thrift.Type.DOUBLE, 3);
-    output.writeDouble(this.k3);
-    output.writeFieldEnd();
-  }
-  if (this.k4 !== null && this.k4 !== undefined) {
-    output.writeFieldBegin('k4', Thrift.Type.DOUBLE, 4);
-    output.writeDouble(this.k4);
-    output.writeFieldEnd();
-  }
-  if (this.k5 !== null && this.k5 !== undefined) {
-    output.writeFieldBegin('k5', Thrift.Type.DOUBLE, 5);
-    output.writeDouble(this.k5);
-    output.writeFieldEnd();
-  }
-  if (this.k6 !== null && this.k6 !== undefined) {
-    output.writeFieldBegin('k6', Thrift.Type.DOUBLE, 6);
-    output.writeDouble(this.k6);
+  if (this.cols !== null && this.cols !== undefined) {
+    output.writeFieldBegin('cols', Thrift.Type.I32, 3);
+    output.writeI32(this.cols);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -532,12 +214,12 @@ var Point3 = module.exports.Point3 = function(args) {
   this.rotation = null;
   if (args) {
     if (args.position !== undefined && args.position !== null) {
-      this.position = new ttypes.Vector3D(args.position);
+      this.position = new ttypes.GenericVector(args.position);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field position is unset!');
     }
     if (args.rotation !== undefined && args.rotation !== null) {
-      this.rotation = new ttypes.Matrix3x3(args.rotation);
+      this.rotation = new ttypes.GenericMatrix(args.rotation);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field rotation is unset!');
     }
@@ -556,7 +238,7 @@ Point3.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.position = new ttypes.Vector3D();
+        this.position = new ttypes.GenericVector();
         this.position[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -564,7 +246,7 @@ Point3.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRUCT) {
-        this.rotation = new ttypes.Matrix3x3();
+        this.rotation = new ttypes.GenericMatrix();
         this.rotation[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -589,472 +271,6 @@ Point3.prototype[Symbol.for("write")] = function(output) {
   if (this.rotation !== null && this.rotation !== undefined) {
     output.writeFieldBegin('rotation', Thrift.Type.STRUCT, 2);
     this.rotation[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var Matrix3x3 = module.exports.Matrix3x3 = function(args) {
-  this.r1 = null;
-  this.r2 = null;
-  this.r3 = null;
-  if (args) {
-    if (args.r1 !== undefined && args.r1 !== null) {
-      this.r1 = new ttypes.Vector3D(args.r1);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r1 is unset!');
-    }
-    if (args.r2 !== undefined && args.r2 !== null) {
-      this.r2 = new ttypes.Vector3D(args.r2);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r2 is unset!');
-    }
-    if (args.r3 !== undefined && args.r3 !== null) {
-      this.r3 = new ttypes.Vector3D(args.r3);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r3 is unset!');
-    }
-  }
-};
-Matrix3x3.prototype = {};
-Matrix3x3.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r1 = new ttypes.Vector3D();
-        this.r1[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r2 = new ttypes.Vector3D();
-        this.r2[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r3 = new ttypes.Vector3D();
-        this.r3[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Matrix3x3.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Matrix3x3');
-  if (this.r1 !== null && this.r1 !== undefined) {
-    output.writeFieldBegin('r1', Thrift.Type.STRUCT, 1);
-    this.r1[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r2 !== null && this.r2 !== undefined) {
-    output.writeFieldBegin('r2', Thrift.Type.STRUCT, 2);
-    this.r2[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r3 !== null && this.r3 !== undefined) {
-    output.writeFieldBegin('r3', Thrift.Type.STRUCT, 3);
-    this.r3[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var Matrix4x4 = module.exports.Matrix4x4 = function(args) {
-  this.r1 = null;
-  this.r2 = null;
-  this.r3 = null;
-  this.r4 = null;
-  if (args) {
-    if (args.r1 !== undefined && args.r1 !== null) {
-      this.r1 = new ttypes.Vector4D(args.r1);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r1 is unset!');
-    }
-    if (args.r2 !== undefined && args.r2 !== null) {
-      this.r2 = new ttypes.Vector4D(args.r2);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r2 is unset!');
-    }
-    if (args.r3 !== undefined && args.r3 !== null) {
-      this.r3 = new ttypes.Vector4D(args.r3);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r3 is unset!');
-    }
-    if (args.r4 !== undefined && args.r4 !== null) {
-      this.r4 = new ttypes.Vector4D(args.r4);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r4 is unset!');
-    }
-  }
-};
-Matrix4x4.prototype = {};
-Matrix4x4.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r1 = new ttypes.Vector4D();
-        this.r1[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r2 = new ttypes.Vector4D();
-        this.r2[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r3 = new ttypes.Vector4D();
-        this.r3[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r4 = new ttypes.Vector4D();
-        this.r4[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Matrix4x4.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Matrix4x4');
-  if (this.r1 !== null && this.r1 !== undefined) {
-    output.writeFieldBegin('r1', Thrift.Type.STRUCT, 1);
-    this.r1[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r2 !== null && this.r2 !== undefined) {
-    output.writeFieldBegin('r2', Thrift.Type.STRUCT, 2);
-    this.r2[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r3 !== null && this.r3 !== undefined) {
-    output.writeFieldBegin('r3', Thrift.Type.STRUCT, 3);
-    this.r3[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r4 !== null && this.r4 !== undefined) {
-    output.writeFieldBegin('r4', Thrift.Type.STRUCT, 4);
-    this.r4[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var Matrix5x5 = module.exports.Matrix5x5 = function(args) {
-  this.r1 = null;
-  this.r2 = null;
-  this.r3 = null;
-  this.r4 = null;
-  this.r5 = null;
-  if (args) {
-    if (args.r1 !== undefined && args.r1 !== null) {
-      this.r1 = new ttypes.Vector5D(args.r1);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r1 is unset!');
-    }
-    if (args.r2 !== undefined && args.r2 !== null) {
-      this.r2 = new ttypes.Vector5D(args.r2);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r2 is unset!');
-    }
-    if (args.r3 !== undefined && args.r3 !== null) {
-      this.r3 = new ttypes.Vector5D(args.r3);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r3 is unset!');
-    }
-    if (args.r4 !== undefined && args.r4 !== null) {
-      this.r4 = new ttypes.Vector5D(args.r4);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r4 is unset!');
-    }
-    if (args.r5 !== undefined && args.r5 !== null) {
-      this.r5 = new ttypes.Vector5D(args.r5);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r5 is unset!');
-    }
-  }
-};
-Matrix5x5.prototype = {};
-Matrix5x5.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r1 = new ttypes.Vector5D();
-        this.r1[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r2 = new ttypes.Vector5D();
-        this.r2[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r3 = new ttypes.Vector5D();
-        this.r3[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r4 = new ttypes.Vector5D();
-        this.r4[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r5 = new ttypes.Vector5D();
-        this.r5[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Matrix5x5.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Matrix5x5');
-  if (this.r1 !== null && this.r1 !== undefined) {
-    output.writeFieldBegin('r1', Thrift.Type.STRUCT, 1);
-    this.r1[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r2 !== null && this.r2 !== undefined) {
-    output.writeFieldBegin('r2', Thrift.Type.STRUCT, 2);
-    this.r2[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r3 !== null && this.r3 !== undefined) {
-    output.writeFieldBegin('r3', Thrift.Type.STRUCT, 3);
-    this.r3[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r4 !== null && this.r4 !== undefined) {
-    output.writeFieldBegin('r4', Thrift.Type.STRUCT, 4);
-    this.r4[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r5 !== null && this.r5 !== undefined) {
-    output.writeFieldBegin('r5', Thrift.Type.STRUCT, 5);
-    this.r5[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var Matrix6x6 = module.exports.Matrix6x6 = function(args) {
-  this.r1 = null;
-  this.r2 = null;
-  this.r3 = null;
-  this.r4 = null;
-  this.r5 = null;
-  this.r6 = null;
-  if (args) {
-    if (args.r1 !== undefined && args.r1 !== null) {
-      this.r1 = new ttypes.Vector6D(args.r1);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r1 is unset!');
-    }
-    if (args.r2 !== undefined && args.r2 !== null) {
-      this.r2 = new ttypes.Vector6D(args.r2);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r2 is unset!');
-    }
-    if (args.r3 !== undefined && args.r3 !== null) {
-      this.r3 = new ttypes.Vector6D(args.r3);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r3 is unset!');
-    }
-    if (args.r4 !== undefined && args.r4 !== null) {
-      this.r4 = new ttypes.Vector6D(args.r4);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r4 is unset!');
-    }
-    if (args.r5 !== undefined && args.r5 !== null) {
-      this.r5 = new ttypes.Vector6D(args.r5);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r5 is unset!');
-    }
-    if (args.r6 !== undefined && args.r6 !== null) {
-      this.r6 = new ttypes.Vector6D(args.r6);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field r6 is unset!');
-    }
-  }
-};
-Matrix6x6.prototype = {};
-Matrix6x6.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r1 = new ttypes.Vector6D();
-        this.r1[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r2 = new ttypes.Vector6D();
-        this.r2[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r3 = new ttypes.Vector6D();
-        this.r3[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r4 = new ttypes.Vector6D();
-        this.r4[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r5 = new ttypes.Vector6D();
-        this.r5[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.r6 = new ttypes.Vector6D();
-        this.r6[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-Matrix6x6.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('Matrix6x6');
-  if (this.r1 !== null && this.r1 !== undefined) {
-    output.writeFieldBegin('r1', Thrift.Type.STRUCT, 1);
-    this.r1[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r2 !== null && this.r2 !== undefined) {
-    output.writeFieldBegin('r2', Thrift.Type.STRUCT, 2);
-    this.r2[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r3 !== null && this.r3 !== undefined) {
-    output.writeFieldBegin('r3', Thrift.Type.STRUCT, 3);
-    this.r3[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r4 !== null && this.r4 !== undefined) {
-    output.writeFieldBegin('r4', Thrift.Type.STRUCT, 4);
-    this.r4[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r5 !== null && this.r5 !== undefined) {
-    output.writeFieldBegin('r5', Thrift.Type.STRUCT, 5);
-    this.r5[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.r6 !== null && this.r6 !== undefined) {
-    output.writeFieldBegin('r6', Thrift.Type.STRUCT, 6);
-    this.r6[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -1165,12 +381,12 @@ MapData.prototype[Symbol.for("read")] = function(input) {
       case 1:
       if (ftype == Thrift.Type.LIST) {
         this.map_data = [];
-        var _rtmp31 = input.readListBegin();
-        var _size0 = _rtmp31.size || 0;
-        for (var _i2 = 0; _i2 < _size0; ++_i2) {
-          var elem3 = null;
-          elem3 = input.readBool();
-          this.map_data.push(elem3);
+        var _rtmp316 = input.readListBegin();
+        var _size15 = _rtmp316.size || 0;
+        for (var _i17 = 0; _i17 < _size15; ++_i17) {
+          var elem18 = null;
+          elem18 = input.readBool();
+          this.map_data.push(elem18);
         }
         input.readListEnd();
       } else {
@@ -1205,10 +421,10 @@ MapData.prototype[Symbol.for("write")] = function(output) {
   if (this.map_data !== null && this.map_data !== undefined) {
     output.writeFieldBegin('map_data', Thrift.Type.LIST, 1);
     output.writeListBegin(Thrift.Type.BOOL, this.map_data.length);
-    for (var iter4 in this.map_data) {
-      if (this.map_data.hasOwnProperty(iter4)) {
-        iter4 = this.map_data[iter4];
-        output.writeBool(iter4);
+    for (var iter19 in this.map_data) {
+      if (this.map_data.hasOwnProperty(iter19)) {
+        iter19 = this.map_data[iter19];
+        output.writeBool(iter19);
       }
     }
     output.writeListEnd();

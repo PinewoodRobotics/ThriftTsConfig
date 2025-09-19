@@ -61,12 +61,12 @@ var LidarConfig = module.exports.LidarConfig = function(args) {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field cloud_scan_num is unset!');
     }
     if (args.position_in_robot !== undefined && args.position_in_robot !== null) {
-      this.position_in_robot = new common_ttypes.Vector3D(args.position_in_robot);
+      this.position_in_robot = new common_ttypes.GenericVector(args.position_in_robot);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field position_in_robot is unset!');
     }
     if (args.rotation_in_robot !== undefined && args.rotation_in_robot !== null) {
-      this.rotation_in_robot = new common_ttypes.Matrix3x3(args.rotation_in_robot);
+      this.rotation_in_robot = new common_ttypes.GenericMatrix(args.rotation_in_robot);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field rotation_in_robot is unset!');
     }
@@ -134,7 +134,7 @@ LidarConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 8:
       if (ftype == Thrift.Type.STRUCT) {
-        this.position_in_robot = new common_ttypes.Vector3D();
+        this.position_in_robot = new common_ttypes.GenericVector();
         this.position_in_robot[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -142,7 +142,7 @@ LidarConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 9:
       if (ftype == Thrift.Type.STRUCT) {
-        this.rotation_in_robot = new common_ttypes.Matrix3x3();
+        this.rotation_in_robot = new common_ttypes.GenericMatrix();
         this.rotation_in_robot[Symbol.for("read")](input);
       } else {
         input.skip(ftype);

@@ -9,94 +9,26 @@ import Q = thrift.Q;
 import Int64 = require('node-int64');
 
 
-declare class Vector2D {
-  public k1: number;
-  public k2: number;
+declare class GenericVector {
+  public values: number[];
+  public size: number;
 
-    constructor(args?: { k1: number; k2: number; });
+    constructor(args?: { values: number[]; size: number; });
 }
 
-declare class Vector3D {
-  public k1: number;
-  public k2: number;
-  public k3: number;
+declare class GenericMatrix {
+  public values: number[][];
+  public rows: number;
+  public cols: number;
 
-    constructor(args?: { k1: number; k2: number; k3: number; });
-}
-
-declare class Vector4D {
-  public k1: number;
-  public k2: number;
-  public k3: number;
-  public k4: number;
-
-    constructor(args?: { k1: number; k2: number; k3: number; k4: number; });
-}
-
-declare class Vector5D {
-  public k1: number;
-  public k2: number;
-  public k3: number;
-  public k4: number;
-  public k5: number;
-
-    constructor(args?: { k1: number; k2: number; k3: number; k4: number; k5: number; });
-}
-
-declare class Vector6D {
-  public k1: number;
-  public k2: number;
-  public k3: number;
-  public k4: number;
-  public k5: number;
-  public k6: number;
-
-    constructor(args?: { k1: number; k2: number; k3: number; k4: number; k5: number; k6: number; });
+    constructor(args?: { values: number[][]; rows: number; cols: number; });
 }
 
 declare class Point3 {
-  public position: Vector3D;
-  public rotation: Matrix3x3;
+  public position: GenericVector;
+  public rotation: GenericMatrix;
 
-    constructor(args?: { position: Vector3D; rotation: Matrix3x3; });
-}
-
-declare class Matrix3x3 {
-  public r1: Vector3D;
-  public r2: Vector3D;
-  public r3: Vector3D;
-
-    constructor(args?: { r1: Vector3D; r2: Vector3D; r3: Vector3D; });
-}
-
-declare class Matrix4x4 {
-  public r1: Vector4D;
-  public r2: Vector4D;
-  public r3: Vector4D;
-  public r4: Vector4D;
-
-    constructor(args?: { r1: Vector4D; r2: Vector4D; r3: Vector4D; r4: Vector4D; });
-}
-
-declare class Matrix5x5 {
-  public r1: Vector5D;
-  public r2: Vector5D;
-  public r3: Vector5D;
-  public r4: Vector5D;
-  public r5: Vector5D;
-
-    constructor(args?: { r1: Vector5D; r2: Vector5D; r3: Vector5D; r4: Vector5D; r5: Vector5D; });
-}
-
-declare class Matrix6x6 {
-  public r1: Vector6D;
-  public r2: Vector6D;
-  public r3: Vector6D;
-  public r4: Vector6D;
-  public r5: Vector6D;
-  public r6: Vector6D;
-
-    constructor(args?: { r1: Vector6D; r2: Vector6D; r3: Vector6D; r4: Vector6D; r5: Vector6D; r6: Vector6D; });
+    constructor(args?: { position: GenericVector; rotation: GenericMatrix; });
 }
 
 declare class UnitConversion {

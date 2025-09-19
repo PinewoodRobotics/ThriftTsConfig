@@ -44,12 +44,12 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pi_to_run_on is unset!');
     }
     if (args.camera_matrix !== undefined && args.camera_matrix !== null) {
-      this.camera_matrix = new common_ttypes.Matrix3x3(args.camera_matrix);
+      this.camera_matrix = new common_ttypes.GenericMatrix(args.camera_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_matrix is unset!');
     }
     if (args.dist_coeff !== undefined && args.dist_coeff !== null) {
-      this.dist_coeff = new common_ttypes.Vector5D(args.dist_coeff);
+      this.dist_coeff = new common_ttypes.GenericVector(args.dist_coeff);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field dist_coeff is unset!');
     }
@@ -124,7 +124,7 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRUCT) {
-        this.camera_matrix = new common_ttypes.Matrix3x3();
+        this.camera_matrix = new common_ttypes.GenericMatrix();
         this.camera_matrix[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
@@ -132,7 +132,7 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
       break;
       case 3:
       if (ftype == Thrift.Type.STRUCT) {
-        this.dist_coeff = new common_ttypes.Vector5D();
+        this.dist_coeff = new common_ttypes.GenericVector();
         this.dist_coeff[Symbol.for("read")](input);
       } else {
         input.skip(ftype);

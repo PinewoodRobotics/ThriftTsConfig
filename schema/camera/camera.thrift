@@ -10,8 +10,8 @@ enum CameraType {
 
 struct CameraParameters {
     1: required string pi_to_run_on,
-    2: required common.Matrix3x3 camera_matrix,
-    3: required common.Vector5D dist_coeff,
+    2: required common.GenericMatrix camera_matrix,
+    3: required common.GenericVector dist_coeff,
     4: required string camera_path,
     5: required i32 max_fps,
     6: required i32 width,

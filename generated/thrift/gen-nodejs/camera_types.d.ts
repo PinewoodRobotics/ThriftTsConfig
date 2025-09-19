@@ -19,8 +19,8 @@ declare enum CameraType {
 
 declare class CameraParameters {
   public pi_to_run_on: string;
-  public camera_matrix: common_ttypes.Matrix3x3;
-  public dist_coeff: common_ttypes.Vector5D;
+  public camera_matrix: common_ttypes.GenericMatrix;
+  public dist_coeff: common_ttypes.GenericVector;
   public camera_path: string;
   public max_fps: number;
   public width: number;
@@ -33,5 +33,5 @@ declare class CameraParameters {
   public do_compression?: boolean;
   public compression_quality?: number;
 
-    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.Matrix3x3; dist_coeff: common_ttypes.Vector5D; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; do_compression?: boolean; compression_quality?: number; });
+    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; do_compression?: boolean; compression_quality?: number; });
 }
