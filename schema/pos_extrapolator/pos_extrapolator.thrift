@@ -23,6 +23,12 @@ struct ImuConfig {
     4: required common.Point3 imu_robot_position,
 }
 
+enum TagUseImuRotation {
+    ALWAYS = 0,
+    UNTIL_FIRST_NON_TAG_ROTATION = 1,
+    NEVER = 2,
+}
+
 struct PosExtrapolator {
     1: required PosExtrapolatorMessageConfig message_config,
     2: required map<i32, common.Point3> tag_position_config,
@@ -37,5 +43,5 @@ struct PosExtrapolator {
     11: required map<string, common.Point3> camera_position_config,
     12: optional double time_s_between_position_sends,
     13: optional string composite_publish_topic,
-    14: required bool tag_use_imu_rotation
+    14: required TagUseImuRotation tag_use_imu_rotation
 }

@@ -15,6 +15,14 @@ var kalman_filter_ttypes = require('./kalman_filter_types.js');
 
 
 var ttypes = module.exports = {};
+ttypes.TagUseImuRotation = {
+  '0' : 'ALWAYS',
+  'ALWAYS' : 0,
+  '1' : 'UNTIL_FIRST_NON_TAG_ROTATION',
+  'UNTIL_FIRST_NON_TAG_ROTATION' : 1,
+  '2' : 'NEVER',
+  'NEVER' : 2
+};
 var PosExtrapolatorMessageConfig = module.exports.PosExtrapolatorMessageConfig = function(args) {
   this.post_tag_input_topic = null;
   this.post_odometry_input_topic = null;
@@ -531,8 +539,8 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 14:
-      if (ftype == Thrift.Type.BOOL) {
-        this.tag_use_imu_rotation = input.readBool();
+      if (ftype == Thrift.Type.I32) {
+        this.tag_use_imu_rotation = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -638,8 +646,8 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
     output.writeFieldEnd();
   }
   if (this.tag_use_imu_rotation !== null && this.tag_use_imu_rotation !== undefined) {
-    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.BOOL, 14);
-    output.writeBool(this.tag_use_imu_rotation);
+    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 14);
+    output.writeI32(this.tag_use_imu_rotation);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
