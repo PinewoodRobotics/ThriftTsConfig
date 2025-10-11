@@ -17,6 +17,16 @@ declare enum CameraType {
   MOST_RECENT_RECORDING = 2,
 }
 
+declare class VideoFeedOptions {
+  public send_feed: boolean;
+  public publication_topic?: string;
+  public overlay_tags?: boolean;
+  public do_compression?: boolean;
+  public compression_quality?: number;
+
+    constructor(args?: { send_feed: boolean; publication_topic?: string; overlay_tags?: boolean; do_compression?: boolean; compression_quality?: number; });
+}
+
 declare class CameraParameters {
   public pi_to_run_on: string;
   public camera_matrix: common_ttypes.GenericMatrix;
@@ -30,8 +40,7 @@ declare class CameraParameters {
   public name: string;
   public camera_type: CameraType;
   public video_file_path?: string;
-  public do_compression?: boolean;
-  public compression_quality?: number;
+  public video_options: VideoFeedOptions;
 
-    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; do_compression?: boolean; compression_quality?: number; });
+    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; video_options: VideoFeedOptions; });
 }

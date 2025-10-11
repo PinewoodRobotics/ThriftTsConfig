@@ -33,6 +33,7 @@ declare class PathfindingConfig {
   public others_config: OthersConfig;
   public publish_map: boolean;
   public map_pub_topic: string;
+  public global_pose_pub_topic?: string;
 
-    constructor(args?: { map_data: common_ttypes.MapData; lidar_config: LidarConfig; others_config: OthersConfig; publish_map: boolean; map_pub_topic: string; });
+    constructor(args?: { map_data: common_ttypes.MapData; lidar_config: LidarConfig; others_config: OthersConfig; publish_map: boolean; map_pub_topic: string; global_pose_pub_topic?: string; });
 }

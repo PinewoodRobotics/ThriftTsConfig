@@ -9,13 +9,6 @@ import Q = thrift.Q;
 import Int64 = require('node-int64');
 
 
-declare class AprilDetectionMessageConfig {
-  public post_camera_output_topic?: string;
-  public post_tag_output_topic?: string;
-
-    constructor(args?: { post_camera_output_topic?: string; post_tag_output_topic?: string; });
-}
-
 declare class AprilDetectionConfig {
   public tag_size: number;
   public family: string;
@@ -26,9 +19,9 @@ declare class AprilDetectionConfig {
   public decode_sharpening: number;
   public searchpath: string[];
   public debug: boolean;
-  public message: AprilDetectionMessageConfig;
+  public post_tag_output_topic?: string;
   public send_stats: boolean;
   public stats_topic: string;
 
-    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; searchpath: string[]; debug: boolean; message: AprilDetectionMessageConfig; send_stats: boolean; stats_topic: string; });
+    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; searchpath: string[]; debug: boolean; post_tag_output_topic?: string; send_stats: boolean; stats_topic: string; });
 }

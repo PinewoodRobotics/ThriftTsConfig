@@ -1,10 +1,5 @@
 namespace py config.apriltag
 
-struct AprilDetectionMessageConfig {
-    1: optional string post_camera_output_topic,
-    2: optional string post_tag_output_topic,
-}
-
 struct AprilDetectionConfig {
     1: required double tag_size,
     2: required string family,
@@ -15,7 +10,7 @@ struct AprilDetectionConfig {
     7: required double decode_sharpening,
     8: required list<string> searchpath,
     9: required bool debug,
-    10: required AprilDetectionMessageConfig message,
+    10: optional string post_tag_output_topic,
     11: required bool send_stats,
     12: required string stats_topic,
 }

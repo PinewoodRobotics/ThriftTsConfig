@@ -12,69 +12,6 @@ var Int64 = require('node-int64');
 
 
 var ttypes = module.exports = {};
-var AprilDetectionMessageConfig = module.exports.AprilDetectionMessageConfig = function(args) {
-  this.post_camera_output_topic = null;
-  this.post_tag_output_topic = null;
-  if (args) {
-    if (args.post_camera_output_topic !== undefined && args.post_camera_output_topic !== null) {
-      this.post_camera_output_topic = args.post_camera_output_topic;
-    }
-    if (args.post_tag_output_topic !== undefined && args.post_tag_output_topic !== null) {
-      this.post_tag_output_topic = args.post_tag_output_topic;
-    }
-  }
-};
-AprilDetectionMessageConfig.prototype = {};
-AprilDetectionMessageConfig.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.post_camera_output_topic = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.post_tag_output_topic = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-AprilDetectionMessageConfig.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('AprilDetectionMessageConfig');
-  if (this.post_camera_output_topic !== null && this.post_camera_output_topic !== undefined) {
-    output.writeFieldBegin('post_camera_output_topic', Thrift.Type.STRING, 1);
-    output.writeString(this.post_camera_output_topic);
-    output.writeFieldEnd();
-  }
-  if (this.post_tag_output_topic !== null && this.post_tag_output_topic !== undefined) {
-    output.writeFieldBegin('post_tag_output_topic', Thrift.Type.STRING, 2);
-    output.writeString(this.post_tag_output_topic);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
 var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) {
   this.tag_size = null;
   this.family = null;
@@ -85,7 +22,7 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
   this.decode_sharpening = null;
   this.searchpath = null;
   this.debug = null;
-  this.message = null;
+  this.post_tag_output_topic = null;
   this.send_stats = null;
   this.stats_topic = null;
   if (args) {
@@ -134,10 +71,8 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field debug is unset!');
     }
-    if (args.message !== undefined && args.message !== null) {
-      this.message = new ttypes.AprilDetectionMessageConfig(args.message);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field message is unset!');
+    if (args.post_tag_output_topic !== undefined && args.post_tag_output_topic !== null) {
+      this.post_tag_output_topic = args.post_tag_output_topic;
     }
     if (args.send_stats !== undefined && args.send_stats !== null) {
       this.send_stats = args.send_stats;
@@ -234,9 +169,8 @@ AprilDetectionConfig.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 10:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.message = new ttypes.AprilDetectionMessageConfig();
-        this.message[Symbol.for("read")](input);
+      if (ftype == Thrift.Type.STRING) {
+        this.post_tag_output_topic = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -318,9 +252,9 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeBool(this.debug);
     output.writeFieldEnd();
   }
-  if (this.message !== null && this.message !== undefined) {
-    output.writeFieldBegin('message', Thrift.Type.STRUCT, 10);
-    this.message[Symbol.for("write")](output);
+  if (this.post_tag_output_topic !== null && this.post_tag_output_topic !== undefined) {
+    output.writeFieldBegin('post_tag_output_topic', Thrift.Type.STRING, 10);
+    output.writeString(this.post_tag_output_topic);
     output.writeFieldEnd();
   }
   if (this.send_stats !== null && this.send_stats !== undefined) {
