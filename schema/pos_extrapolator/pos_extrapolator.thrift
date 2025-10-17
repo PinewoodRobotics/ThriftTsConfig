@@ -27,6 +27,7 @@ enum TagUseImuRotation {
     ALWAYS = 0,
     UNTIL_FIRST_NON_TAG_ROTATION = 1,
     NEVER = 2,
+    WHEN_TAG_BASED_DIFFERENT = 3,
 }
 
 struct PosExtrapolator {
@@ -44,4 +45,5 @@ struct PosExtrapolator {
     12: optional double time_s_between_position_sends,
     13: optional string composite_publish_topic,
     14: required TagUseImuRotation tag_use_imu_rotation
+    15: optional double tag_based_difference_threshold_degrees,
 }

@@ -21,7 +21,9 @@ ttypes.TagUseImuRotation = {
   '1' : 'UNTIL_FIRST_NON_TAG_ROTATION',
   'UNTIL_FIRST_NON_TAG_ROTATION' : 1,
   '2' : 'NEVER',
-  'NEVER' : 2
+  'NEVER' : 2,
+  '3' : 'WHEN_TAG_BASED_DIFFERENT',
+  'WHEN_TAG_BASED_DIFFERENT' : 3
 };
 var PosExtrapolatorMessageConfig = module.exports.PosExtrapolatorMessageConfig = function(args) {
   this.post_tag_input_topic = null;
@@ -331,6 +333,7 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
   this.time_s_between_position_sends = null;
   this.composite_publish_topic = null;
   this.tag_use_imu_rotation = null;
+  this.tag_based_difference_threshold_degrees = null;
   if (args) {
     if (args.message_config !== undefined && args.message_config !== null) {
       this.message_config = new ttypes.PosExtrapolatorMessageConfig(args.message_config);
@@ -397,6 +400,9 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
       this.tag_use_imu_rotation = args.tag_use_imu_rotation;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_use_imu_rotation is unset!');
+    }
+    if (args.tag_based_difference_threshold_degrees !== undefined && args.tag_based_difference_threshold_degrees !== null) {
+      this.tag_based_difference_threshold_degrees = args.tag_based_difference_threshold_degrees;
     }
   }
 };
@@ -545,6 +551,13 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 15:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.tag_based_difference_threshold_degrees = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -648,6 +661,11 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
   if (this.tag_use_imu_rotation !== null && this.tag_use_imu_rotation !== undefined) {
     output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 14);
     output.writeI32(this.tag_use_imu_rotation);
+    output.writeFieldEnd();
+  }
+  if (this.tag_based_difference_threshold_degrees !== null && this.tag_based_difference_threshold_degrees !== undefined) {
+    output.writeFieldBegin('tag_based_difference_threshold_degrees', Thrift.Type.DOUBLE, 15);
+    output.writeDouble(this.tag_based_difference_threshold_degrees);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
