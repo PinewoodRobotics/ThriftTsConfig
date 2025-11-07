@@ -46,4 +46,5 @@ struct PosExtrapolator {
     13: optional string composite_publish_topic,
     14: required TagUseImuRotation tag_use_imu_rotation
     15: optional double tag_based_difference_threshold_degrees,
+    16: optional double future_position_prediction_margin_s,
 }

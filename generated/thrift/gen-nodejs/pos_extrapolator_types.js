@@ -334,6 +334,7 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
   this.composite_publish_topic = null;
   this.tag_use_imu_rotation = null;
   this.tag_based_difference_threshold_degrees = null;
+  this.future_position_prediction_margin_s = null;
   if (args) {
     if (args.message_config !== undefined && args.message_config !== null) {
       this.message_config = new ttypes.PosExtrapolatorMessageConfig(args.message_config);
@@ -403,6 +404,11 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
     }
     if (args.tag_based_difference_threshold_degrees !== undefined && args.tag_based_difference_threshold_degrees !== null) {
       this.tag_based_difference_threshold_degrees = args.tag_based_difference_threshold_degrees;
+    }
+    if (args.future_position_prediction_margin_s !== undefined && args.future_position_prediction_margin_s !== null) {
+      this.future_position_prediction_margin_s = args.future_position_prediction_margin_s;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field future_position_prediction_margin_s is unset!');
     }
   }
 };
@@ -558,6 +564,13 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 16:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.future_position_prediction_margin_s = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -666,6 +679,11 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
   if (this.tag_based_difference_threshold_degrees !== null && this.tag_based_difference_threshold_degrees !== undefined) {
     output.writeFieldBegin('tag_based_difference_threshold_degrees', Thrift.Type.DOUBLE, 15);
     output.writeDouble(this.tag_based_difference_threshold_degrees);
+    output.writeFieldEnd();
+  }
+  if (this.future_position_prediction_margin_s !== null && this.future_position_prediction_margin_s !== undefined) {
+    output.writeFieldBegin('future_position_prediction_margin_s', Thrift.Type.DOUBLE, 16);
+    output.writeDouble(this.future_position_prediction_margin_s);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
