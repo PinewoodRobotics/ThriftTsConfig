@@ -61,7 +61,7 @@ declare class PosExtrapolator {
   public composite_publish_topic?: string;
   public tag_use_imu_rotation: TagUseImuRotation;
   public tag_based_difference_threshold_degrees?: number;
-  public future_position_prediction_margin_s: number;
+  public future_position_prediction_margin_s?: number;
 
-    constructor(args?: { message_config: PosExtrapolatorMessageConfig; tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_confidence_threshold: number; april_tag_discard_distance: number; enable_imu: boolean; enable_odom: boolean; enable_tags: boolean; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; camera_position_config: { [k: string]: common_ttypes.Point3; }; time_s_between_position_sends?: number; composite_publish_topic?: string; tag_use_imu_rotation: TagUseImuRotation; tag_based_difference_threshold_degrees?: number; future_position_prediction_margin_s: number; });
+    constructor(args?: { message_config: PosExtrapolatorMessageConfig; tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_confidence_threshold: number; april_tag_discard_distance: number; enable_imu: boolean; enable_odom: boolean; enable_tags: boolean; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; camera_position_config: { [k: string]: common_ttypes.Point3; }; time_s_between_position_sends?: number; composite_publish_topic?: string; tag_use_imu_rotation: TagUseImuRotation; tag_based_difference_threshold_degrees?: number; future_position_prediction_margin_s?: number; });
 }

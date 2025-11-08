@@ -407,8 +407,6 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
     }
     if (args.future_position_prediction_margin_s !== undefined && args.future_position_prediction_margin_s !== null) {
       this.future_position_prediction_margin_s = args.future_position_prediction_margin_s;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field future_position_prediction_margin_s is unset!');
     }
   }
 };
