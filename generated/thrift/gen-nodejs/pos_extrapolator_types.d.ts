@@ -12,6 +12,12 @@ import kalman_filter_ttypes = require('./kalman_filter_types.js');
 
 
 
+declare enum OdometryPositionSource {
+  ABSOLUTE = 0,
+  ABS_CHANGE = 1,
+  DONT_USE = 2,
+}
+
 declare enum TagUseImuRotation {
   ALWAYS = 0,
   UNTIL_FIRST_NON_TAG_ROTATION = 1,
@@ -29,11 +35,11 @@ declare class PosExtrapolatorMessageConfig {
 }
 
 declare class OdomConfig {
-  public use_position: boolean;
+  public position_source: OdometryPositionSource;
   public use_rotation: boolean;
   public imu_robot_position: common_ttypes.Point3;
 
-    constructor(args?: { use_position: boolean; use_rotation: boolean; imu_robot_position: common_ttypes.Point3; });
+    constructor(args?: { position_source: OdometryPositionSource; use_rotation: boolean; imu_robot_position: common_ttypes.Point3; });
 }
 
 declare class ImuConfig {

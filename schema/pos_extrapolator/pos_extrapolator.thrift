@@ -10,8 +10,14 @@ struct PosExtrapolatorMessageConfig {
     4: required string post_robot_position_output_topic,
 }
 
+enum OdometryPositionSource {
+    ABSOLUTE = 0,
+    ABS_CHANGE = 1,
+    DONT_USE = 2,
+}
+
 struct OdomConfig {
-    1: required bool use_position,
+    1: required OdometryPositionSource position_source,
     2: required bool use_rotation,
     3: required common.Point3 imu_robot_position,
 }

@@ -15,6 +15,14 @@ var kalman_filter_ttypes = require('./kalman_filter_types.js');
 
 
 var ttypes = module.exports = {};
+ttypes.OdometryPositionSource = {
+  '0' : 'ABSOLUTE',
+  'ABSOLUTE' : 0,
+  '1' : 'ABS_CHANGE',
+  'ABS_CHANGE' : 1,
+  '2' : 'DONT_USE',
+  'DONT_USE' : 2
+};
 ttypes.TagUseImuRotation = {
   '0' : 'ALWAYS',
   'ALWAYS' : 0,
@@ -129,14 +137,14 @@ PosExtrapolatorMessageConfig.prototype[Symbol.for("write")] = function(output) {
 };
 
 var OdomConfig = module.exports.OdomConfig = function(args) {
-  this.use_position = null;
+  this.position_source = null;
   this.use_rotation = null;
   this.imu_robot_position = null;
   if (args) {
-    if (args.use_position !== undefined && args.use_position !== null) {
-      this.use_position = args.use_position;
+    if (args.position_source !== undefined && args.position_source !== null) {
+      this.position_source = args.position_source;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_position is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field position_source is unset!');
     }
     if (args.use_rotation !== undefined && args.use_rotation !== null) {
       this.use_rotation = args.use_rotation;
@@ -162,8 +170,8 @@ OdomConfig.prototype[Symbol.for("read")] = function(input) {
     }
     switch (fid) {
       case 1:
-      if (ftype == Thrift.Type.BOOL) {
-        this.use_position = input.readBool();
+      if (ftype == Thrift.Type.I32) {
+        this.position_source = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -194,9 +202,9 @@ OdomConfig.prototype[Symbol.for("read")] = function(input) {
 
 OdomConfig.prototype[Symbol.for("write")] = function(output) {
   output.writeStructBegin('OdomConfig');
-  if (this.use_position !== null && this.use_position !== undefined) {
-    output.writeFieldBegin('use_position', Thrift.Type.BOOL, 1);
-    output.writeBool(this.use_position);
+  if (this.position_source !== null && this.position_source !== undefined) {
+    output.writeFieldBegin('position_source', Thrift.Type.I32, 1);
+    output.writeI32(this.position_source);
     output.writeFieldEnd();
   }
   if (this.use_rotation !== null && this.use_rotation !== undefined) {
