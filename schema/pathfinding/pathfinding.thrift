@@ -21,4 +21,6 @@ struct PathfindingConfig {
     4: required bool publish_map,
     5: required string map_pub_topic,
     6: optional string global_pose_pub_topic,
+    7: required common.UnitConversion x_map_to_meters,
+    8: required common.UnitConversion y_map_to_meters,
 }
