@@ -5,6 +5,7 @@ include "./camera/camera.thrift"
 include "./lidar/lidar.thrift"
 include "./pos_extrapolator/pos_extrapolator.thrift"
 include "./pathfinding/pathfinding.thrift"
+include "./image_recognition/image_recognition.thrift"
 
 struct Config {
     1: required pos_extrapolator.PosExtrapolator pos_extrapolator,
@@ -14,4 +15,5 @@ struct Config {
     5: required pathfinding.PathfindingConfig pathfinding,
     6: required bool record_replay,
     7: required string replay_folder_path,
+    8: required image_recognition.ObjectRecognitionConfig object_recognition,
 }

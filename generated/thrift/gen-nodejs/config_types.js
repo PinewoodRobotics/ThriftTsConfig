@@ -15,6 +15,7 @@ var camera_ttypes = require('./camera_types.js');
 var lidar_ttypes = require('./lidar_types.js');
 var pos_extrapolator_ttypes = require('./pos_extrapolator_types.js');
 var pathfinding_ttypes = require('./pathfinding_types.js');
+var image_recognition_ttypes = require('./image_recognition_types.js');
 
 
 var ttypes = module.exports = {};
@@ -26,6 +27,7 @@ var Config = module.exports.Config = function(args) {
   this.pathfinding = null;
   this.record_replay = null;
   this.replay_folder_path = null;
+  this.object_recognition = null;
   if (args) {
     if (args.pos_extrapolator !== undefined && args.pos_extrapolator !== null) {
       this.pos_extrapolator = new pos_extrapolator_ttypes.PosExtrapolator(args.pos_extrapolator);
@@ -61,6 +63,11 @@ var Config = module.exports.Config = function(args) {
       this.replay_folder_path = args.replay_folder_path;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field replay_folder_path is unset!');
+    }
+    if (args.object_recognition !== undefined && args.object_recognition !== null) {
+      this.object_recognition = new image_recognition_ttypes.ObjectRecognitionConfig(args.object_recognition);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field object_recognition is unset!');
     }
   }
 };
@@ -147,6 +154,14 @@ Config.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 8:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.object_recognition = new image_recognition_ttypes.ObjectRecognitionConfig();
+        this.object_recognition[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -206,6 +221,11 @@ Config.prototype[Symbol.for("write")] = function(output) {
   if (this.replay_folder_path !== null && this.replay_folder_path !== undefined) {
     output.writeFieldBegin('replay_folder_path', Thrift.Type.STRING, 7);
     output.writeString(this.replay_folder_path);
+    output.writeFieldEnd();
+  }
+  if (this.object_recognition !== null && this.object_recognition !== undefined) {
+    output.writeFieldBegin('object_recognition', Thrift.Type.STRUCT, 8);
+    this.object_recognition[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
