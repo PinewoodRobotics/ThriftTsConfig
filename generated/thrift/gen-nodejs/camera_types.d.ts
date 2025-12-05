@@ -15,6 +15,7 @@ declare enum CameraType {
   OV2311 = 0,
   VIDEO_FILE = 1,
   MOST_RECENT_RECORDING = 2,
+  ULTRAWIDE_100 = 3,
 }
 
 declare class VideoFeedOptions {
@@ -41,6 +42,7 @@ declare class CameraParameters {
   public camera_type: CameraType;
   public video_file_path?: string;
   public video_options: VideoFeedOptions;
+  public brightness?: number;
 
-    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; video_options: VideoFeedOptions; });
+    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; video_options: VideoFeedOptions; brightness?: number; });
 }

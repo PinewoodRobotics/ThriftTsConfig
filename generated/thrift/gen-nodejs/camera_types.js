@@ -20,7 +20,9 @@ ttypes.CameraType = {
   '1' : 'VIDEO_FILE',
   'VIDEO_FILE' : 1,
   '2' : 'MOST_RECENT_RECORDING',
-  'MOST_RECENT_RECORDING' : 2
+  'MOST_RECENT_RECORDING' : 2,
+  '3' : 'ULTRAWIDE_100',
+  'ULTRAWIDE_100' : 3
 };
 var VideoFeedOptions = module.exports.VideoFeedOptions = function(args) {
   this.send_feed = null;
@@ -151,6 +153,7 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
   this.camera_type = null;
   this.video_file_path = null;
   this.video_options = null;
+  this.brightness = null;
   if (args) {
     if (args.pi_to_run_on !== undefined && args.pi_to_run_on !== null) {
       this.pi_to_run_on = args.pi_to_run_on;
@@ -214,6 +217,9 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
       this.video_options = new ttypes.VideoFeedOptions(args.video_options);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field video_options is unset!');
+    }
+    if (args.brightness !== undefined && args.brightness !== null) {
+      this.brightness = args.brightness;
     }
   }
 };
@@ -322,6 +328,13 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 14:
+      if (ftype == Thrift.Type.I32) {
+        this.brightness = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -396,6 +409,11 @@ CameraParameters.prototype[Symbol.for("write")] = function(output) {
   if (this.video_options !== null && this.video_options !== undefined) {
     output.writeFieldBegin('video_options', Thrift.Type.STRUCT, 13);
     this.video_options[Symbol.for("write")](output);
+    output.writeFieldEnd();
+  }
+  if (this.brightness !== null && this.brightness !== undefined) {
+    output.writeFieldBegin('brightness', Thrift.Type.I32, 14);
+    output.writeI32(this.brightness);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
