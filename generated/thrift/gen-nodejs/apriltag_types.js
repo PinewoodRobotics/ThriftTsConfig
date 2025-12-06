@@ -19,6 +19,7 @@ ttypes.SpecialDetectorType = {
 var SpecialDetectorConfig = module.exports.SpecialDetectorConfig = function(args) {
   this.type = null;
   this.lib_searchpath = null;
+  this.py_lib_searchpath = null;
   if (args) {
     if (args.type !== undefined && args.type !== null) {
       this.type = args.type;
@@ -29,6 +30,11 @@ var SpecialDetectorConfig = module.exports.SpecialDetectorConfig = function(args
       this.lib_searchpath = Thrift.copyList(args.lib_searchpath, [null]);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field lib_searchpath is unset!');
+    }
+    if (args.py_lib_searchpath !== undefined && args.py_lib_searchpath !== null) {
+      this.py_lib_searchpath = args.py_lib_searchpath;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field py_lib_searchpath is unset!');
     }
   }
 };
@@ -65,6 +71,13 @@ SpecialDetectorConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.py_lib_searchpath = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -91,6 +104,11 @@ SpecialDetectorConfig.prototype[Symbol.for("write")] = function(output) {
       }
     }
     output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.py_lib_searchpath !== null && this.py_lib_searchpath !== undefined) {
+    output.writeFieldBegin('py_lib_searchpath', Thrift.Type.STRING, 3);
+    output.writeString(this.py_lib_searchpath);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
