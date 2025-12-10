@@ -15,10 +15,9 @@ declare enum SpecialDetectorType {
 
 declare class SpecialDetectorConfig {
   public type: SpecialDetectorType;
-  public lib_searchpath: string[];
   public py_lib_searchpath: string;
 
-    constructor(args?: { type: SpecialDetectorType; lib_searchpath: string[]; py_lib_searchpath: string; });
+    constructor(args?: { type: SpecialDetectorType; py_lib_searchpath: string; });
 }
 
 declare class AprilDetectionConfig {

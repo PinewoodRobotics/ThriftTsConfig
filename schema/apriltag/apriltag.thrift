@@ -6,8 +6,7 @@ enum SpecialDetectorType {
 
 struct SpecialDetectorConfig {
   1: required SpecialDetectorType type,
-  2: required list<string> lib_searchpath,
-  3: required string py_lib_searchpath,
+  2: required string py_lib_searchpath,
 }
 
 struct AprilDetectionConfig {

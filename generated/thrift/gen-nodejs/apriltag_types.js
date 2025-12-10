@@ -18,18 +18,12 @@ ttypes.SpecialDetectorType = {
 };
 var SpecialDetectorConfig = module.exports.SpecialDetectorConfig = function(args) {
   this.type = null;
-  this.lib_searchpath = null;
   this.py_lib_searchpath = null;
   if (args) {
     if (args.type !== undefined && args.type !== null) {
       this.type = args.type;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field type is unset!');
-    }
-    if (args.lib_searchpath !== undefined && args.lib_searchpath !== null) {
-      this.lib_searchpath = Thrift.copyList(args.lib_searchpath, [null]);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field lib_searchpath is unset!');
     }
     if (args.py_lib_searchpath !== undefined && args.py_lib_searchpath !== null) {
       this.py_lib_searchpath = args.py_lib_searchpath;
@@ -57,21 +51,6 @@ SpecialDetectorConfig.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.LIST) {
-        this.lib_searchpath = [];
-        var _rtmp31 = input.readListBegin();
-        var _size0 = _rtmp31.size || 0;
-        for (var _i2 = 0; _i2 < _size0; ++_i2) {
-          var elem3 = null;
-          elem3 = input.readString();
-          this.lib_searchpath.push(elem3);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
       if (ftype == Thrift.Type.STRING) {
         this.py_lib_searchpath = input.readString();
       } else {
@@ -94,20 +73,8 @@ SpecialDetectorConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeI32(this.type);
     output.writeFieldEnd();
   }
-  if (this.lib_searchpath !== null && this.lib_searchpath !== undefined) {
-    output.writeFieldBegin('lib_searchpath', Thrift.Type.LIST, 2);
-    output.writeListBegin(Thrift.Type.STRING, this.lib_searchpath.length);
-    for (var iter4 in this.lib_searchpath) {
-      if (this.lib_searchpath.hasOwnProperty(iter4)) {
-        iter4 = this.lib_searchpath[iter4];
-        output.writeString(iter4);
-      }
-    }
-    output.writeListEnd();
-    output.writeFieldEnd();
-  }
   if (this.py_lib_searchpath !== null && this.py_lib_searchpath !== undefined) {
-    output.writeFieldBegin('py_lib_searchpath', Thrift.Type.STRING, 3);
+    output.writeFieldBegin('py_lib_searchpath', Thrift.Type.STRING, 2);
     output.writeString(this.py_lib_searchpath);
     output.writeFieldEnd();
   }
@@ -259,12 +226,12 @@ AprilDetectionConfig.prototype[Symbol.for("read")] = function(input) {
       case 8:
       if (ftype == Thrift.Type.LIST) {
         this.searchpath = [];
-        var _rtmp36 = input.readListBegin();
-        var _size5 = _rtmp36.size || 0;
-        for (var _i7 = 0; _i7 < _size5; ++_i7) {
-          var elem8 = null;
-          elem8 = input.readString();
-          this.searchpath.push(elem8);
+        var _rtmp31 = input.readListBegin();
+        var _size0 = _rtmp31.size || 0;
+        for (var _i2 = 0; _i2 < _size0; ++_i2) {
+          var elem3 = null;
+          elem3 = input.readString();
+          this.searchpath.push(elem3);
         }
         input.readListEnd();
       } else {
@@ -302,15 +269,15 @@ AprilDetectionConfig.prototype[Symbol.for("read")] = function(input) {
       case 13:
       if (ftype == Thrift.Type.MAP) {
         this.pi_name_to_special_detector_config = {};
-        var _rtmp310 = input.readMapBegin();
-        var _size9 = _rtmp310.size || 0;
-        for (var _i11 = 0; _i11 < _size9; ++_i11) {
-          var key12 = null;
-          var val13 = null;
-          key12 = input.readString();
-          val13 = new ttypes.SpecialDetectorConfig();
-          val13[Symbol.for("read")](input);
-          this.pi_name_to_special_detector_config[key12] = val13;
+        var _rtmp35 = input.readMapBegin();
+        var _size4 = _rtmp35.size || 0;
+        for (var _i6 = 0; _i6 < _size4; ++_i6) {
+          var key7 = null;
+          var val8 = null;
+          key7 = input.readString();
+          val8 = new ttypes.SpecialDetectorConfig();
+          val8[Symbol.for("read")](input);
+          this.pi_name_to_special_detector_config[key7] = val8;
         }
         input.readMapEnd();
       } else {
@@ -366,10 +333,10 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.searchpath !== null && this.searchpath !== undefined) {
     output.writeFieldBegin('searchpath', Thrift.Type.LIST, 8);
     output.writeListBegin(Thrift.Type.STRING, this.searchpath.length);
-    for (var iter14 in this.searchpath) {
-      if (this.searchpath.hasOwnProperty(iter14)) {
-        iter14 = this.searchpath[iter14];
-        output.writeString(iter14);
+    for (var iter9 in this.searchpath) {
+      if (this.searchpath.hasOwnProperty(iter9)) {
+        iter9 = this.searchpath[iter9];
+        output.writeString(iter9);
       }
     }
     output.writeListEnd();
@@ -398,11 +365,11 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.pi_name_to_special_detector_config !== null && this.pi_name_to_special_detector_config !== undefined) {
     output.writeFieldBegin('pi_name_to_special_detector_config', Thrift.Type.MAP, 13);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.pi_name_to_special_detector_config));
-    for (var kiter15 in this.pi_name_to_special_detector_config) {
-      if (this.pi_name_to_special_detector_config.hasOwnProperty(kiter15)) {
-        var viter16 = this.pi_name_to_special_detector_config[kiter15];
-        output.writeString(kiter15);
-        viter16[Symbol.for("write")](output);
+    for (var kiter10 in this.pi_name_to_special_detector_config) {
+      if (this.pi_name_to_special_detector_config.hasOwnProperty(kiter10)) {
+        var viter11 = this.pi_name_to_special_detector_config[kiter10];
+        output.writeString(kiter10);
+        viter11[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
