@@ -9,11 +9,15 @@ import Q = thrift.Q;
 import Int64 = require('node-int64');
 
 
-declare class AprilDetectionMessageConfig {
-  public post_camera_output_topic?: string;
-  public post_tag_output_topic?: string;
+declare enum SpecialDetectorType {
+  GPU_CUDA = 0,
+}
 
-    constructor(args?: { post_camera_output_topic?: string; post_tag_output_topic?: string; });
+declare class SpecialDetectorConfig {
+  public type: SpecialDetectorType;
+  public py_lib_searchpath: string;
+
+    constructor(args?: { type: SpecialDetectorType; py_lib_searchpath: string; });
 }
 
 declare class AprilDetectionConfig {
@@ -26,9 +30,10 @@ declare class AprilDetectionConfig {
   public decode_sharpening: number;
   public searchpath: string[];
   public debug: boolean;
-  public message: AprilDetectionMessageConfig;
+  public post_tag_output_topic?: string;
   public send_stats: boolean;
   public stats_topic: string;
+  public pi_name_to_special_detector_config: { [k: string]: SpecialDetectorConfig; };
 
-    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; searchpath: string[]; debug: boolean; message: AprilDetectionMessageConfig; send_stats: boolean; stats_topic: string; });
+    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; searchpath: string[]; debug: boolean; post_tag_output_topic?: string; send_stats: boolean; stats_topic: string; pi_name_to_special_detector_config: { [k: string]: SpecialDetectorConfig; }; });
 }

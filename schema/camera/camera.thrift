@@ -5,7 +5,16 @@ namespace py config.camera
 enum CameraType {
     OV2311,
     VIDEO_FILE,
-    MOST_RECENT_RECORDING
+    MOST_RECENT_RECORDING,
+    ULTRAWIDE_100
+}
+
+struct VideoFeedOptions {
+  1: required bool send_feed,
+  2: optional string publication_topic,
+  3: required bool overlay_tags = false
+  4: optional bool do_compression,
+  5: optional i32 compression_quality,
 }
 
 struct CameraParameters {
@@ -21,6 +30,6 @@ struct CameraParameters {
     10: required string name,
     11: required CameraType camera_type,
     12: optional string video_file_path,
-    13: optional bool do_compression,
-    14: optional i32 compression_quality,
+    13: required VideoFeedOptions video_options
+    14: optional i32 brightness,
 }

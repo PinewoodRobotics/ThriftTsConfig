@@ -12,6 +12,7 @@ import camera_ttypes = require('./camera_types.js');
 import lidar_ttypes = require('./lidar_types.js');
 import pos_extrapolator_ttypes = require('./pos_extrapolator_types.js');
 import pathfinding_ttypes = require('./pathfinding_types.js');
+import image_recognition_ttypes = require('./image_recognition_types.js');
 
 
 
@@ -23,6 +24,7 @@ declare class Config {
   public pathfinding: pathfinding_ttypes.PathfindingConfig;
   public record_replay: boolean;
   public replay_folder_path: string;
+  public object_recognition: image_recognition_ttypes.ObjectRecognitionConfig;
 
-    constructor(args?: { pos_extrapolator: pos_extrapolator_ttypes.PosExtrapolator; cameras: camera_ttypes.CameraParameters[]; lidar_configs: { [k: string]: lidar_ttypes.LidarConfig; }; april_detection: apriltag_ttypes.AprilDetectionConfig; pathfinding: pathfinding_ttypes.PathfindingConfig; record_replay: boolean; replay_folder_path: string; });
+    constructor(args?: { pos_extrapolator: pos_extrapolator_ttypes.PosExtrapolator; cameras: camera_ttypes.CameraParameters[]; lidar_configs: { [k: string]: lidar_ttypes.LidarConfig; }; april_detection: apriltag_ttypes.AprilDetectionConfig; pathfinding: pathfinding_ttypes.PathfindingConfig; record_replay: boolean; replay_folder_path: string; object_recognition: image_recognition_ttypes.ObjectRecognitionConfig; });
 }

@@ -1,8 +1,12 @@
 namespace py config.apriltag
 
-struct AprilDetectionMessageConfig {
-    1: optional string post_camera_output_topic,
-    2: optional string post_tag_output_topic,
+enum SpecialDetectorType {
+  GPU_CUDA = 0,
+}
+
+struct SpecialDetectorConfig {
+  1: required SpecialDetectorType type,
+  2: required string py_lib_searchpath,
 }
 
 struct AprilDetectionConfig {
@@ -15,7 +19,8 @@ struct AprilDetectionConfig {
     7: required double decode_sharpening,
     8: required list<string> searchpath,
     9: required bool debug,
-    10: required AprilDetectionMessageConfig message,
+    10: optional string post_tag_output_topic,
     11: required bool send_stats,
     12: required string stats_topic,
+    13: required map<string, SpecialDetectorConfig> pi_name_to_special_detector_config,
 }

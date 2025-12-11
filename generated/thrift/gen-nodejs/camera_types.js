@@ -20,8 +20,125 @@ ttypes.CameraType = {
   '1' : 'VIDEO_FILE',
   'VIDEO_FILE' : 1,
   '2' : 'MOST_RECENT_RECORDING',
-  'MOST_RECENT_RECORDING' : 2
+  'MOST_RECENT_RECORDING' : 2,
+  '3' : 'ULTRAWIDE_100',
+  'ULTRAWIDE_100' : 3
 };
+var VideoFeedOptions = module.exports.VideoFeedOptions = function(args) {
+  this.send_feed = null;
+  this.publication_topic = null;
+  this.overlay_tags = false;
+  this.do_compression = null;
+  this.compression_quality = null;
+  if (args) {
+    if (args.send_feed !== undefined && args.send_feed !== null) {
+      this.send_feed = args.send_feed;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field send_feed is unset!');
+    }
+    if (args.publication_topic !== undefined && args.publication_topic !== null) {
+      this.publication_topic = args.publication_topic;
+    }
+    if (args.overlay_tags !== undefined && args.overlay_tags !== null) {
+      this.overlay_tags = args.overlay_tags;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field overlay_tags is unset!');
+    }
+    if (args.do_compression !== undefined && args.do_compression !== null) {
+      this.do_compression = args.do_compression;
+    }
+    if (args.compression_quality !== undefined && args.compression_quality !== null) {
+      this.compression_quality = args.compression_quality;
+    }
+  }
+};
+VideoFeedOptions.prototype = {};
+VideoFeedOptions.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.BOOL) {
+        this.send_feed = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.publication_topic = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.BOOL) {
+        this.overlay_tags = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.BOOL) {
+        this.do_compression = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.I32) {
+        this.compression_quality = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+VideoFeedOptions.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('VideoFeedOptions');
+  if (this.send_feed !== null && this.send_feed !== undefined) {
+    output.writeFieldBegin('send_feed', Thrift.Type.BOOL, 1);
+    output.writeBool(this.send_feed);
+    output.writeFieldEnd();
+  }
+  if (this.publication_topic !== null && this.publication_topic !== undefined) {
+    output.writeFieldBegin('publication_topic', Thrift.Type.STRING, 2);
+    output.writeString(this.publication_topic);
+    output.writeFieldEnd();
+  }
+  if (this.overlay_tags !== null && this.overlay_tags !== undefined) {
+    output.writeFieldBegin('overlay_tags', Thrift.Type.BOOL, 3);
+    output.writeBool(this.overlay_tags);
+    output.writeFieldEnd();
+  }
+  if (this.do_compression !== null && this.do_compression !== undefined) {
+    output.writeFieldBegin('do_compression', Thrift.Type.BOOL, 4);
+    output.writeBool(this.do_compression);
+    output.writeFieldEnd();
+  }
+  if (this.compression_quality !== null && this.compression_quality !== undefined) {
+    output.writeFieldBegin('compression_quality', Thrift.Type.I32, 5);
+    output.writeI32(this.compression_quality);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var CameraParameters = module.exports.CameraParameters = function(args) {
   this.pi_to_run_on = null;
   this.camera_matrix = null;
@@ -35,8 +152,8 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
   this.name = null;
   this.camera_type = null;
   this.video_file_path = null;
-  this.do_compression = null;
-  this.compression_quality = null;
+  this.video_options = null;
+  this.brightness = null;
   if (args) {
     if (args.pi_to_run_on !== undefined && args.pi_to_run_on !== null) {
       this.pi_to_run_on = args.pi_to_run_on;
@@ -96,11 +213,13 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
     if (args.video_file_path !== undefined && args.video_file_path !== null) {
       this.video_file_path = args.video_file_path;
     }
-    if (args.do_compression !== undefined && args.do_compression !== null) {
-      this.do_compression = args.do_compression;
+    if (args.video_options !== undefined && args.video_options !== null) {
+      this.video_options = new ttypes.VideoFeedOptions(args.video_options);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field video_options is unset!');
     }
-    if (args.compression_quality !== undefined && args.compression_quality !== null) {
-      this.compression_quality = args.compression_quality;
+    if (args.brightness !== undefined && args.brightness !== null) {
+      this.brightness = args.brightness;
     }
   }
 };
@@ -202,15 +321,16 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 13:
-      if (ftype == Thrift.Type.BOOL) {
-        this.do_compression = input.readBool();
+      if (ftype == Thrift.Type.STRUCT) {
+        this.video_options = new ttypes.VideoFeedOptions();
+        this.video_options[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
       break;
       case 14:
       if (ftype == Thrift.Type.I32) {
-        this.compression_quality = input.readI32();
+        this.brightness = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -286,14 +406,14 @@ CameraParameters.prototype[Symbol.for("write")] = function(output) {
     output.writeString(this.video_file_path);
     output.writeFieldEnd();
   }
-  if (this.do_compression !== null && this.do_compression !== undefined) {
-    output.writeFieldBegin('do_compression', Thrift.Type.BOOL, 13);
-    output.writeBool(this.do_compression);
+  if (this.video_options !== null && this.video_options !== undefined) {
+    output.writeFieldBegin('video_options', Thrift.Type.STRUCT, 13);
+    this.video_options[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
-  if (this.compression_quality !== null && this.compression_quality !== undefined) {
-    output.writeFieldBegin('compression_quality', Thrift.Type.I32, 14);
-    output.writeI32(this.compression_quality);
+  if (this.brightness !== null && this.brightness !== undefined) {
+    output.writeFieldBegin('brightness', Thrift.Type.I32, 14);
+    output.writeI32(this.brightness);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

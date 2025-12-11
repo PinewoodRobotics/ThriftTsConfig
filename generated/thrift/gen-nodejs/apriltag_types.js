@@ -12,20 +12,28 @@ var Int64 = require('node-int64');
 
 
 var ttypes = module.exports = {};
-var AprilDetectionMessageConfig = module.exports.AprilDetectionMessageConfig = function(args) {
-  this.post_camera_output_topic = null;
-  this.post_tag_output_topic = null;
+ttypes.SpecialDetectorType = {
+  '0' : 'GPU_CUDA',
+  'GPU_CUDA' : 0
+};
+var SpecialDetectorConfig = module.exports.SpecialDetectorConfig = function(args) {
+  this.type = null;
+  this.py_lib_searchpath = null;
   if (args) {
-    if (args.post_camera_output_topic !== undefined && args.post_camera_output_topic !== null) {
-      this.post_camera_output_topic = args.post_camera_output_topic;
+    if (args.type !== undefined && args.type !== null) {
+      this.type = args.type;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field type is unset!');
     }
-    if (args.post_tag_output_topic !== undefined && args.post_tag_output_topic !== null) {
-      this.post_tag_output_topic = args.post_tag_output_topic;
+    if (args.py_lib_searchpath !== undefined && args.py_lib_searchpath !== null) {
+      this.py_lib_searchpath = args.py_lib_searchpath;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field py_lib_searchpath is unset!');
     }
   }
 };
-AprilDetectionMessageConfig.prototype = {};
-AprilDetectionMessageConfig.prototype[Symbol.for("read")] = function(input) {
+SpecialDetectorConfig.prototype = {};
+SpecialDetectorConfig.prototype[Symbol.for("read")] = function(input) {
   input.readStructBegin();
   while (true) {
     var ret = input.readFieldBegin();
@@ -36,15 +44,15 @@ AprilDetectionMessageConfig.prototype[Symbol.for("read")] = function(input) {
     }
     switch (fid) {
       case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.post_camera_output_topic = input.readString();
+      if (ftype == Thrift.Type.I32) {
+        this.type = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
       case 2:
       if (ftype == Thrift.Type.STRING) {
-        this.post_tag_output_topic = input.readString();
+        this.py_lib_searchpath = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -58,16 +66,16 @@ AprilDetectionMessageConfig.prototype[Symbol.for("read")] = function(input) {
   return;
 };
 
-AprilDetectionMessageConfig.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('AprilDetectionMessageConfig');
-  if (this.post_camera_output_topic !== null && this.post_camera_output_topic !== undefined) {
-    output.writeFieldBegin('post_camera_output_topic', Thrift.Type.STRING, 1);
-    output.writeString(this.post_camera_output_topic);
+SpecialDetectorConfig.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('SpecialDetectorConfig');
+  if (this.type !== null && this.type !== undefined) {
+    output.writeFieldBegin('type', Thrift.Type.I32, 1);
+    output.writeI32(this.type);
     output.writeFieldEnd();
   }
-  if (this.post_tag_output_topic !== null && this.post_tag_output_topic !== undefined) {
-    output.writeFieldBegin('post_tag_output_topic', Thrift.Type.STRING, 2);
-    output.writeString(this.post_tag_output_topic);
+  if (this.py_lib_searchpath !== null && this.py_lib_searchpath !== undefined) {
+    output.writeFieldBegin('py_lib_searchpath', Thrift.Type.STRING, 2);
+    output.writeString(this.py_lib_searchpath);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -85,9 +93,10 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
   this.decode_sharpening = null;
   this.searchpath = null;
   this.debug = null;
-  this.message = null;
+  this.post_tag_output_topic = null;
   this.send_stats = null;
   this.stats_topic = null;
+  this.pi_name_to_special_detector_config = null;
   if (args) {
     if (args.tag_size !== undefined && args.tag_size !== null) {
       this.tag_size = args.tag_size;
@@ -134,10 +143,8 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field debug is unset!');
     }
-    if (args.message !== undefined && args.message !== null) {
-      this.message = new ttypes.AprilDetectionMessageConfig(args.message);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field message is unset!');
+    if (args.post_tag_output_topic !== undefined && args.post_tag_output_topic !== null) {
+      this.post_tag_output_topic = args.post_tag_output_topic;
     }
     if (args.send_stats !== undefined && args.send_stats !== null) {
       this.send_stats = args.send_stats;
@@ -148,6 +155,11 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
       this.stats_topic = args.stats_topic;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field stats_topic is unset!');
+    }
+    if (args.pi_name_to_special_detector_config !== undefined && args.pi_name_to_special_detector_config !== null) {
+      this.pi_name_to_special_detector_config = Thrift.copyMap(args.pi_name_to_special_detector_config, [ttypes.SpecialDetectorConfig]);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pi_name_to_special_detector_config is unset!');
     }
   }
 };
@@ -234,9 +246,8 @@ AprilDetectionConfig.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 10:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.message = new ttypes.AprilDetectionMessageConfig();
-        this.message[Symbol.for("read")](input);
+      if (ftype == Thrift.Type.STRING) {
+        this.post_tag_output_topic = input.readString();
       } else {
         input.skip(ftype);
       }
@@ -251,6 +262,24 @@ AprilDetectionConfig.prototype[Symbol.for("read")] = function(input) {
       case 12:
       if (ftype == Thrift.Type.STRING) {
         this.stats_topic = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 13:
+      if (ftype == Thrift.Type.MAP) {
+        this.pi_name_to_special_detector_config = {};
+        var _rtmp35 = input.readMapBegin();
+        var _size4 = _rtmp35.size || 0;
+        for (var _i6 = 0; _i6 < _size4; ++_i6) {
+          var key7 = null;
+          var val8 = null;
+          key7 = input.readString();
+          val8 = new ttypes.SpecialDetectorConfig();
+          val8[Symbol.for("read")](input);
+          this.pi_name_to_special_detector_config[key7] = val8;
+        }
+        input.readMapEnd();
       } else {
         input.skip(ftype);
       }
@@ -304,10 +333,10 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.searchpath !== null && this.searchpath !== undefined) {
     output.writeFieldBegin('searchpath', Thrift.Type.LIST, 8);
     output.writeListBegin(Thrift.Type.STRING, this.searchpath.length);
-    for (var iter4 in this.searchpath) {
-      if (this.searchpath.hasOwnProperty(iter4)) {
-        iter4 = this.searchpath[iter4];
-        output.writeString(iter4);
+    for (var iter9 in this.searchpath) {
+      if (this.searchpath.hasOwnProperty(iter9)) {
+        iter9 = this.searchpath[iter9];
+        output.writeString(iter9);
       }
     }
     output.writeListEnd();
@@ -318,9 +347,9 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeBool(this.debug);
     output.writeFieldEnd();
   }
-  if (this.message !== null && this.message !== undefined) {
-    output.writeFieldBegin('message', Thrift.Type.STRUCT, 10);
-    this.message[Symbol.for("write")](output);
+  if (this.post_tag_output_topic !== null && this.post_tag_output_topic !== undefined) {
+    output.writeFieldBegin('post_tag_output_topic', Thrift.Type.STRING, 10);
+    output.writeString(this.post_tag_output_topic);
     output.writeFieldEnd();
   }
   if (this.send_stats !== null && this.send_stats !== undefined) {
@@ -331,6 +360,19 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.stats_topic !== null && this.stats_topic !== undefined) {
     output.writeFieldBegin('stats_topic', Thrift.Type.STRING, 12);
     output.writeString(this.stats_topic);
+    output.writeFieldEnd();
+  }
+  if (this.pi_name_to_special_detector_config !== null && this.pi_name_to_special_detector_config !== undefined) {
+    output.writeFieldBegin('pi_name_to_special_detector_config', Thrift.Type.MAP, 13);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.pi_name_to_special_detector_config));
+    for (var kiter10 in this.pi_name_to_special_detector_config) {
+      if (this.pi_name_to_special_detector_config.hasOwnProperty(kiter10)) {
+        var viter11 = this.pi_name_to_special_detector_config[kiter10];
+        output.writeString(kiter10);
+        viter11[Symbol.for("write")](output);
+      }
+    }
+    output.writeMapEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();

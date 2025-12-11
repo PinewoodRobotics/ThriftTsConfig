@@ -15,13 +15,39 @@ var kalman_filter_ttypes = require('./kalman_filter_types.js');
 
 
 var ttypes = module.exports = {};
+ttypes.OdometryPositionSource = {
+  '0' : 'ABSOLUTE',
+  'ABSOLUTE' : 0,
+  '1' : 'ABS_CHANGE',
+  'ABS_CHANGE' : 1,
+  '2' : 'DONT_USE',
+  'DONT_USE' : 2
+};
 ttypes.TagUseImuRotation = {
   '0' : 'ALWAYS',
   'ALWAYS' : 0,
   '1' : 'UNTIL_FIRST_NON_TAG_ROTATION',
   'UNTIL_FIRST_NON_TAG_ROTATION' : 1,
   '2' : 'NEVER',
-  'NEVER' : 2
+  'NEVER' : 2,
+  '3' : 'WHEN_TAG_BASED_DIFFERENT',
+  'WHEN_TAG_BASED_DIFFERENT' : 3
+};
+ttypes.TagDistanceDiscardMode = {
+  '0' : 'NONE',
+  'NONE' : 0,
+  '1' : 'DISCARD_DISTANCE_AWAY',
+  'DISCARD_DISTANCE_AWAY' : 1,
+  '2' : 'DISCARD_ANGLE_AWAY',
+  'DISCARD_ANGLE_AWAY' : 2,
+  '3' : 'DISCARD_ANGLE_AND_DISTANCE_AWAY',
+  'DISCARD_ANGLE_AND_DISTANCE_AWAY' : 3,
+  '4' : 'ADD_WEIGHT_PER_M_FROM_DISCARD_DISTANCE',
+  'ADD_WEIGHT_PER_M_FROM_DISCARD_DISTANCE' : 4,
+  '5' : 'ADD_WEIGHT_PER_DEGREE_FROM_DISCARD_ANGLE',
+  'ADD_WEIGHT_PER_DEGREE_FROM_DISCARD_ANGLE' : 5,
+  '6' : 'ADD_WEIGHT',
+  'ADD_WEIGHT' : 6
 };
 var PosExtrapolatorMessageConfig = module.exports.PosExtrapolatorMessageConfig = function(args) {
   this.post_tag_input_topic = null;
@@ -127,24 +153,18 @@ PosExtrapolatorMessageConfig.prototype[Symbol.for("write")] = function(output) {
 };
 
 var OdomConfig = module.exports.OdomConfig = function(args) {
-  this.use_position = null;
+  this.position_source = null;
   this.use_rotation = null;
-  this.imu_robot_position = null;
   if (args) {
-    if (args.use_position !== undefined && args.use_position !== null) {
-      this.use_position = args.use_position;
+    if (args.position_source !== undefined && args.position_source !== null) {
+      this.position_source = args.position_source;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_position is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field position_source is unset!');
     }
     if (args.use_rotation !== undefined && args.use_rotation !== null) {
       this.use_rotation = args.use_rotation;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_rotation is unset!');
-    }
-    if (args.imu_robot_position !== undefined && args.imu_robot_position !== null) {
-      this.imu_robot_position = new common_ttypes.Point3(args.imu_robot_position);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field imu_robot_position is unset!');
     }
   }
 };
@@ -160,8 +180,8 @@ OdomConfig.prototype[Symbol.for("read")] = function(input) {
     }
     switch (fid) {
       case 1:
-      if (ftype == Thrift.Type.BOOL) {
-        this.use_position = input.readBool();
+      if (ftype == Thrift.Type.I32) {
+        this.position_source = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -169,14 +189,6 @@ OdomConfig.prototype[Symbol.for("read")] = function(input) {
       case 2:
       if (ftype == Thrift.Type.BOOL) {
         this.use_rotation = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.imu_robot_position = new common_ttypes.Point3();
-        this.imu_robot_position[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
@@ -192,19 +204,14 @@ OdomConfig.prototype[Symbol.for("read")] = function(input) {
 
 OdomConfig.prototype[Symbol.for("write")] = function(output) {
   output.writeStructBegin('OdomConfig');
-  if (this.use_position !== null && this.use_position !== undefined) {
-    output.writeFieldBegin('use_position', Thrift.Type.BOOL, 1);
-    output.writeBool(this.use_position);
+  if (this.position_source !== null && this.position_source !== undefined) {
+    output.writeFieldBegin('position_source', Thrift.Type.I32, 1);
+    output.writeI32(this.position_source);
     output.writeFieldEnd();
   }
   if (this.use_rotation !== null && this.use_rotation !== undefined) {
     output.writeFieldBegin('use_rotation', Thrift.Type.BOOL, 2);
     output.writeBool(this.use_rotation);
-    output.writeFieldEnd();
-  }
-  if (this.imu_robot_position !== null && this.imu_robot_position !== undefined) {
-    output.writeFieldBegin('imu_robot_position', Thrift.Type.STRUCT, 3);
-    this.imu_robot_position[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -216,7 +223,6 @@ var ImuConfig = module.exports.ImuConfig = function(args) {
   this.use_rotation = null;
   this.use_position = null;
   this.use_velocity = null;
-  this.imu_robot_position = null;
   if (args) {
     if (args.use_rotation !== undefined && args.use_rotation !== null) {
       this.use_rotation = args.use_rotation;
@@ -232,11 +238,6 @@ var ImuConfig = module.exports.ImuConfig = function(args) {
       this.use_velocity = args.use_velocity;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_velocity is unset!');
-    }
-    if (args.imu_robot_position !== undefined && args.imu_robot_position !== null) {
-      this.imu_robot_position = new common_ttypes.Point3(args.imu_robot_position);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field imu_robot_position is unset!');
     }
   }
 };
@@ -272,14 +273,6 @@ ImuConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 4:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.imu_robot_position = new common_ttypes.Point3();
-        this.imu_robot_position[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -306,9 +299,265 @@ ImuConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeBool(this.use_velocity);
     output.writeFieldEnd();
   }
-  if (this.imu_robot_position !== null && this.imu_robot_position !== undefined) {
-    output.writeFieldBegin('imu_robot_position', Thrift.Type.STRUCT, 4);
-    this.imu_robot_position[Symbol.for("write")](output);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var TagDistanceDiscardConfig = module.exports.TagDistanceDiscardConfig = function(args) {
+  this.distance_threshold = null;
+  this.angle_threshold_degrees = null;
+  this.weight_per_m_from_discard_distance = null;
+  this.weight_per_degree_from_discard_angle = null;
+  if (args) {
+    if (args.distance_threshold !== undefined && args.distance_threshold !== null) {
+      this.distance_threshold = args.distance_threshold;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field distance_threshold is unset!');
+    }
+    if (args.angle_threshold_degrees !== undefined && args.angle_threshold_degrees !== null) {
+      this.angle_threshold_degrees = args.angle_threshold_degrees;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field angle_threshold_degrees is unset!');
+    }
+    if (args.weight_per_m_from_discard_distance !== undefined && args.weight_per_m_from_discard_distance !== null) {
+      this.weight_per_m_from_discard_distance = args.weight_per_m_from_discard_distance;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_m_from_discard_distance is unset!');
+    }
+    if (args.weight_per_degree_from_discard_angle !== undefined && args.weight_per_degree_from_discard_angle !== null) {
+      this.weight_per_degree_from_discard_angle = args.weight_per_degree_from_discard_angle;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_degree_from_discard_angle is unset!');
+    }
+  }
+};
+TagDistanceDiscardConfig.prototype = {};
+TagDistanceDiscardConfig.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.distance_threshold = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.angle_threshold_degrees = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.weight_per_m_from_discard_distance = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.weight_per_degree_from_discard_angle = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TagDistanceDiscardConfig.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('TagDistanceDiscardConfig');
+  if (this.distance_threshold !== null && this.distance_threshold !== undefined) {
+    output.writeFieldBegin('distance_threshold', Thrift.Type.DOUBLE, 1);
+    output.writeDouble(this.distance_threshold);
+    output.writeFieldEnd();
+  }
+  if (this.angle_threshold_degrees !== null && this.angle_threshold_degrees !== undefined) {
+    output.writeFieldBegin('angle_threshold_degrees', Thrift.Type.DOUBLE, 2);
+    output.writeDouble(this.angle_threshold_degrees);
+    output.writeFieldEnd();
+  }
+  if (this.weight_per_m_from_discard_distance !== null && this.weight_per_m_from_discard_distance !== undefined) {
+    output.writeFieldBegin('weight_per_m_from_discard_distance', Thrift.Type.DOUBLE, 3);
+    output.writeDouble(this.weight_per_m_from_discard_distance);
+    output.writeFieldEnd();
+  }
+  if (this.weight_per_degree_from_discard_angle !== null && this.weight_per_degree_from_discard_angle !== undefined) {
+    output.writeFieldBegin('weight_per_degree_from_discard_angle', Thrift.Type.DOUBLE, 4);
+    output.writeDouble(this.weight_per_degree_from_discard_angle);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
+  this.tag_position_config = null;
+  this.tag_discard_mode = null;
+  this.camera_position_config = null;
+  this.tag_use_imu_rotation = null;
+  this.discard_config = null;
+  if (args) {
+    if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
+      this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_position_config is unset!');
+    }
+    if (args.tag_discard_mode !== undefined && args.tag_discard_mode !== null) {
+      this.tag_discard_mode = args.tag_discard_mode;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_discard_mode is unset!');
+    }
+    if (args.camera_position_config !== undefined && args.camera_position_config !== null) {
+      this.camera_position_config = Thrift.copyMap(args.camera_position_config, [common_ttypes.Point3]);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_position_config is unset!');
+    }
+    if (args.tag_use_imu_rotation !== undefined && args.tag_use_imu_rotation !== null) {
+      this.tag_use_imu_rotation = args.tag_use_imu_rotation;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_use_imu_rotation is unset!');
+    }
+    if (args.discard_config !== undefined && args.discard_config !== null) {
+      this.discard_config = new ttypes.TagDistanceDiscardConfig(args.discard_config);
+    }
+  }
+};
+AprilTagConfig.prototype = {};
+AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.MAP) {
+        this.tag_position_config = {};
+        var _rtmp31 = input.readMapBegin();
+        var _size0 = _rtmp31.size || 0;
+        for (var _i2 = 0; _i2 < _size0; ++_i2) {
+          var key3 = null;
+          var val4 = null;
+          key3 = input.readI32();
+          val4 = new common_ttypes.Point3();
+          val4[Symbol.for("read")](input);
+          this.tag_position_config[key3] = val4;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.tag_discard_mode = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.MAP) {
+        this.camera_position_config = {};
+        var _rtmp36 = input.readMapBegin();
+        var _size5 = _rtmp36.size || 0;
+        for (var _i7 = 0; _i7 < _size5; ++_i7) {
+          var key8 = null;
+          var val9 = null;
+          key8 = input.readString();
+          val9 = new common_ttypes.Point3();
+          val9[Symbol.for("read")](input);
+          this.camera_position_config[key8] = val9;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.I32) {
+        this.tag_use_imu_rotation = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.discard_config = new ttypes.TagDistanceDiscardConfig();
+        this.discard_config[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('AprilTagConfig');
+  if (this.tag_position_config !== null && this.tag_position_config !== undefined) {
+    output.writeFieldBegin('tag_position_config', Thrift.Type.MAP, 1);
+    output.writeMapBegin(Thrift.Type.I32, Thrift.Type.STRUCT, Thrift.objectLength(this.tag_position_config));
+    for (var kiter10 in this.tag_position_config) {
+      if (this.tag_position_config.hasOwnProperty(kiter10)) {
+        var viter11 = this.tag_position_config[kiter10];
+        output.writeI32(kiter10);
+        viter11[Symbol.for("write")](output);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.tag_discard_mode !== null && this.tag_discard_mode !== undefined) {
+    output.writeFieldBegin('tag_discard_mode', Thrift.Type.I32, 2);
+    output.writeI32(this.tag_discard_mode);
+    output.writeFieldEnd();
+  }
+  if (this.camera_position_config !== null && this.camera_position_config !== undefined) {
+    output.writeFieldBegin('camera_position_config', Thrift.Type.MAP, 3);
+    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.camera_position_config));
+    for (var kiter12 in this.camera_position_config) {
+      if (this.camera_position_config.hasOwnProperty(kiter12)) {
+        var viter13 = this.camera_position_config[kiter12];
+        output.writeString(kiter12);
+        viter13[Symbol.for("write")](output);
+      }
+    }
+    output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.tag_use_imu_rotation !== null && this.tag_use_imu_rotation !== undefined) {
+    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 5);
+    output.writeI32(this.tag_use_imu_rotation);
+    output.writeFieldEnd();
+  }
+  if (this.discard_config !== null && this.discard_config !== undefined) {
+    output.writeFieldBegin('discard_config', Thrift.Type.STRUCT, 6);
+    this.discard_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -318,39 +567,21 @@ ImuConfig.prototype[Symbol.for("write")] = function(output) {
 
 var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
   this.message_config = null;
-  this.tag_position_config = null;
-  this.tag_confidence_threshold = null;
-  this.april_tag_discard_distance = null;
   this.enable_imu = null;
   this.enable_odom = null;
   this.enable_tags = null;
+  this.april_tag_config = null;
   this.odom_config = null;
   this.imu_config = null;
   this.kalman_filter_config = null;
-  this.camera_position_config = null;
   this.time_s_between_position_sends = null;
   this.composite_publish_topic = null;
-  this.tag_use_imu_rotation = null;
+  this.future_position_prediction_margin_s = null;
   if (args) {
     if (args.message_config !== undefined && args.message_config !== null) {
       this.message_config = new ttypes.PosExtrapolatorMessageConfig(args.message_config);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field message_config is unset!');
-    }
-    if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
-      this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_position_config is unset!');
-    }
-    if (args.tag_confidence_threshold !== undefined && args.tag_confidence_threshold !== null) {
-      this.tag_confidence_threshold = args.tag_confidence_threshold;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_confidence_threshold is unset!');
-    }
-    if (args.april_tag_discard_distance !== undefined && args.april_tag_discard_distance !== null) {
-      this.april_tag_discard_distance = args.april_tag_discard_distance;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field april_tag_discard_distance is unset!');
     }
     if (args.enable_imu !== undefined && args.enable_imu !== null) {
       this.enable_imu = args.enable_imu;
@@ -367,6 +598,11 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field enable_tags is unset!');
     }
+    if (args.april_tag_config !== undefined && args.april_tag_config !== null) {
+      this.april_tag_config = new ttypes.AprilTagConfig(args.april_tag_config);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field april_tag_config is unset!');
+    }
     if (args.odom_config !== undefined && args.odom_config !== null) {
       this.odom_config = new ttypes.OdomConfig(args.odom_config);
     } else {
@@ -382,21 +618,14 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field kalman_filter_config is unset!');
     }
-    if (args.camera_position_config !== undefined && args.camera_position_config !== null) {
-      this.camera_position_config = Thrift.copyMap(args.camera_position_config, [common_ttypes.Point3]);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_position_config is unset!');
-    }
     if (args.time_s_between_position_sends !== undefined && args.time_s_between_position_sends !== null) {
       this.time_s_between_position_sends = args.time_s_between_position_sends;
     }
     if (args.composite_publish_topic !== undefined && args.composite_publish_topic !== null) {
       this.composite_publish_topic = args.composite_publish_topic;
     }
-    if (args.tag_use_imu_rotation !== undefined && args.tag_use_imu_rotation !== null) {
-      this.tag_use_imu_rotation = args.tag_use_imu_rotation;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_use_imu_rotation is unset!');
+    if (args.future_position_prediction_margin_s !== undefined && args.future_position_prediction_margin_s !== null) {
+      this.future_position_prediction_margin_s = args.future_position_prediction_margin_s;
     }
   }
 };
@@ -415,38 +644,6 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       if (ftype == Thrift.Type.STRUCT) {
         this.message_config = new ttypes.PosExtrapolatorMessageConfig();
         this.message_config[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.MAP) {
-        this.tag_position_config = {};
-        var _rtmp31 = input.readMapBegin();
-        var _size0 = _rtmp31.size || 0;
-        for (var _i2 = 0; _i2 < _size0; ++_i2) {
-          var key3 = null;
-          var val4 = null;
-          key3 = input.readI32();
-          val4 = new common_ttypes.Point3();
-          val4[Symbol.for("read")](input);
-          this.tag_position_config[key3] = val4;
-        }
-        input.readMapEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.tag_confidence_threshold = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.april_tag_discard_distance = input.readDouble();
       } else {
         input.skip(ftype);
       }
@@ -474,52 +671,42 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       break;
       case 8:
       if (ftype == Thrift.Type.STRUCT) {
+        this.april_tag_config = new ttypes.AprilTagConfig();
+        this.april_tag_config[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 9:
+      if (ftype == Thrift.Type.STRUCT) {
         this.odom_config = new ttypes.OdomConfig();
         this.odom_config[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
       break;
-      case 9:
+      case 10:
       if (ftype == Thrift.Type.MAP) {
         this.imu_config = {};
-        var _rtmp36 = input.readMapBegin();
-        var _size5 = _rtmp36.size || 0;
-        for (var _i7 = 0; _i7 < _size5; ++_i7) {
-          var key8 = null;
-          var val9 = null;
-          key8 = input.readString();
-          val9 = new ttypes.ImuConfig();
-          val9[Symbol.for("read")](input);
-          this.imu_config[key8] = val9;
+        var _rtmp315 = input.readMapBegin();
+        var _size14 = _rtmp315.size || 0;
+        for (var _i16 = 0; _i16 < _size14; ++_i16) {
+          var key17 = null;
+          var val18 = null;
+          key17 = input.readString();
+          val18 = new ttypes.ImuConfig();
+          val18[Symbol.for("read")](input);
+          this.imu_config[key17] = val18;
         }
         input.readMapEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 10:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.kalman_filter_config = new kalman_filter_ttypes.KalmanFilterConfig();
-        this.kalman_filter_config[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
       break;
       case 11:
-      if (ftype == Thrift.Type.MAP) {
-        this.camera_position_config = {};
-        var _rtmp311 = input.readMapBegin();
-        var _size10 = _rtmp311.size || 0;
-        for (var _i12 = 0; _i12 < _size10; ++_i12) {
-          var key13 = null;
-          var val14 = null;
-          key13 = input.readString();
-          val14 = new common_ttypes.Point3();
-          val14[Symbol.for("read")](input);
-          this.camera_position_config[key13] = val14;
-        }
-        input.readMapEnd();
+      if (ftype == Thrift.Type.STRUCT) {
+        this.kalman_filter_config = new kalman_filter_ttypes.KalmanFilterConfig();
+        this.kalman_filter_config[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
@@ -539,8 +726,8 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 14:
-      if (ftype == Thrift.Type.I32) {
-        this.tag_use_imu_rotation = input.readI32();
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.future_position_prediction_margin_s = input.readDouble();
       } else {
         input.skip(ftype);
       }
@@ -561,29 +748,6 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
     this.message_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
-  if (this.tag_position_config !== null && this.tag_position_config !== undefined) {
-    output.writeFieldBegin('tag_position_config', Thrift.Type.MAP, 2);
-    output.writeMapBegin(Thrift.Type.I32, Thrift.Type.STRUCT, Thrift.objectLength(this.tag_position_config));
-    for (var kiter15 in this.tag_position_config) {
-      if (this.tag_position_config.hasOwnProperty(kiter15)) {
-        var viter16 = this.tag_position_config[kiter15];
-        output.writeI32(kiter15);
-        viter16[Symbol.for("write")](output);
-      }
-    }
-    output.writeMapEnd();
-    output.writeFieldEnd();
-  }
-  if (this.tag_confidence_threshold !== null && this.tag_confidence_threshold !== undefined) {
-    output.writeFieldBegin('tag_confidence_threshold', Thrift.Type.DOUBLE, 3);
-    output.writeDouble(this.tag_confidence_threshold);
-    output.writeFieldEnd();
-  }
-  if (this.april_tag_discard_distance !== null && this.april_tag_discard_distance !== undefined) {
-    output.writeFieldBegin('april_tag_discard_distance', Thrift.Type.DOUBLE, 4);
-    output.writeDouble(this.april_tag_discard_distance);
-    output.writeFieldEnd();
-  }
   if (this.enable_imu !== null && this.enable_imu !== undefined) {
     output.writeFieldBegin('enable_imu', Thrift.Type.BOOL, 5);
     output.writeBool(this.enable_imu);
@@ -599,40 +763,32 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
     output.writeBool(this.enable_tags);
     output.writeFieldEnd();
   }
+  if (this.april_tag_config !== null && this.april_tag_config !== undefined) {
+    output.writeFieldBegin('april_tag_config', Thrift.Type.STRUCT, 8);
+    this.april_tag_config[Symbol.for("write")](output);
+    output.writeFieldEnd();
+  }
   if (this.odom_config !== null && this.odom_config !== undefined) {
-    output.writeFieldBegin('odom_config', Thrift.Type.STRUCT, 8);
+    output.writeFieldBegin('odom_config', Thrift.Type.STRUCT, 9);
     this.odom_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.imu_config !== null && this.imu_config !== undefined) {
-    output.writeFieldBegin('imu_config', Thrift.Type.MAP, 9);
+    output.writeFieldBegin('imu_config', Thrift.Type.MAP, 10);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.imu_config));
-    for (var kiter17 in this.imu_config) {
-      if (this.imu_config.hasOwnProperty(kiter17)) {
-        var viter18 = this.imu_config[kiter17];
-        output.writeString(kiter17);
-        viter18[Symbol.for("write")](output);
+    for (var kiter19 in this.imu_config) {
+      if (this.imu_config.hasOwnProperty(kiter19)) {
+        var viter20 = this.imu_config[kiter19];
+        output.writeString(kiter19);
+        viter20[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
     output.writeFieldEnd();
   }
   if (this.kalman_filter_config !== null && this.kalman_filter_config !== undefined) {
-    output.writeFieldBegin('kalman_filter_config', Thrift.Type.STRUCT, 10);
+    output.writeFieldBegin('kalman_filter_config', Thrift.Type.STRUCT, 11);
     this.kalman_filter_config[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.camera_position_config !== null && this.camera_position_config !== undefined) {
-    output.writeFieldBegin('camera_position_config', Thrift.Type.MAP, 11);
-    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.camera_position_config));
-    for (var kiter19 in this.camera_position_config) {
-      if (this.camera_position_config.hasOwnProperty(kiter19)) {
-        var viter20 = this.camera_position_config[kiter19];
-        output.writeString(kiter19);
-        viter20[Symbol.for("write")](output);
-      }
-    }
-    output.writeMapEnd();
     output.writeFieldEnd();
   }
   if (this.time_s_between_position_sends !== null && this.time_s_between_position_sends !== undefined) {
@@ -645,9 +801,9 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
     output.writeString(this.composite_publish_topic);
     output.writeFieldEnd();
   }
-  if (this.tag_use_imu_rotation !== null && this.tag_use_imu_rotation !== undefined) {
-    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 14);
-    output.writeI32(this.tag_use_imu_rotation);
+  if (this.future_position_prediction_margin_s !== null && this.future_position_prediction_margin_s !== undefined) {
+    output.writeFieldBegin('future_position_prediction_margin_s', Thrift.Type.DOUBLE, 14);
+    output.writeDouble(this.future_position_prediction_margin_s);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

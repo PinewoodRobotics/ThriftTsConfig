@@ -192,6 +192,9 @@ var PathfindingConfig = module.exports.PathfindingConfig = function(args) {
   this.others_config = null;
   this.publish_map = null;
   this.map_pub_topic = null;
+  this.global_pose_pub_topic = null;
+  this.x_map_to_meters = null;
+  this.y_map_to_meters = null;
   if (args) {
     if (args.map_data !== undefined && args.map_data !== null) {
       this.map_data = new common_ttypes.MapData(args.map_data);
@@ -217,6 +220,19 @@ var PathfindingConfig = module.exports.PathfindingConfig = function(args) {
       this.map_pub_topic = args.map_pub_topic;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field map_pub_topic is unset!');
+    }
+    if (args.global_pose_pub_topic !== undefined && args.global_pose_pub_topic !== null) {
+      this.global_pose_pub_topic = args.global_pose_pub_topic;
+    }
+    if (args.x_map_to_meters !== undefined && args.x_map_to_meters !== null) {
+      this.x_map_to_meters = new common_ttypes.UnitConversion(args.x_map_to_meters);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field x_map_to_meters is unset!');
+    }
+    if (args.y_map_to_meters !== undefined && args.y_map_to_meters !== null) {
+      this.y_map_to_meters = new common_ttypes.UnitConversion(args.y_map_to_meters);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field y_map_to_meters is unset!');
     }
   }
 };
@@ -269,6 +285,29 @@ PathfindingConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.STRING) {
+        this.global_pose_pub_topic = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.x_map_to_meters = new common_ttypes.UnitConversion();
+        this.x_map_to_meters[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.y_map_to_meters = new common_ttypes.UnitConversion();
+        this.y_map_to_meters[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -303,6 +342,21 @@ PathfindingConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.map_pub_topic !== null && this.map_pub_topic !== undefined) {
     output.writeFieldBegin('map_pub_topic', Thrift.Type.STRING, 5);
     output.writeString(this.map_pub_topic);
+    output.writeFieldEnd();
+  }
+  if (this.global_pose_pub_topic !== null && this.global_pose_pub_topic !== undefined) {
+    output.writeFieldBegin('global_pose_pub_topic', Thrift.Type.STRING, 6);
+    output.writeString(this.global_pose_pub_topic);
+    output.writeFieldEnd();
+  }
+  if (this.x_map_to_meters !== null && this.x_map_to_meters !== undefined) {
+    output.writeFieldBegin('x_map_to_meters', Thrift.Type.STRUCT, 7);
+    this.x_map_to_meters[Symbol.for("write")](output);
+    output.writeFieldEnd();
+  }
+  if (this.y_map_to_meters !== null && this.y_map_to_meters !== undefined) {
+    output.writeFieldBegin('y_map_to_meters', Thrift.Type.STRUCT, 8);
+    this.y_map_to_meters[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

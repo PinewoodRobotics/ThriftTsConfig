@@ -12,10 +12,27 @@ import kalman_filter_ttypes = require('./kalman_filter_types.js');
 
 
 
+declare enum OdometryPositionSource {
+  ABSOLUTE = 0,
+  ABS_CHANGE = 1,
+  DONT_USE = 2,
+}
+
 declare enum TagUseImuRotation {
   ALWAYS = 0,
   UNTIL_FIRST_NON_TAG_ROTATION = 1,
   NEVER = 2,
+  WHEN_TAG_BASED_DIFFERENT = 3,
+}
+
+declare enum TagDistanceDiscardMode {
+  NONE = 0,
+  DISCARD_DISTANCE_AWAY = 1,
+  DISCARD_ANGLE_AWAY = 2,
+  DISCARD_ANGLE_AND_DISTANCE_AWAY = 3,
+  ADD_WEIGHT_PER_M_FROM_DISCARD_DISTANCE = 4,
+  ADD_WEIGHT_PER_DEGREE_FROM_DISCARD_ANGLE = 5,
+  ADD_WEIGHT = 6,
 }
 
 declare class PosExtrapolatorMessageConfig {
@@ -28,37 +45,51 @@ declare class PosExtrapolatorMessageConfig {
 }
 
 declare class OdomConfig {
-  public use_position: boolean;
+  public position_source: OdometryPositionSource;
   public use_rotation: boolean;
-  public imu_robot_position: common_ttypes.Point3;
 
-    constructor(args?: { use_position: boolean; use_rotation: boolean; imu_robot_position: common_ttypes.Point3; });
+    constructor(args?: { position_source: OdometryPositionSource; use_rotation: boolean; });
 }
 
 declare class ImuConfig {
   public use_rotation: boolean;
   public use_position: boolean;
   public use_velocity: boolean;
-  public imu_robot_position: common_ttypes.Point3;
 
-    constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; imu_robot_position: common_ttypes.Point3; });
+    constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; });
+}
+
+declare class TagDistanceDiscardConfig {
+  public distance_threshold: number;
+  public angle_threshold_degrees: number;
+  public weight_per_m_from_discard_distance: number;
+  public weight_per_degree_from_discard_angle: number;
+
+    constructor(args?: { distance_threshold: number; angle_threshold_degrees: number; weight_per_m_from_discard_distance: number; weight_per_degree_from_discard_angle: number; });
+}
+
+declare class AprilTagConfig {
+  public tag_position_config: { [k: number]: common_ttypes.Point3; };
+  public tag_discard_mode: TagDistanceDiscardMode;
+  public camera_position_config: { [k: string]: common_ttypes.Point3; };
+  public tag_use_imu_rotation: TagUseImuRotation;
+  public discard_config?: TagDistanceDiscardConfig;
+
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_discard_mode: TagDistanceDiscardMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; discard_config?: TagDistanceDiscardConfig; });
 }
 
 declare class PosExtrapolator {
   public message_config: PosExtrapolatorMessageConfig;
-  public tag_position_config: { [k: number]: common_ttypes.Point3; };
-  public tag_confidence_threshold: number;
-  public april_tag_discard_distance: number;
   public enable_imu: boolean;
   public enable_odom: boolean;
   public enable_tags: boolean;
+  public april_tag_config: AprilTagConfig;
   public odom_config: OdomConfig;
   public imu_config: { [k: string]: ImuConfig; };
   public kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig;
-  public camera_position_config: { [k: string]: common_ttypes.Point3; };
   public time_s_between_position_sends?: number;
   public composite_publish_topic?: string;
-  public tag_use_imu_rotation: TagUseImuRotation;
+  public future_position_prediction_margin_s?: number;
 
-    constructor(args?: { message_config: PosExtrapolatorMessageConfig; tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_confidence_threshold: number; april_tag_discard_distance: number; enable_imu: boolean; enable_odom: boolean; enable_tags: boolean; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; camera_position_config: { [k: string]: common_ttypes.Point3; }; time_s_between_position_sends?: number; composite_publish_topic?: string; tag_use_imu_rotation: TagUseImuRotation; });
+    constructor(args?: { message_config: PosExtrapolatorMessageConfig; enable_imu: boolean; enable_odom: boolean; enable_tags: boolean; april_tag_config: AprilTagConfig; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; time_s_between_position_sends?: number; composite_publish_topic?: string; future_position_prediction_margin_s?: number; });
 }
