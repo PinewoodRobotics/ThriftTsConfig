@@ -34,29 +34,19 @@ enum TagUseImuRotation {
     WHEN_TAG_BASED_DIFFERENT = 3,
 }
 
-enum TagDistanceDiscardMode {
+enum TagDisambiguationMode {
     NONE = 0,
-    DISCARD_DISTANCE_AWAY = 1,
-    DISCARD_ANGLE_AWAY = 2,
-    DISCARD_ANGLE_AND_DISTANCE_AWAY = 3,
-    ADD_WEIGHT_PER_M_FROM_DISCARD_DISTANCE = 4,
-    ADD_WEIGHT_PER_DEGREE_FROM_DISCARD_ANGLE = 5,
-    ADD_WEIGHT = 6,
-}
-
-struct TagDistanceDiscardConfig {
-  1: required double distance_threshold,
-  2: required double angle_threshold_degrees,
-  3: required double weight_per_m_from_discard_distance,
-  4: required double weight_per_degree_from_discard_angle,
+    LEAST_ANGLE = 1,
+    LEAST_DISTANCE = 2,
+    LEAST_ANGLE_AND_DISTANCE = 3,
 }
 
 struct AprilTagConfig {
   1: required map<i32, common.Point3> tag_position_config,
-  2: required TagDistanceDiscardMode tag_discard_mode,
+  2: required TagDisambiguationMode tag_disambiguation_mode,
   3: required map<string, common.Point3> camera_position_config,
-  5: required TagUseImuRotation tag_use_imu_rotation,
-  6: optional TagDistanceDiscardConfig discard_config,
+  4: required TagUseImuRotation tag_use_imu_rotation,
+  5: required double disambiguation_time_window_s,
 }
 
 struct PosExtrapolator {

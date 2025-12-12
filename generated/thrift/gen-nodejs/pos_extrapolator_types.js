@@ -33,21 +33,15 @@ ttypes.TagUseImuRotation = {
   '3' : 'WHEN_TAG_BASED_DIFFERENT',
   'WHEN_TAG_BASED_DIFFERENT' : 3
 };
-ttypes.TagDistanceDiscardMode = {
+ttypes.TagDisambiguationMode = {
   '0' : 'NONE',
   'NONE' : 0,
-  '1' : 'DISCARD_DISTANCE_AWAY',
-  'DISCARD_DISTANCE_AWAY' : 1,
-  '2' : 'DISCARD_ANGLE_AWAY',
-  'DISCARD_ANGLE_AWAY' : 2,
-  '3' : 'DISCARD_ANGLE_AND_DISTANCE_AWAY',
-  'DISCARD_ANGLE_AND_DISTANCE_AWAY' : 3,
-  '4' : 'ADD_WEIGHT_PER_M_FROM_DISCARD_DISTANCE',
-  'ADD_WEIGHT_PER_M_FROM_DISCARD_DISTANCE' : 4,
-  '5' : 'ADD_WEIGHT_PER_DEGREE_FROM_DISCARD_ANGLE',
-  'ADD_WEIGHT_PER_DEGREE_FROM_DISCARD_ANGLE' : 5,
-  '6' : 'ADD_WEIGHT',
-  'ADD_WEIGHT' : 6
+  '1' : 'LEAST_ANGLE',
+  'LEAST_ANGLE' : 1,
+  '2' : 'LEAST_DISTANCE',
+  'LEAST_DISTANCE' : 2,
+  '3' : 'LEAST_ANGLE_AND_DISTANCE',
+  'LEAST_ANGLE_AND_DISTANCE' : 3
 };
 var PosExtrapolatorMessageConfig = module.exports.PosExtrapolatorMessageConfig = function(args) {
   this.post_tag_input_topic = null;
@@ -304,125 +298,22 @@ ImuConfig.prototype[Symbol.for("write")] = function(output) {
   return;
 };
 
-var TagDistanceDiscardConfig = module.exports.TagDistanceDiscardConfig = function(args) {
-  this.distance_threshold = null;
-  this.angle_threshold_degrees = null;
-  this.weight_per_m_from_discard_distance = null;
-  this.weight_per_degree_from_discard_angle = null;
-  if (args) {
-    if (args.distance_threshold !== undefined && args.distance_threshold !== null) {
-      this.distance_threshold = args.distance_threshold;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field distance_threshold is unset!');
-    }
-    if (args.angle_threshold_degrees !== undefined && args.angle_threshold_degrees !== null) {
-      this.angle_threshold_degrees = args.angle_threshold_degrees;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field angle_threshold_degrees is unset!');
-    }
-    if (args.weight_per_m_from_discard_distance !== undefined && args.weight_per_m_from_discard_distance !== null) {
-      this.weight_per_m_from_discard_distance = args.weight_per_m_from_discard_distance;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_m_from_discard_distance is unset!');
-    }
-    if (args.weight_per_degree_from_discard_angle !== undefined && args.weight_per_degree_from_discard_angle !== null) {
-      this.weight_per_degree_from_discard_angle = args.weight_per_degree_from_discard_angle;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_degree_from_discard_angle is unset!');
-    }
-  }
-};
-TagDistanceDiscardConfig.prototype = {};
-TagDistanceDiscardConfig.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.distance_threshold = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.angle_threshold_degrees = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.weight_per_m_from_discard_distance = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.weight_per_degree_from_discard_angle = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-TagDistanceDiscardConfig.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('TagDistanceDiscardConfig');
-  if (this.distance_threshold !== null && this.distance_threshold !== undefined) {
-    output.writeFieldBegin('distance_threshold', Thrift.Type.DOUBLE, 1);
-    output.writeDouble(this.distance_threshold);
-    output.writeFieldEnd();
-  }
-  if (this.angle_threshold_degrees !== null && this.angle_threshold_degrees !== undefined) {
-    output.writeFieldBegin('angle_threshold_degrees', Thrift.Type.DOUBLE, 2);
-    output.writeDouble(this.angle_threshold_degrees);
-    output.writeFieldEnd();
-  }
-  if (this.weight_per_m_from_discard_distance !== null && this.weight_per_m_from_discard_distance !== undefined) {
-    output.writeFieldBegin('weight_per_m_from_discard_distance', Thrift.Type.DOUBLE, 3);
-    output.writeDouble(this.weight_per_m_from_discard_distance);
-    output.writeFieldEnd();
-  }
-  if (this.weight_per_degree_from_discard_angle !== null && this.weight_per_degree_from_discard_angle !== undefined) {
-    output.writeFieldBegin('weight_per_degree_from_discard_angle', Thrift.Type.DOUBLE, 4);
-    output.writeDouble(this.weight_per_degree_from_discard_angle);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
 var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.tag_position_config = null;
-  this.tag_discard_mode = null;
+  this.tag_disambiguation_mode = null;
   this.camera_position_config = null;
   this.tag_use_imu_rotation = null;
-  this.discard_config = null;
+  this.disambiguation_time_window_s = null;
   if (args) {
     if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
       this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_position_config is unset!');
     }
-    if (args.tag_discard_mode !== undefined && args.tag_discard_mode !== null) {
-      this.tag_discard_mode = args.tag_discard_mode;
+    if (args.tag_disambiguation_mode !== undefined && args.tag_disambiguation_mode !== null) {
+      this.tag_disambiguation_mode = args.tag_disambiguation_mode;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_discard_mode is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_disambiguation_mode is unset!');
     }
     if (args.camera_position_config !== undefined && args.camera_position_config !== null) {
       this.camera_position_config = Thrift.copyMap(args.camera_position_config, [common_ttypes.Point3]);
@@ -434,8 +325,10 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_use_imu_rotation is unset!');
     }
-    if (args.discard_config !== undefined && args.discard_config !== null) {
-      this.discard_config = new ttypes.TagDistanceDiscardConfig(args.discard_config);
+    if (args.disambiguation_time_window_s !== undefined && args.disambiguation_time_window_s !== null) {
+      this.disambiguation_time_window_s = args.disambiguation_time_window_s;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field disambiguation_time_window_s is unset!');
     }
   }
 };
@@ -470,7 +363,7 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.I32) {
-        this.tag_discard_mode = input.readI32();
+        this.tag_disambiguation_mode = input.readI32();
       } else {
         input.skip(ftype);
       }
@@ -493,17 +386,16 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 5:
+      case 4:
       if (ftype == Thrift.Type.I32) {
         this.tag_use_imu_rotation = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
-      case 6:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.discard_config = new ttypes.TagDistanceDiscardConfig();
-        this.discard_config[Symbol.for("read")](input);
+      case 5:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.disambiguation_time_window_s = input.readDouble();
       } else {
         input.skip(ftype);
       }
@@ -532,9 +424,9 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeMapEnd();
     output.writeFieldEnd();
   }
-  if (this.tag_discard_mode !== null && this.tag_discard_mode !== undefined) {
-    output.writeFieldBegin('tag_discard_mode', Thrift.Type.I32, 2);
-    output.writeI32(this.tag_discard_mode);
+  if (this.tag_disambiguation_mode !== null && this.tag_disambiguation_mode !== undefined) {
+    output.writeFieldBegin('tag_disambiguation_mode', Thrift.Type.I32, 2);
+    output.writeI32(this.tag_disambiguation_mode);
     output.writeFieldEnd();
   }
   if (this.camera_position_config !== null && this.camera_position_config !== undefined) {
@@ -551,13 +443,13 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeFieldEnd();
   }
   if (this.tag_use_imu_rotation !== null && this.tag_use_imu_rotation !== undefined) {
-    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 5);
+    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 4);
     output.writeI32(this.tag_use_imu_rotation);
     output.writeFieldEnd();
   }
-  if (this.discard_config !== null && this.discard_config !== undefined) {
-    output.writeFieldBegin('discard_config', Thrift.Type.STRUCT, 6);
-    this.discard_config[Symbol.for("write")](output);
+  if (this.disambiguation_time_window_s !== null && this.disambiguation_time_window_s !== undefined) {
+    output.writeFieldBegin('disambiguation_time_window_s', Thrift.Type.DOUBLE, 5);
+    output.writeDouble(this.disambiguation_time_window_s);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

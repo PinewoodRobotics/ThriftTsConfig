@@ -25,14 +25,11 @@ declare enum TagUseImuRotation {
   WHEN_TAG_BASED_DIFFERENT = 3,
 }
 
-declare enum TagDistanceDiscardMode {
+declare enum TagDisambiguationMode {
   NONE = 0,
-  DISCARD_DISTANCE_AWAY = 1,
-  DISCARD_ANGLE_AWAY = 2,
-  DISCARD_ANGLE_AND_DISTANCE_AWAY = 3,
-  ADD_WEIGHT_PER_M_FROM_DISCARD_DISTANCE = 4,
-  ADD_WEIGHT_PER_DEGREE_FROM_DISCARD_ANGLE = 5,
-  ADD_WEIGHT = 6,
+  LEAST_ANGLE = 1,
+  LEAST_DISTANCE = 2,
+  LEAST_ANGLE_AND_DISTANCE = 3,
 }
 
 declare class PosExtrapolatorMessageConfig {
@@ -59,23 +56,14 @@ declare class ImuConfig {
     constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; });
 }
 
-declare class TagDistanceDiscardConfig {
-  public distance_threshold: number;
-  public angle_threshold_degrees: number;
-  public weight_per_m_from_discard_distance: number;
-  public weight_per_degree_from_discard_angle: number;
-
-    constructor(args?: { distance_threshold: number; angle_threshold_degrees: number; weight_per_m_from_discard_distance: number; weight_per_degree_from_discard_angle: number; });
-}
-
 declare class AprilTagConfig {
   public tag_position_config: { [k: number]: common_ttypes.Point3; };
-  public tag_discard_mode: TagDistanceDiscardMode;
+  public tag_disambiguation_mode: TagDisambiguationMode;
   public camera_position_config: { [k: string]: common_ttypes.Point3; };
   public tag_use_imu_rotation: TagUseImuRotation;
-  public discard_config?: TagDistanceDiscardConfig;
+  public disambiguation_time_window_s: number;
 
-    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_discard_mode: TagDistanceDiscardMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; discard_config?: TagDistanceDiscardConfig; });
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_disambiguation_mode: TagDisambiguationMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; disambiguation_time_window_s: number; });
 }
 
 declare class PosExtrapolator {
