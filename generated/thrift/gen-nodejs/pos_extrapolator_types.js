@@ -469,6 +469,7 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
   this.time_s_between_position_sends = null;
   this.composite_publish_topic = null;
   this.future_position_prediction_margin_s = null;
+  this.log_relevant_ai_training_data = null;
   if (args) {
     if (args.message_config !== undefined && args.message_config !== null) {
       this.message_config = new ttypes.PosExtrapolatorMessageConfig(args.message_config);
@@ -518,6 +519,9 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
     }
     if (args.future_position_prediction_margin_s !== undefined && args.future_position_prediction_margin_s !== null) {
       this.future_position_prediction_margin_s = args.future_position_prediction_margin_s;
+    }
+    if (args.log_relevant_ai_training_data !== undefined && args.log_relevant_ai_training_data !== null) {
+      this.log_relevant_ai_training_data = args.log_relevant_ai_training_data;
     }
   }
 };
@@ -624,6 +628,13 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 15:
+      if (ftype == Thrift.Type.BOOL) {
+        this.log_relevant_ai_training_data = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -696,6 +707,11 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
   if (this.future_position_prediction_margin_s !== null && this.future_position_prediction_margin_s !== undefined) {
     output.writeFieldBegin('future_position_prediction_margin_s', Thrift.Type.DOUBLE, 14);
     output.writeDouble(this.future_position_prediction_margin_s);
+    output.writeFieldEnd();
+  }
+  if (this.log_relevant_ai_training_data !== null && this.log_relevant_ai_training_data !== undefined) {
+    output.writeFieldBegin('log_relevant_ai_training_data', Thrift.Type.BOOL, 15);
+    output.writeBool(this.log_relevant_ai_training_data);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

@@ -78,6 +78,7 @@ declare class PosExtrapolator {
   public time_s_between_position_sends?: number;
   public composite_publish_topic?: string;
   public future_position_prediction_margin_s?: number;
+  public log_relevant_ai_training_data?: boolean;
 
-    constructor(args?: { message_config: PosExtrapolatorMessageConfig; enable_imu: boolean; enable_odom: boolean; enable_tags: boolean; april_tag_config: AprilTagConfig; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; time_s_between_position_sends?: number; composite_publish_topic?: string; future_position_prediction_margin_s?: number; });
+    constructor(args?: { message_config: PosExtrapolatorMessageConfig; enable_imu: boolean; enable_odom: boolean; enable_tags: boolean; april_tag_config: AprilTagConfig; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; time_s_between_position_sends?: number; composite_publish_topic?: string; future_position_prediction_margin_s?: number; log_relevant_ai_training_data?: boolean; });
 }

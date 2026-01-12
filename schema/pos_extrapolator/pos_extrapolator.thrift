@@ -61,4 +61,5 @@ struct PosExtrapolator {
     12: optional double time_s_between_position_sends,
     13: optional string composite_publish_topic,
     14: optional double future_position_prediction_margin_s,
+    15: optional bool log_relevant_ai_training_data,
 }
