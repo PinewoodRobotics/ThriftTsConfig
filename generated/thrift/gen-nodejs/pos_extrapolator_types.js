@@ -43,6 +43,16 @@ ttypes.TagDisambiguationMode = {
   '3' : 'LEAST_ANGLE_AND_DISTANCE',
   'LEAST_ANGLE_AND_DISTANCE' : 3
 };
+ttypes.TagNoiseAdjustMode = {
+  '0' : 'NONE',
+  'NONE' : 0,
+  '1' : 'ADD_WEIGHT',
+  'ADD_WEIGHT' : 1,
+  '2' : 'ADD_WEIGHT_PER_M_FROM_DISTANCE_ERROR',
+  'ADD_WEIGHT_PER_M_FROM_DISTANCE_ERROR' : 2,
+  '3' : 'ADD_WEIGHT_PER_DEGREE_FROM_ANGLE_ERROR',
+  'ADD_WEIGHT_PER_DEGREE_FROM_ANGLE_ERROR' : 3
+};
 var PosExtrapolatorMessageConfig = module.exports.PosExtrapolatorMessageConfig = function(args) {
   this.post_tag_input_topic = null;
   this.post_odometry_input_topic = null;
@@ -298,12 +308,77 @@ ImuConfig.prototype[Symbol.for("write")] = function(output) {
   return;
 };
 
+var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) {
+  this.weight_per_m_from_distance_error = null;
+  this.weight_per_degree_from_angle_error = null;
+  if (args) {
+    if (args.weight_per_m_from_distance_error !== undefined && args.weight_per_m_from_distance_error !== null) {
+      this.weight_per_m_from_distance_error = args.weight_per_m_from_distance_error;
+    }
+    if (args.weight_per_degree_from_angle_error !== undefined && args.weight_per_degree_from_angle_error !== null) {
+      this.weight_per_degree_from_angle_error = args.weight_per_degree_from_angle_error;
+    }
+  }
+};
+TagNoiseAdjustConfig.prototype = {};
+TagNoiseAdjustConfig.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.weight_per_m_from_distance_error = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.weight_per_degree_from_angle_error = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('TagNoiseAdjustConfig');
+  if (this.weight_per_m_from_distance_error !== null && this.weight_per_m_from_distance_error !== undefined) {
+    output.writeFieldBegin('weight_per_m_from_distance_error', Thrift.Type.DOUBLE, 1);
+    output.writeDouble(this.weight_per_m_from_distance_error);
+    output.writeFieldEnd();
+  }
+  if (this.weight_per_degree_from_angle_error !== null && this.weight_per_degree_from_angle_error !== undefined) {
+    output.writeFieldBegin('weight_per_degree_from_angle_error', Thrift.Type.DOUBLE, 2);
+    output.writeDouble(this.weight_per_degree_from_angle_error);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.tag_position_config = null;
   this.tag_disambiguation_mode = null;
   this.camera_position_config = null;
   this.tag_use_imu_rotation = null;
   this.disambiguation_time_window_s = null;
+  this.tag_noise_adjust_mode = 0;
+  this.tag_noise_adjust_config = null;
   if (args) {
     if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
       this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
@@ -329,6 +404,12 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
       this.disambiguation_time_window_s = args.disambiguation_time_window_s;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field disambiguation_time_window_s is unset!');
+    }
+    if (args.tag_noise_adjust_mode !== undefined && args.tag_noise_adjust_mode !== null) {
+      this.tag_noise_adjust_mode = args.tag_noise_adjust_mode;
+    }
+    if (args.tag_noise_adjust_config !== undefined && args.tag_noise_adjust_config !== null) {
+      this.tag_noise_adjust_config = new ttypes.TagNoiseAdjustConfig(args.tag_noise_adjust_config);
     }
   }
 };
@@ -400,6 +481,21 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.I32) {
+        this.tag_noise_adjust_mode = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.tag_noise_adjust_config = new ttypes.TagNoiseAdjustConfig();
+        this.tag_noise_adjust_config[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -450,6 +546,16 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.disambiguation_time_window_s !== null && this.disambiguation_time_window_s !== undefined) {
     output.writeFieldBegin('disambiguation_time_window_s', Thrift.Type.DOUBLE, 5);
     output.writeDouble(this.disambiguation_time_window_s);
+    output.writeFieldEnd();
+  }
+  if (this.tag_noise_adjust_mode !== null && this.tag_noise_adjust_mode !== undefined) {
+    output.writeFieldBegin('tag_noise_adjust_mode', Thrift.Type.I32, 6);
+    output.writeI32(this.tag_noise_adjust_mode);
+    output.writeFieldEnd();
+  }
+  if (this.tag_noise_adjust_config !== null && this.tag_noise_adjust_config !== undefined) {
+    output.writeFieldBegin('tag_noise_adjust_config', Thrift.Type.STRUCT, 7);
+    this.tag_noise_adjust_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

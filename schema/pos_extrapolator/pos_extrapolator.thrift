@@ -41,12 +41,26 @@ enum TagDisambiguationMode {
     LEAST_ANGLE_AND_DISTANCE = 3,
 }
 
+enum TagNoiseAdjustMode {
+    NONE = 0,
+    ADD_WEIGHT = 1,
+    ADD_WEIGHT_PER_M_FROM_DISTANCE_ERROR = 2,
+    ADD_WEIGHT_PER_DEGREE_FROM_ANGLE_ERROR = 3,
+}
+
+struct TagNoiseAdjustConfig {
+    1: optional double weight_per_m_from_distance_error,
+    2: optional double weight_per_degree_from_angle_error,
+}
+
 struct AprilTagConfig {
   1: required map<i32, common.Point3> tag_position_config,
   2: required TagDisambiguationMode tag_disambiguation_mode,
   3: required map<string, common.Point3> camera_position_config,
   4: required TagUseImuRotation tag_use_imu_rotation,
   5: required double disambiguation_time_window_s,
+  6: optional TagNoiseAdjustMode tag_noise_adjust_mode = TagNoiseAdjustMode.NONE,
+  7: optional TagNoiseAdjustConfig tag_noise_adjust_config,
 }
 
 struct PosExtrapolator {

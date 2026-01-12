@@ -32,6 +32,13 @@ declare enum TagDisambiguationMode {
   LEAST_ANGLE_AND_DISTANCE = 3,
 }
 
+declare enum TagNoiseAdjustMode {
+  NONE = 0,
+  ADD_WEIGHT = 1,
+  ADD_WEIGHT_PER_M_FROM_DISTANCE_ERROR = 2,
+  ADD_WEIGHT_PER_DEGREE_FROM_ANGLE_ERROR = 3,
+}
+
 declare class PosExtrapolatorMessageConfig {
   public post_tag_input_topic: string;
   public post_odometry_input_topic: string;
@@ -56,14 +63,23 @@ declare class ImuConfig {
     constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; });
 }
 
+declare class TagNoiseAdjustConfig {
+  public weight_per_m_from_distance_error?: number;
+  public weight_per_degree_from_angle_error?: number;
+
+    constructor(args?: { weight_per_m_from_distance_error?: number; weight_per_degree_from_angle_error?: number; });
+}
+
 declare class AprilTagConfig {
   public tag_position_config: { [k: number]: common_ttypes.Point3; };
   public tag_disambiguation_mode: TagDisambiguationMode;
   public camera_position_config: { [k: string]: common_ttypes.Point3; };
   public tag_use_imu_rotation: TagUseImuRotation;
   public disambiguation_time_window_s: number;
+  public tag_noise_adjust_mode?: TagNoiseAdjustMode;
+  public tag_noise_adjust_config?: TagNoiseAdjustConfig;
 
-    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_disambiguation_mode: TagDisambiguationMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; disambiguation_time_window_s: number; });
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_disambiguation_mode: TagDisambiguationMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; disambiguation_time_window_s: number; tag_noise_adjust_mode?: TagNoiseAdjustMode; tag_noise_adjust_config?: TagNoiseAdjustConfig; });
 }
 
 declare class PosExtrapolator {
