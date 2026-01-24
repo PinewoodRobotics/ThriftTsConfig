@@ -32,4 +32,5 @@ struct CameraParameters {
     12: optional string video_file_path,
     13: required VideoFeedOptions video_options
     14: optional i32 brightness,
+    15: required bool do_detection
 }

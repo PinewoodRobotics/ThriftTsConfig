@@ -43,6 +43,7 @@ declare class CameraParameters {
   public video_file_path?: string;
   public video_options: VideoFeedOptions;
   public brightness?: number;
+  public do_detection: boolean;
 
-    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; video_options: VideoFeedOptions; brightness?: number; });
+    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; video_options: VideoFeedOptions; brightness?: number; do_detection: boolean; });
 }

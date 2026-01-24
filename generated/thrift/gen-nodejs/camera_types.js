@@ -154,6 +154,7 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
   this.video_file_path = null;
   this.video_options = null;
   this.brightness = null;
+  this.do_detection = null;
   if (args) {
     if (args.pi_to_run_on !== undefined && args.pi_to_run_on !== null) {
       this.pi_to_run_on = args.pi_to_run_on;
@@ -220,6 +221,11 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
     }
     if (args.brightness !== undefined && args.brightness !== null) {
       this.brightness = args.brightness;
+    }
+    if (args.do_detection !== undefined && args.do_detection !== null) {
+      this.do_detection = args.do_detection;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field do_detection is unset!');
     }
   }
 };
@@ -335,6 +341,13 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 15:
+      if (ftype == Thrift.Type.BOOL) {
+        this.do_detection = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -414,6 +427,11 @@ CameraParameters.prototype[Symbol.for("write")] = function(output) {
   if (this.brightness !== null && this.brightness !== undefined) {
     output.writeFieldBegin('brightness', Thrift.Type.I32, 14);
     output.writeI32(this.brightness);
+    output.writeFieldEnd();
+  }
+  if (this.do_detection !== null && this.do_detection !== undefined) {
+    output.writeFieldBegin('do_detection', Thrift.Type.BOOL, 15);
+    output.writeBool(this.do_detection);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
