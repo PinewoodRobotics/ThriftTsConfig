@@ -42,15 +42,15 @@ enum TagDisambiguationMode {
 }
 
 enum TagNoiseAdjustMode {
-    NONE = 0,
-    ADD_WEIGHT = 1,
-    ADD_WEIGHT_PER_M_FROM_DISTANCE_ERROR = 2,
-    ADD_WEIGHT_PER_DEGREE_FROM_ANGLE_ERROR = 3,
+    ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
+    ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG = 1,
+    ADD_WEIGHT_PER_TAG_CONFIDENCE = 2,
 }
 
 struct TagNoiseAdjustConfig {
-    1: optional double weight_per_m_from_distance_error,
-    2: optional double weight_per_degree_from_angle_error,
+    1: optional double weight_per_m_from_distance_from_tag,
+    2: optional double weight_per_degree_from_angle_error_tag,
+    3: optional double weight_per_confidence_tag,
 }
 
 struct AprilTagConfig {
@@ -59,7 +59,7 @@ struct AprilTagConfig {
   3: required map<string, common.Point3> camera_position_config,
   4: required TagUseImuRotation tag_use_imu_rotation,
   5: required double disambiguation_time_window_s,
-  6: optional TagNoiseAdjustMode tag_noise_adjust_mode = TagNoiseAdjustMode.NONE,
+  6: optional list<TagNoiseAdjustMode> tag_noise_adjust_mode,
   7: optional TagNoiseAdjustConfig tag_noise_adjust_config,
 }
 
