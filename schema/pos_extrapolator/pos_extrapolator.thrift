@@ -22,9 +22,10 @@ struct OdomConfig {
 }
 
 struct ImuConfig {
-    1: required bool use_rotation,
+    1: required bool use_rotation_absolute,
     2: required bool use_position,
     3: required bool use_velocity,
+    4: required bool use_rotation_velocity,
 }
 
 enum TagUseImuRotation {
