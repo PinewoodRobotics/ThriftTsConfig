@@ -24,17 +24,11 @@ ttypes.KalmanFilterSensorType = {
 };
 var KalmanFilterSensorConfig = module.exports.KalmanFilterSensorConfig = function(args) {
   this.measurement_noise_matrix = null;
-  this.measurement_conversion_matrix = null;
   if (args) {
     if (args.measurement_noise_matrix !== undefined && args.measurement_noise_matrix !== null) {
       this.measurement_noise_matrix = new common_ttypes.GenericMatrix(args.measurement_noise_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field measurement_noise_matrix is unset!');
-    }
-    if (args.measurement_conversion_matrix !== undefined && args.measurement_conversion_matrix !== null) {
-      this.measurement_conversion_matrix = new common_ttypes.GenericMatrix(args.measurement_conversion_matrix);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field measurement_conversion_matrix is unset!');
     }
   }
 };
@@ -57,14 +51,9 @@ KalmanFilterSensorConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 2:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.measurement_conversion_matrix = new common_ttypes.GenericMatrix();
-        this.measurement_conversion_matrix[Symbol.for("read")](input);
-      } else {
+      case 0:
         input.skip(ftype);
-      }
-      break;
+        break;
       default:
         input.skip(ftype);
     }
@@ -81,11 +70,6 @@ KalmanFilterSensorConfig.prototype[Symbol.for("write")] = function(output) {
     this.measurement_noise_matrix[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
-  if (this.measurement_conversion_matrix !== null && this.measurement_conversion_matrix !== undefined) {
-    output.writeFieldBegin('measurement_conversion_matrix', Thrift.Type.STRUCT, 2);
-    this.measurement_conversion_matrix[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -93,10 +77,8 @@ KalmanFilterSensorConfig.prototype[Symbol.for("write")] = function(output) {
 
 var KalmanFilterConfig = module.exports.KalmanFilterConfig = function(args) {
   this.state_vector = null;
-  this.state_transition_matrix = null;
   this.uncertainty_matrix = null;
   this.process_noise_matrix = null;
-  this.time_step_initial = null;
   this.sensors = null;
   this.dim_x_z = null;
   if (args) {
@@ -104,11 +86,6 @@ var KalmanFilterConfig = module.exports.KalmanFilterConfig = function(args) {
       this.state_vector = new common_ttypes.GenericVector(args.state_vector);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field state_vector is unset!');
-    }
-    if (args.state_transition_matrix !== undefined && args.state_transition_matrix !== null) {
-      this.state_transition_matrix = new common_ttypes.GenericMatrix(args.state_transition_matrix);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field state_transition_matrix is unset!');
     }
     if (args.uncertainty_matrix !== undefined && args.uncertainty_matrix !== null) {
       this.uncertainty_matrix = new common_ttypes.GenericMatrix(args.uncertainty_matrix);
@@ -119,11 +96,6 @@ var KalmanFilterConfig = module.exports.KalmanFilterConfig = function(args) {
       this.process_noise_matrix = new common_ttypes.GenericMatrix(args.process_noise_matrix);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field process_noise_matrix is unset!');
-    }
-    if (args.time_step_initial !== undefined && args.time_step_initial !== null) {
-      this.time_step_initial = args.time_step_initial;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field time_step_initial is unset!');
     }
     if (args.sensors !== undefined && args.sensors !== null) {
       this.sensors = Thrift.copyMap(args.sensors, [Thrift.copyMap, ttypes.KalmanFilterSensorConfig]);
@@ -158,21 +130,13 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
       break;
       case 2:
       if (ftype == Thrift.Type.STRUCT) {
-        this.state_transition_matrix = new common_ttypes.GenericMatrix();
-        this.state_transition_matrix[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.STRUCT) {
         this.uncertainty_matrix = new common_ttypes.GenericMatrix();
         this.uncertainty_matrix[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
       break;
-      case 4:
+      case 3:
       if (ftype == Thrift.Type.STRUCT) {
         this.process_noise_matrix = new common_ttypes.GenericMatrix();
         this.process_noise_matrix[Symbol.for("read")](input);
@@ -180,14 +144,7 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 5:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.time_step_initial = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
+      case 4:
       if (ftype == Thrift.Type.MAP) {
         this.sensors = {};
         var _rtmp31 = input.readMapBegin();
@@ -215,7 +172,7 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 7:
+      case 5:
       if (ftype == Thrift.Type.LIST) {
         this.dim_x_z = [];
         var _rtmp311 = input.readListBegin();
@@ -246,28 +203,18 @@ KalmanFilterConfig.prototype[Symbol.for("write")] = function(output) {
     this.state_vector[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
-  if (this.state_transition_matrix !== null && this.state_transition_matrix !== undefined) {
-    output.writeFieldBegin('state_transition_matrix', Thrift.Type.STRUCT, 2);
-    this.state_transition_matrix[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
   if (this.uncertainty_matrix !== null && this.uncertainty_matrix !== undefined) {
-    output.writeFieldBegin('uncertainty_matrix', Thrift.Type.STRUCT, 3);
+    output.writeFieldBegin('uncertainty_matrix', Thrift.Type.STRUCT, 2);
     this.uncertainty_matrix[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.process_noise_matrix !== null && this.process_noise_matrix !== undefined) {
-    output.writeFieldBegin('process_noise_matrix', Thrift.Type.STRUCT, 4);
+    output.writeFieldBegin('process_noise_matrix', Thrift.Type.STRUCT, 3);
     this.process_noise_matrix[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
-  if (this.time_step_initial !== null && this.time_step_initial !== undefined) {
-    output.writeFieldBegin('time_step_initial', Thrift.Type.DOUBLE, 5);
-    output.writeDouble(this.time_step_initial);
-    output.writeFieldEnd();
-  }
   if (this.sensors !== null && this.sensors !== undefined) {
-    output.writeFieldBegin('sensors', Thrift.Type.MAP, 6);
+    output.writeFieldBegin('sensors', Thrift.Type.MAP, 4);
     output.writeMapBegin(Thrift.Type.I32, Thrift.Type.MAP, Thrift.objectLength(this.sensors));
     for (var kiter14 in this.sensors) {
       if (this.sensors.hasOwnProperty(kiter14)) {
@@ -288,7 +235,7 @@ KalmanFilterConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeFieldEnd();
   }
   if (this.dim_x_z !== null && this.dim_x_z !== undefined) {
-    output.writeFieldBegin('dim_x_z', Thrift.Type.LIST, 7);
+    output.writeFieldBegin('dim_x_z', Thrift.Type.LIST, 5);
     output.writeListBegin(Thrift.Type.I32, this.dim_x_z.length);
     for (var iter18 in this.dim_x_z) {
       if (this.dim_x_z.hasOwnProperty(iter18)) {

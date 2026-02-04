@@ -49,7 +49,9 @@ ttypes.TagNoiseAdjustMode = {
   '1' : 'ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG',
   'ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG' : 1,
   '2' : 'ADD_WEIGHT_PER_TAG_CONFIDENCE',
-  'ADD_WEIGHT_PER_TAG_CONFIDENCE' : 2
+  'ADD_WEIGHT_PER_TAG_CONFIDENCE' : 2,
+  '3' : 'MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG',
+  'MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG' : 3
 };
 var PosExtrapolatorMessageConfig = module.exports.PosExtrapolatorMessageConfig = function(args) {
   this.post_tag_input_topic = null;
@@ -328,6 +330,8 @@ var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) 
   this.weight_per_m_from_distance_from_tag = null;
   this.weight_per_degree_from_angle_error_tag = null;
   this.weight_per_confidence_tag = null;
+  this.multiply_coef_m_distance_from_tag = 1.0000000000000000;
+  this.pow_distance_from_tag_coef = 1.0000000000000000;
   if (args) {
     if (args.weight_per_m_from_distance_from_tag !== undefined && args.weight_per_m_from_distance_from_tag !== null) {
       this.weight_per_m_from_distance_from_tag = args.weight_per_m_from_distance_from_tag;
@@ -337,6 +341,16 @@ var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) 
     }
     if (args.weight_per_confidence_tag !== undefined && args.weight_per_confidence_tag !== null) {
       this.weight_per_confidence_tag = args.weight_per_confidence_tag;
+    }
+    if (args.multiply_coef_m_distance_from_tag !== undefined && args.multiply_coef_m_distance_from_tag !== null) {
+      this.multiply_coef_m_distance_from_tag = args.multiply_coef_m_distance_from_tag;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field multiply_coef_m_distance_from_tag is unset!');
+    }
+    if (args.pow_distance_from_tag_coef !== undefined && args.pow_distance_from_tag_coef !== null) {
+      this.pow_distance_from_tag_coef = args.pow_distance_from_tag_coef;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pow_distance_from_tag_coef is unset!');
     }
   }
 };
@@ -372,6 +386,20 @@ TagNoiseAdjustConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.multiply_coef_m_distance_from_tag = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.pow_distance_from_tag_coef = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -398,6 +426,16 @@ TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeDouble(this.weight_per_confidence_tag);
     output.writeFieldEnd();
   }
+  if (this.multiply_coef_m_distance_from_tag !== null && this.multiply_coef_m_distance_from_tag !== undefined) {
+    output.writeFieldBegin('multiply_coef_m_distance_from_tag', Thrift.Type.DOUBLE, 4);
+    output.writeDouble(this.multiply_coef_m_distance_from_tag);
+    output.writeFieldEnd();
+  }
+  if (this.pow_distance_from_tag_coef !== null && this.pow_distance_from_tag_coef !== undefined) {
+    output.writeFieldBegin('pow_distance_from_tag_coef', Thrift.Type.DOUBLE, 5);
+    output.writeDouble(this.pow_distance_from_tag_coef);
+    output.writeFieldEnd();
+  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -409,7 +447,7 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.camera_position_config = null;
   this.tag_use_imu_rotation = null;
   this.disambiguation_time_window_s = null;
-  this.tag_noise_adjust_mode = null;
+  this.tag_noise_adjust_mode = [];
   this.tag_noise_adjust_config = null;
   if (args) {
     if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
@@ -439,9 +477,13 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
     }
     if (args.tag_noise_adjust_mode !== undefined && args.tag_noise_adjust_mode !== null) {
       this.tag_noise_adjust_mode = Thrift.copyList(args.tag_noise_adjust_mode, [null]);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_noise_adjust_mode is unset!');
     }
     if (args.tag_noise_adjust_config !== undefined && args.tag_noise_adjust_config !== null) {
       this.tag_noise_adjust_config = new ttypes.TagNoiseAdjustConfig(args.tag_noise_adjust_config);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_noise_adjust_config is unset!');
     }
   }
 };

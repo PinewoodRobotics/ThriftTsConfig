@@ -36,6 +36,7 @@ declare enum TagNoiseAdjustMode {
   ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
   ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG = 1,
   ADD_WEIGHT_PER_TAG_CONFIDENCE = 2,
+  MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG = 3,
 }
 
 declare class PosExtrapolatorMessageConfig {
@@ -67,8 +68,10 @@ declare class TagNoiseAdjustConfig {
   public weight_per_m_from_distance_from_tag?: number;
   public weight_per_degree_from_angle_error_tag?: number;
   public weight_per_confidence_tag?: number;
+  public multiply_coef_m_distance_from_tag?: number;
+  public pow_distance_from_tag_coef?: number;
 
-    constructor(args?: { weight_per_m_from_distance_from_tag?: number; weight_per_degree_from_angle_error_tag?: number; weight_per_confidence_tag?: number; });
+    constructor(args?: { weight_per_m_from_distance_from_tag?: number; weight_per_degree_from_angle_error_tag?: number; weight_per_confidence_tag?: number; multiply_coef_m_distance_from_tag?: number; pow_distance_from_tag_coef?: number; });
 }
 
 declare class AprilTagConfig {
@@ -78,9 +81,9 @@ declare class AprilTagConfig {
   public tag_use_imu_rotation: TagUseImuRotation;
   public disambiguation_time_window_s: number;
   public tag_noise_adjust_mode?: TagNoiseAdjustMode[];
-  public tag_noise_adjust_config?: TagNoiseAdjustConfig;
+  public tag_noise_adjust_config: TagNoiseAdjustConfig;
 
-    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_disambiguation_mode: TagDisambiguationMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; disambiguation_time_window_s: number; tag_noise_adjust_mode?: TagNoiseAdjustMode[]; tag_noise_adjust_config?: TagNoiseAdjustConfig; });
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_disambiguation_mode: TagDisambiguationMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; disambiguation_time_window_s: number; tag_noise_adjust_mode?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; });
 }
 
 declare class PosExtrapolator {

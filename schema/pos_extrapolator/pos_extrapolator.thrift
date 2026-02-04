@@ -35,7 +35,7 @@ enum TagUseImuRotation {
     WHEN_TAG_BASED_DIFFERENT = 3,
 }
 
-enum TagDisambiguationMode {
+enum TagDisambiguationMode { // TODO
     NONE = 0,
     LEAST_ANGLE = 1,
     LEAST_DISTANCE = 2,
@@ -46,12 +46,15 @@ enum TagNoiseAdjustMode {
     ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
     ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG = 1,
     ADD_WEIGHT_PER_TAG_CONFIDENCE = 2,
+    MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG = 3,
 }
 
 struct TagNoiseAdjustConfig {
     1: optional double weight_per_m_from_distance_from_tag,
     2: optional double weight_per_degree_from_angle_error_tag,
     3: optional double weight_per_confidence_tag,
+    4: required double multiply_coef_m_distance_from_tag = 1.0,
+    5: required double pow_distance_from_tag_coef = 1.0,
 }
 
 struct AprilTagConfig {
@@ -60,8 +63,8 @@ struct AprilTagConfig {
   3: required map<string, common.Point3> camera_position_config,
   4: required TagUseImuRotation tag_use_imu_rotation,
   5: required double disambiguation_time_window_s,
-  6: optional list<TagNoiseAdjustMode> tag_noise_adjust_mode,
-  7: optional TagNoiseAdjustConfig tag_noise_adjust_config,
+  6: required list<TagNoiseAdjustMode> tag_noise_adjust_mode = [],
+  7: required TagNoiseAdjustConfig tag_noise_adjust_config,
 }
 
 struct PosExtrapolator {
