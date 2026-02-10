@@ -10,13 +10,12 @@ var Thrift = thrift.Thrift;
 var Q = thrift.Q;
 var Int64 = require('node-int64');
 
-var apriltag_ttypes = require('./apriltag_types.js');
-var camera_ttypes = require('./camera_types.js');
 var lidar_ttypes = require('./lidar_types.js');
+var camera_ttypes = require('./camera_types.js');
 var pos_extrapolator_ttypes = require('./pos_extrapolator_types.js');
 var pathfinding_ttypes = require('./pathfinding_types.js');
-var image_recognition_ttypes = require('./image_recognition_types.js');
 var obj_pose_extrapolator_ttypes = require('./obj_pose_extrapolator_types.js');
+var camera_processor_ttypes = require('./camera_processor_types.js');
 
 
 var ttypes = module.exports = {};
@@ -24,12 +23,7 @@ var Config = module.exports.Config = function(args) {
   this.pos_extrapolator = null;
   this.cameras = null;
   this.lidar_configs = null;
-  this.april_detection = null;
   this.pathfinding = null;
-  this.record_replay = null;
-  this.replay_folder_path = null;
-  this.object_recognition = null;
-  this.obj_pose_extrapolator = null;
   if (args) {
     if (args.pos_extrapolator !== undefined && args.pos_extrapolator !== null) {
       this.pos_extrapolator = new pos_extrapolator_ttypes.PosExtrapolator(args.pos_extrapolator);
@@ -37,7 +31,7 @@ var Config = module.exports.Config = function(args) {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pos_extrapolator is unset!');
     }
     if (args.cameras !== undefined && args.cameras !== null) {
-      this.cameras = Thrift.copyList(args.cameras, [camera_ttypes.CameraParameters]);
+      this.cameras = Thrift.copyList(args.cameras, [camera_ttypes.Camera]);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field cameras is unset!');
     }
@@ -46,31 +40,8 @@ var Config = module.exports.Config = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field lidar_configs is unset!');
     }
-    if (args.april_detection !== undefined && args.april_detection !== null) {
-      this.april_detection = new apriltag_ttypes.AprilDetectionConfig(args.april_detection);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field april_detection is unset!');
-    }
     if (args.pathfinding !== undefined && args.pathfinding !== null) {
       this.pathfinding = new pathfinding_ttypes.PathfindingConfig(args.pathfinding);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pathfinding is unset!');
-    }
-    if (args.record_replay !== undefined && args.record_replay !== null) {
-      this.record_replay = args.record_replay;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field record_replay is unset!');
-    }
-    if (args.replay_folder_path !== undefined && args.replay_folder_path !== null) {
-      this.replay_folder_path = args.replay_folder_path;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field replay_folder_path is unset!');
-    }
-    if (args.object_recognition !== undefined && args.object_recognition !== null) {
-      this.object_recognition = new image_recognition_ttypes.ObjectRecognitionConfig(args.object_recognition);
-    }
-    if (args.obj_pose_extrapolator !== undefined && args.obj_pose_extrapolator !== null) {
-      this.obj_pose_extrapolator = new obj_pose_extrapolator_ttypes.ObjPoseExtrapolatorConfig(args.obj_pose_extrapolator);
     }
   }
 };
@@ -100,7 +71,7 @@ Config.prototype[Symbol.for("read")] = function(input) {
         var _size0 = _rtmp31.size || 0;
         for (var _i2 = 0; _i2 < _size0; ++_i2) {
           var elem3 = null;
-          elem3 = new camera_ttypes.CameraParameters();
+          elem3 = new camera_ttypes.Camera();
           elem3[Symbol.for("read")](input);
           this.cameras.push(elem3);
         }
@@ -129,46 +100,8 @@ Config.prototype[Symbol.for("read")] = function(input) {
       break;
       case 4:
       if (ftype == Thrift.Type.STRUCT) {
-        this.april_detection = new apriltag_ttypes.AprilDetectionConfig();
-        this.april_detection[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.STRUCT) {
         this.pathfinding = new pathfinding_ttypes.PathfindingConfig();
         this.pathfinding[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
-      if (ftype == Thrift.Type.BOOL) {
-        this.record_replay = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.STRING) {
-        this.replay_folder_path = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 8:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.object_recognition = new image_recognition_ttypes.ObjectRecognitionConfig();
-        this.object_recognition[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 9:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.obj_pose_extrapolator = new obj_pose_extrapolator_ttypes.ObjPoseExtrapolatorConfig();
-        this.obj_pose_extrapolator[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
@@ -214,34 +147,9 @@ Config.prototype[Symbol.for("write")] = function(output) {
     output.writeMapEnd();
     output.writeFieldEnd();
   }
-  if (this.april_detection !== null && this.april_detection !== undefined) {
-    output.writeFieldBegin('april_detection', Thrift.Type.STRUCT, 4);
-    this.april_detection[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
   if (this.pathfinding !== null && this.pathfinding !== undefined) {
-    output.writeFieldBegin('pathfinding', Thrift.Type.STRUCT, 5);
+    output.writeFieldBegin('pathfinding', Thrift.Type.STRUCT, 4);
     this.pathfinding[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.record_replay !== null && this.record_replay !== undefined) {
-    output.writeFieldBegin('record_replay', Thrift.Type.BOOL, 6);
-    output.writeBool(this.record_replay);
-    output.writeFieldEnd();
-  }
-  if (this.replay_folder_path !== null && this.replay_folder_path !== undefined) {
-    output.writeFieldBegin('replay_folder_path', Thrift.Type.STRING, 7);
-    output.writeString(this.replay_folder_path);
-    output.writeFieldEnd();
-  }
-  if (this.object_recognition !== null && this.object_recognition !== undefined) {
-    output.writeFieldBegin('object_recognition', Thrift.Type.STRUCT, 8);
-    this.object_recognition[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
-  if (this.obj_pose_extrapolator !== null && this.obj_pose_extrapolator !== undefined) {
-    output.writeFieldBegin('obj_pose_extrapolator', Thrift.Type.STRUCT, 9);
-    this.obj_pose_extrapolator[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

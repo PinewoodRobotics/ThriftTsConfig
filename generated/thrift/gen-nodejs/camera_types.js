@@ -11,156 +11,22 @@ var Q = thrift.Q;
 var Int64 = require('node-int64');
 
 var common_ttypes = require('./common_types.js');
+var camera_processor_ttypes = require('./camera_processor_types.js');
 
 
 var ttypes = module.exports = {};
 ttypes.CameraType = {
   '0' : 'OV2311',
   'OV2311' : 0,
-  '1' : 'VIDEO_FILE',
-  'VIDEO_FILE' : 1,
-  '2' : 'MOST_RECENT_RECORDING',
-  'MOST_RECENT_RECORDING' : 2,
-  '3' : 'ULTRAWIDE_100',
-  'ULTRAWIDE_100' : 3
+  '1' : 'ULTRAWIDE_100',
+  'ULTRAWIDE_100' : 1
 };
-var VideoFeedOptions = module.exports.VideoFeedOptions = function(args) {
-  this.send_feed = null;
-  this.publication_topic = null;
-  this.overlay_tags = false;
-  this.do_compression = null;
-  this.compression_quality = null;
-  if (args) {
-    if (args.send_feed !== undefined && args.send_feed !== null) {
-      this.send_feed = args.send_feed;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field send_feed is unset!');
-    }
-    if (args.publication_topic !== undefined && args.publication_topic !== null) {
-      this.publication_topic = args.publication_topic;
-    }
-    if (args.overlay_tags !== undefined && args.overlay_tags !== null) {
-      this.overlay_tags = args.overlay_tags;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field overlay_tags is unset!');
-    }
-    if (args.do_compression !== undefined && args.do_compression !== null) {
-      this.do_compression = args.do_compression;
-    }
-    if (args.compression_quality !== undefined && args.compression_quality !== null) {
-      this.compression_quality = args.compression_quality;
-    }
-  }
-};
-VideoFeedOptions.prototype = {};
-VideoFeedOptions.prototype[Symbol.for("read")] = function(input) {
-  input.readStructBegin();
-  while (true) {
-    var ret = input.readFieldBegin();
-    var ftype = ret.ftype;
-    var fid = ret.fid;
-    if (ftype == Thrift.Type.STOP) {
-      break;
-    }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.BOOL) {
-        this.send_feed = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.STRING) {
-        this.publication_topic = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.BOOL) {
-        this.overlay_tags = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
-      if (ftype == Thrift.Type.BOOL) {
-        this.do_compression = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.I32) {
-        this.compression_quality = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
-    input.readFieldEnd();
-  }
-  input.readStructEnd();
-  return;
-};
-
-VideoFeedOptions.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('VideoFeedOptions');
-  if (this.send_feed !== null && this.send_feed !== undefined) {
-    output.writeFieldBegin('send_feed', Thrift.Type.BOOL, 1);
-    output.writeBool(this.send_feed);
-    output.writeFieldEnd();
-  }
-  if (this.publication_topic !== null && this.publication_topic !== undefined) {
-    output.writeFieldBegin('publication_topic', Thrift.Type.STRING, 2);
-    output.writeString(this.publication_topic);
-    output.writeFieldEnd();
-  }
-  if (this.overlay_tags !== null && this.overlay_tags !== undefined) {
-    output.writeFieldBegin('overlay_tags', Thrift.Type.BOOL, 3);
-    output.writeBool(this.overlay_tags);
-    output.writeFieldEnd();
-  }
-  if (this.do_compression !== null && this.do_compression !== undefined) {
-    output.writeFieldBegin('do_compression', Thrift.Type.BOOL, 4);
-    output.writeBool(this.do_compression);
-    output.writeFieldEnd();
-  }
-  if (this.compression_quality !== null && this.compression_quality !== undefined) {
-    output.writeFieldBegin('compression_quality', Thrift.Type.I32, 5);
-    output.writeI32(this.compression_quality);
-    output.writeFieldEnd();
-  }
-  output.writeFieldStop();
-  output.writeStructEnd();
-  return;
-};
-
-var CameraParameters = module.exports.CameraParameters = function(args) {
-  this.pi_to_run_on = null;
+var Intrinsics = module.exports.Intrinsics = function(args) {
   this.camera_matrix = null;
   this.dist_coeff = null;
-  this.camera_path = null;
-  this.max_fps = null;
   this.width = null;
   this.height = null;
-  this.flags = null;
-  this.exposure_time = null;
-  this.name = null;
-  this.camera_type = null;
-  this.video_file_path = null;
-  this.video_options = null;
-  this.brightness = null;
-  this.do_detection = null;
   if (args) {
-    if (args.pi_to_run_on !== undefined && args.pi_to_run_on !== null) {
-      this.pi_to_run_on = args.pi_to_run_on;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pi_to_run_on is unset!');
-    }
     if (args.camera_matrix !== undefined && args.camera_matrix !== null) {
       this.camera_matrix = new common_ttypes.GenericMatrix(args.camera_matrix);
     } else {
@@ -170,16 +36,6 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
       this.dist_coeff = new common_ttypes.GenericVector(args.dist_coeff);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field dist_coeff is unset!');
-    }
-    if (args.camera_path !== undefined && args.camera_path !== null) {
-      this.camera_path = args.camera_path;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_path is unset!');
-    }
-    if (args.max_fps !== undefined && args.max_fps !== null) {
-      this.max_fps = args.max_fps;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field max_fps is unset!');
     }
     if (args.width !== undefined && args.width !== null) {
       this.width = args.width;
@@ -191,46 +47,10 @@ var CameraParameters = module.exports.CameraParameters = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field height is unset!');
     }
-    if (args.flags !== undefined && args.flags !== null) {
-      this.flags = args.flags;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field flags is unset!');
-    }
-    if (args.exposure_time !== undefined && args.exposure_time !== null) {
-      this.exposure_time = args.exposure_time;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field exposure_time is unset!');
-    }
-    if (args.name !== undefined && args.name !== null) {
-      this.name = args.name;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field name is unset!');
-    }
-    if (args.camera_type !== undefined && args.camera_type !== null) {
-      this.camera_type = args.camera_type;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_type is unset!');
-    }
-    if (args.video_file_path !== undefined && args.video_file_path !== null) {
-      this.video_file_path = args.video_file_path;
-    }
-    if (args.video_options !== undefined && args.video_options !== null) {
-      this.video_options = new ttypes.VideoFeedOptions(args.video_options);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field video_options is unset!');
-    }
-    if (args.brightness !== undefined && args.brightness !== null) {
-      this.brightness = args.brightness;
-    }
-    if (args.do_detection !== undefined && args.do_detection !== null) {
-      this.do_detection = args.do_detection;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field do_detection is unset!');
-    }
   }
 };
-CameraParameters.prototype = {};
-CameraParameters.prototype[Symbol.for("read")] = function(input) {
+Intrinsics.prototype = {};
+Intrinsics.prototype[Symbol.for("read")] = function(input) {
   input.readStructBegin();
   while (true) {
     var ret = input.readFieldBegin();
@@ -241,13 +61,6 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
     }
     switch (fid) {
       case 1:
-      if (ftype == Thrift.Type.STRING) {
-        this.pi_to_run_on = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
       if (ftype == Thrift.Type.STRUCT) {
         this.camera_matrix = new common_ttypes.GenericMatrix();
         this.camera_matrix[Symbol.for("read")](input);
@@ -255,7 +68,7 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 3:
+      case 2:
       if (ftype == Thrift.Type.STRUCT) {
         this.dist_coeff = new common_ttypes.GenericVector();
         this.dist_coeff[Symbol.for("read")](input);
@@ -263,87 +76,16 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 4:
-      if (ftype == Thrift.Type.STRING) {
-        this.camera_path = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.I32) {
-        this.max_fps = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
+      case 3:
       if (ftype == Thrift.Type.I32) {
         this.width = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
-      case 7:
+      case 4:
       if (ftype == Thrift.Type.I32) {
         this.height = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 8:
-      if (ftype == Thrift.Type.I32) {
-        this.flags = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 9:
-      if (ftype == Thrift.Type.I32) {
-        this.exposure_time = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 10:
-      if (ftype == Thrift.Type.STRING) {
-        this.name = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 11:
-      if (ftype == Thrift.Type.I32) {
-        this.camera_type = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 12:
-      if (ftype == Thrift.Type.STRING) {
-        this.video_file_path = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 13:
-      if (ftype == Thrift.Type.STRUCT) {
-        this.video_options = new ttypes.VideoFeedOptions();
-        this.video_options[Symbol.for("read")](input);
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 14:
-      if (ftype == Thrift.Type.I32) {
-        this.brightness = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 15:
-      if (ftype == Thrift.Type.BOOL) {
-        this.do_detection = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -357,81 +99,269 @@ CameraParameters.prototype[Symbol.for("read")] = function(input) {
   return;
 };
 
-CameraParameters.prototype[Symbol.for("write")] = function(output) {
-  output.writeStructBegin('CameraParameters');
-  if (this.pi_to_run_on !== null && this.pi_to_run_on !== undefined) {
-    output.writeFieldBegin('pi_to_run_on', Thrift.Type.STRING, 1);
-    output.writeString(this.pi_to_run_on);
-    output.writeFieldEnd();
-  }
+Intrinsics.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('Intrinsics');
   if (this.camera_matrix !== null && this.camera_matrix !== undefined) {
-    output.writeFieldBegin('camera_matrix', Thrift.Type.STRUCT, 2);
+    output.writeFieldBegin('camera_matrix', Thrift.Type.STRUCT, 1);
     this.camera_matrix[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.dist_coeff !== null && this.dist_coeff !== undefined) {
-    output.writeFieldBegin('dist_coeff', Thrift.Type.STRUCT, 3);
+    output.writeFieldBegin('dist_coeff', Thrift.Type.STRUCT, 2);
     this.dist_coeff[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
-  if (this.camera_path !== null && this.camera_path !== undefined) {
-    output.writeFieldBegin('camera_path', Thrift.Type.STRING, 4);
-    output.writeString(this.camera_path);
-    output.writeFieldEnd();
-  }
-  if (this.max_fps !== null && this.max_fps !== undefined) {
-    output.writeFieldBegin('max_fps', Thrift.Type.I32, 5);
-    output.writeI32(this.max_fps);
-    output.writeFieldEnd();
-  }
   if (this.width !== null && this.width !== undefined) {
-    output.writeFieldBegin('width', Thrift.Type.I32, 6);
+    output.writeFieldBegin('width', Thrift.Type.I32, 3);
     output.writeI32(this.width);
     output.writeFieldEnd();
   }
   if (this.height !== null && this.height !== undefined) {
-    output.writeFieldBegin('height', Thrift.Type.I32, 7);
+    output.writeFieldBegin('height', Thrift.Type.I32, 4);
     output.writeI32(this.height);
     output.writeFieldEnd();
   }
-  if (this.flags !== null && this.flags !== undefined) {
-    output.writeFieldBegin('flags', Thrift.Type.I32, 8);
-    output.writeI32(this.flags);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var VideoFeed = module.exports.VideoFeed = function(args) {
+  this.max_fps = null;
+  this.exposure_time = null;
+  this.brightness = null;
+  if (args) {
+    if (args.max_fps !== undefined && args.max_fps !== null) {
+      this.max_fps = args.max_fps;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field max_fps is unset!');
+    }
+    if (args.exposure_time !== undefined && args.exposure_time !== null) {
+      this.exposure_time = args.exposure_time;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field exposure_time is unset!');
+    }
+    if (args.brightness !== undefined && args.brightness !== null) {
+      this.brightness = args.brightness;
+    }
+  }
+};
+VideoFeed.prototype = {};
+VideoFeed.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.I32) {
+        this.max_fps = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.I32) {
+        this.exposure_time = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.I32) {
+        this.brightness = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+VideoFeed.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('VideoFeed');
+  if (this.max_fps !== null && this.max_fps !== undefined) {
+    output.writeFieldBegin('max_fps', Thrift.Type.I32, 1);
+    output.writeI32(this.max_fps);
     output.writeFieldEnd();
   }
   if (this.exposure_time !== null && this.exposure_time !== undefined) {
-    output.writeFieldBegin('exposure_time', Thrift.Type.I32, 9);
+    output.writeFieldBegin('exposure_time', Thrift.Type.I32, 2);
     output.writeI32(this.exposure_time);
     output.writeFieldEnd();
   }
-  if (this.name !== null && this.name !== undefined) {
-    output.writeFieldBegin('name', Thrift.Type.STRING, 10);
-    output.writeString(this.name);
-    output.writeFieldEnd();
-  }
-  if (this.camera_type !== null && this.camera_type !== undefined) {
-    output.writeFieldBegin('camera_type', Thrift.Type.I32, 11);
-    output.writeI32(this.camera_type);
-    output.writeFieldEnd();
-  }
-  if (this.video_file_path !== null && this.video_file_path !== undefined) {
-    output.writeFieldBegin('video_file_path', Thrift.Type.STRING, 12);
-    output.writeString(this.video_file_path);
-    output.writeFieldEnd();
-  }
-  if (this.video_options !== null && this.video_options !== undefined) {
-    output.writeFieldBegin('video_options', Thrift.Type.STRUCT, 13);
-    this.video_options[Symbol.for("write")](output);
-    output.writeFieldEnd();
-  }
   if (this.brightness !== null && this.brightness !== undefined) {
-    output.writeFieldBegin('brightness', Thrift.Type.I32, 14);
+    output.writeFieldBegin('brightness', Thrift.Type.I32, 3);
     output.writeI32(this.brightness);
     output.writeFieldEnd();
   }
-  if (this.do_detection !== null && this.do_detection !== undefined) {
-    output.writeFieldBegin('do_detection', Thrift.Type.BOOL, 15);
-    output.writeBool(this.do_detection);
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
+var Camera = module.exports.Camera = function(args) {
+  this.pi_connected_to = null;
+  this.camera_port_path = null;
+  this.camera_alias_name = null;
+  this.camera_type = null;
+  this.intrinsics = null;
+  this.video_feed = null;
+  this.camera_processor_config = null;
+  if (args) {
+    if (args.pi_connected_to !== undefined && args.pi_connected_to !== null) {
+      this.pi_connected_to = args.pi_connected_to;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pi_connected_to is unset!');
+    }
+    if (args.camera_port_path !== undefined && args.camera_port_path !== null) {
+      this.camera_port_path = args.camera_port_path;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_port_path is unset!');
+    }
+    if (args.camera_alias_name !== undefined && args.camera_alias_name !== null) {
+      this.camera_alias_name = args.camera_alias_name;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_alias_name is unset!');
+    }
+    if (args.camera_type !== undefined && args.camera_type !== null) {
+      this.camera_type = args.camera_type;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_type is unset!');
+    }
+    if (args.intrinsics !== undefined && args.intrinsics !== null) {
+      this.intrinsics = new ttypes.Intrinsics(args.intrinsics);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field intrinsics is unset!');
+    }
+    if (args.video_feed !== undefined && args.video_feed !== null) {
+      this.video_feed = new ttypes.VideoFeed(args.video_feed);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field video_feed is unset!');
+    }
+    if (args.camera_processor_config !== undefined && args.camera_processor_config !== null) {
+      this.camera_processor_config = new camera_processor_ttypes.CameraProcessorConfig(args.camera_processor_config);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_processor_config is unset!');
+    }
+  }
+};
+Camera.prototype = {};
+Camera.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.STRING) {
+        this.pi_connected_to = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.STRING) {
+        this.camera_port_path = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 3:
+      if (ftype == Thrift.Type.STRING) {
+        this.camera_alias_name = input.readString();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 4:
+      if (ftype == Thrift.Type.I32) {
+        this.camera_type = input.readI32();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 5:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.intrinsics = new ttypes.Intrinsics();
+        this.intrinsics[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 6:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.video_feed = new ttypes.VideoFeed();
+        this.video_feed[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 7:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.camera_processor_config = new camera_processor_ttypes.CameraProcessorConfig();
+        this.camera_processor_config[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+Camera.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('Camera');
+  if (this.pi_connected_to !== null && this.pi_connected_to !== undefined) {
+    output.writeFieldBegin('pi_connected_to', Thrift.Type.STRING, 1);
+    output.writeString(this.pi_connected_to);
+    output.writeFieldEnd();
+  }
+  if (this.camera_port_path !== null && this.camera_port_path !== undefined) {
+    output.writeFieldBegin('camera_port_path', Thrift.Type.STRING, 2);
+    output.writeString(this.camera_port_path);
+    output.writeFieldEnd();
+  }
+  if (this.camera_alias_name !== null && this.camera_alias_name !== undefined) {
+    output.writeFieldBegin('camera_alias_name', Thrift.Type.STRING, 3);
+    output.writeString(this.camera_alias_name);
+    output.writeFieldEnd();
+  }
+  if (this.camera_type !== null && this.camera_type !== undefined) {
+    output.writeFieldBegin('camera_type', Thrift.Type.I32, 4);
+    output.writeI32(this.camera_type);
+    output.writeFieldEnd();
+  }
+  if (this.intrinsics !== null && this.intrinsics !== undefined) {
+    output.writeFieldBegin('intrinsics', Thrift.Type.STRUCT, 5);
+    this.intrinsics[Symbol.for("write")](output);
+    output.writeFieldEnd();
+  }
+  if (this.video_feed !== null && this.video_feed !== undefined) {
+    output.writeFieldBegin('video_feed', Thrift.Type.STRUCT, 6);
+    this.video_feed[Symbol.for("write")](output);
+    output.writeFieldEnd();
+  }
+  if (this.camera_processor_config !== null && this.camera_processor_config !== undefined) {
+    output.writeFieldBegin('camera_processor_config', Thrift.Type.STRUCT, 7);
+    this.camera_processor_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

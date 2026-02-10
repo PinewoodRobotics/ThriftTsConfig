@@ -91,12 +91,8 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
   this.quad_sigma = null;
   this.refine_edges = null;
   this.decode_sharpening = null;
-  this.searchpath = null;
-  this.debug = null;
-  this.post_tag_output_topic = null;
-  this.send_stats = null;
-  this.stats_topic = null;
-  this.pi_name_to_special_detector_config = null;
+  this.tag_output_topic = null;
+  this.special_detector_config = null;
   if (args) {
     if (args.tag_size !== undefined && args.tag_size !== null) {
       this.tag_size = args.tag_size;
@@ -133,33 +129,13 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field decode_sharpening is unset!');
     }
-    if (args.searchpath !== undefined && args.searchpath !== null) {
-      this.searchpath = Thrift.copyList(args.searchpath, [null]);
+    if (args.tag_output_topic !== undefined && args.tag_output_topic !== null) {
+      this.tag_output_topic = args.tag_output_topic;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field searchpath is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_output_topic is unset!');
     }
-    if (args.debug !== undefined && args.debug !== null) {
-      this.debug = args.debug;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field debug is unset!');
-    }
-    if (args.post_tag_output_topic !== undefined && args.post_tag_output_topic !== null) {
-      this.post_tag_output_topic = args.post_tag_output_topic;
-    }
-    if (args.send_stats !== undefined && args.send_stats !== null) {
-      this.send_stats = args.send_stats;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field send_stats is unset!');
-    }
-    if (args.stats_topic !== undefined && args.stats_topic !== null) {
-      this.stats_topic = args.stats_topic;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field stats_topic is unset!');
-    }
-    if (args.pi_name_to_special_detector_config !== undefined && args.pi_name_to_special_detector_config !== null) {
-      this.pi_name_to_special_detector_config = Thrift.copyMap(args.pi_name_to_special_detector_config, [ttypes.SpecialDetectorConfig]);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pi_name_to_special_detector_config is unset!');
+    if (args.special_detector_config !== undefined && args.special_detector_config !== null) {
+      this.special_detector_config = new ttypes.SpecialDetectorConfig(args.special_detector_config);
     }
   }
 };
@@ -224,62 +200,16 @@ AprilDetectionConfig.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 8:
-      if (ftype == Thrift.Type.LIST) {
-        this.searchpath = [];
-        var _rtmp31 = input.readListBegin();
-        var _size0 = _rtmp31.size || 0;
-        for (var _i2 = 0; _i2 < _size0; ++_i2) {
-          var elem3 = null;
-          elem3 = input.readString();
-          this.searchpath.push(elem3);
-        }
-        input.readListEnd();
+      if (ftype == Thrift.Type.STRING) {
+        this.tag_output_topic = input.readString();
       } else {
         input.skip(ftype);
       }
       break;
       case 9:
-      if (ftype == Thrift.Type.BOOL) {
-        this.debug = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 10:
-      if (ftype == Thrift.Type.STRING) {
-        this.post_tag_output_topic = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 11:
-      if (ftype == Thrift.Type.BOOL) {
-        this.send_stats = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 12:
-      if (ftype == Thrift.Type.STRING) {
-        this.stats_topic = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 13:
-      if (ftype == Thrift.Type.MAP) {
-        this.pi_name_to_special_detector_config = {};
-        var _rtmp35 = input.readMapBegin();
-        var _size4 = _rtmp35.size || 0;
-        for (var _i6 = 0; _i6 < _size4; ++_i6) {
-          var key7 = null;
-          var val8 = null;
-          key7 = input.readString();
-          val8 = new ttypes.SpecialDetectorConfig();
-          val8[Symbol.for("read")](input);
-          this.pi_name_to_special_detector_config[key7] = val8;
-        }
-        input.readMapEnd();
+      if (ftype == Thrift.Type.STRUCT) {
+        this.special_detector_config = new ttypes.SpecialDetectorConfig();
+        this.special_detector_config[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
@@ -330,49 +260,14 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeDouble(this.decode_sharpening);
     output.writeFieldEnd();
   }
-  if (this.searchpath !== null && this.searchpath !== undefined) {
-    output.writeFieldBegin('searchpath', Thrift.Type.LIST, 8);
-    output.writeListBegin(Thrift.Type.STRING, this.searchpath.length);
-    for (var iter9 in this.searchpath) {
-      if (this.searchpath.hasOwnProperty(iter9)) {
-        iter9 = this.searchpath[iter9];
-        output.writeString(iter9);
-      }
-    }
-    output.writeListEnd();
+  if (this.tag_output_topic !== null && this.tag_output_topic !== undefined) {
+    output.writeFieldBegin('tag_output_topic', Thrift.Type.STRING, 8);
+    output.writeString(this.tag_output_topic);
     output.writeFieldEnd();
   }
-  if (this.debug !== null && this.debug !== undefined) {
-    output.writeFieldBegin('debug', Thrift.Type.BOOL, 9);
-    output.writeBool(this.debug);
-    output.writeFieldEnd();
-  }
-  if (this.post_tag_output_topic !== null && this.post_tag_output_topic !== undefined) {
-    output.writeFieldBegin('post_tag_output_topic', Thrift.Type.STRING, 10);
-    output.writeString(this.post_tag_output_topic);
-    output.writeFieldEnd();
-  }
-  if (this.send_stats !== null && this.send_stats !== undefined) {
-    output.writeFieldBegin('send_stats', Thrift.Type.BOOL, 11);
-    output.writeBool(this.send_stats);
-    output.writeFieldEnd();
-  }
-  if (this.stats_topic !== null && this.stats_topic !== undefined) {
-    output.writeFieldBegin('stats_topic', Thrift.Type.STRING, 12);
-    output.writeString(this.stats_topic);
-    output.writeFieldEnd();
-  }
-  if (this.pi_name_to_special_detector_config !== null && this.pi_name_to_special_detector_config !== undefined) {
-    output.writeFieldBegin('pi_name_to_special_detector_config', Thrift.Type.MAP, 13);
-    output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.pi_name_to_special_detector_config));
-    for (var kiter10 in this.pi_name_to_special_detector_config) {
-      if (this.pi_name_to_special_detector_config.hasOwnProperty(kiter10)) {
-        var viter11 = this.pi_name_to_special_detector_config[kiter10];
-        output.writeString(kiter10);
-        viter11[Symbol.for("write")](output);
-      }
-    }
-    output.writeMapEnd();
+  if (this.special_detector_config !== null && this.special_detector_config !== undefined) {
+    output.writeFieldBegin('special_detector_config', Thrift.Type.STRUCT, 9);
+    this.special_detector_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

@@ -17,10 +17,6 @@ struct AprilDetectionConfig {
     5: required double quad_sigma,
     6: required bool refine_edges,
     7: required double decode_sharpening,
-    8: required list<string> searchpath,
-    9: required bool debug,
-    10: optional string post_tag_output_topic,
-    11: required bool send_stats,
-    12: required string stats_topic,
-    13: required map<string, SpecialDetectorConfig> pi_name_to_special_detector_config,
+    8: required string tag_output_topic,
+    9: optional SpecialDetectorConfig special_detector_config,
 }

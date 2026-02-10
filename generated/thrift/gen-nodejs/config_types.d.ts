@@ -7,26 +7,20 @@ import thrift = require('thrift');
 import Thrift = thrift.Thrift;
 import Q = thrift.Q;
 import Int64 = require('node-int64');
-import apriltag_ttypes = require('./apriltag_types.js');
-import camera_ttypes = require('./camera_types.js');
 import lidar_ttypes = require('./lidar_types.js');
+import camera_ttypes = require('./camera_types.js');
 import pos_extrapolator_ttypes = require('./pos_extrapolator_types.js');
 import pathfinding_ttypes = require('./pathfinding_types.js');
-import image_recognition_ttypes = require('./image_recognition_types.js');
 import obj_pose_extrapolator_ttypes = require('./obj_pose_extrapolator_types.js');
+import camera_processor_ttypes = require('./camera_processor_types.js');
 
 
 
 declare class Config {
   public pos_extrapolator: pos_extrapolator_ttypes.PosExtrapolator;
-  public cameras: camera_ttypes.CameraParameters[];
+  public cameras: camera_ttypes.Camera[];
   public lidar_configs: { [k: string]: lidar_ttypes.LidarConfig; };
-  public april_detection: apriltag_ttypes.AprilDetectionConfig;
-  public pathfinding: pathfinding_ttypes.PathfindingConfig;
-  public record_replay: boolean;
-  public replay_folder_path: string;
-  public object_recognition?: image_recognition_ttypes.ObjectRecognitionConfig;
-  public obj_pose_extrapolator?: obj_pose_extrapolator_ttypes.ObjPoseExtrapolatorConfig;
+  public pathfinding?: pathfinding_ttypes.PathfindingConfig;
 
-    constructor(args?: { pos_extrapolator: pos_extrapolator_ttypes.PosExtrapolator; cameras: camera_ttypes.CameraParameters[]; lidar_configs: { [k: string]: lidar_ttypes.LidarConfig; }; april_detection: apriltag_ttypes.AprilDetectionConfig; pathfinding: pathfinding_ttypes.PathfindingConfig; record_replay: boolean; replay_folder_path: string; object_recognition?: image_recognition_ttypes.ObjectRecognitionConfig; obj_pose_extrapolator?: obj_pose_extrapolator_ttypes.ObjPoseExtrapolatorConfig; });
+    constructor(args?: { pos_extrapolator: pos_extrapolator_ttypes.PosExtrapolator; cameras: camera_ttypes.Camera[]; lidar_configs: { [k: string]: lidar_ttypes.LidarConfig; }; pathfinding?: pathfinding_ttypes.PathfindingConfig; });
 }

@@ -28,12 +28,8 @@ declare class AprilDetectionConfig {
   public quad_sigma: number;
   public refine_edges: boolean;
   public decode_sharpening: number;
-  public searchpath: string[];
-  public debug: boolean;
-  public post_tag_output_topic?: string;
-  public send_stats: boolean;
-  public stats_topic: string;
-  public pi_name_to_special_detector_config: { [k: string]: SpecialDetectorConfig; };
+  public tag_output_topic: string;
+  public special_detector_config?: SpecialDetectorConfig;
 
-    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; searchpath: string[]; debug: boolean; post_tag_output_topic?: string; send_stats: boolean; stats_topic: string; pi_name_to_special_detector_config: { [k: string]: SpecialDetectorConfig; }; });
+    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; tag_output_topic: string; special_detector_config?: SpecialDetectorConfig; });
 }

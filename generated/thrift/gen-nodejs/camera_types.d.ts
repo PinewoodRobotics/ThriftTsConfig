@@ -8,42 +8,40 @@ import Thrift = thrift.Thrift;
 import Q = thrift.Q;
 import Int64 = require('node-int64');
 import common_ttypes = require('./common_types.js');
+import camera_processor_ttypes = require('./camera_processor_types.js');
 
 
 
 declare enum CameraType {
   OV2311 = 0,
-  VIDEO_FILE = 1,
-  MOST_RECENT_RECORDING = 2,
-  ULTRAWIDE_100 = 3,
+  ULTRAWIDE_100 = 1,
 }
 
-declare class VideoFeedOptions {
-  public send_feed: boolean;
-  public publication_topic?: string;
-  public overlay_tags?: boolean;
-  public do_compression?: boolean;
-  public compression_quality?: number;
-
-    constructor(args?: { send_feed: boolean; publication_topic?: string; overlay_tags?: boolean; do_compression?: boolean; compression_quality?: number; });
-}
-
-declare class CameraParameters {
-  public pi_to_run_on: string;
+declare class Intrinsics {
   public camera_matrix: common_ttypes.GenericMatrix;
   public dist_coeff: common_ttypes.GenericVector;
-  public camera_path: string;
-  public max_fps: number;
   public width: number;
   public height: number;
-  public flags: number;
-  public exposure_time: number;
-  public name: string;
-  public camera_type: CameraType;
-  public video_file_path?: string;
-  public video_options: VideoFeedOptions;
-  public brightness?: number;
-  public do_detection: boolean;
 
-    constructor(args?: { pi_to_run_on: string; camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; camera_path: string; max_fps: number; width: number; height: number; flags: number; exposure_time: number; name: string; camera_type: CameraType; video_file_path?: string; video_options: VideoFeedOptions; brightness?: number; do_detection: boolean; });
+    constructor(args?: { camera_matrix: common_ttypes.GenericMatrix; dist_coeff: common_ttypes.GenericVector; width: number; height: number; });
+}
+
+declare class VideoFeed {
+  public max_fps: number;
+  public exposure_time: number;
+  public brightness?: number;
+
+    constructor(args?: { max_fps: number; exposure_time: number; brightness?: number; });
+}
+
+declare class Camera {
+  public pi_connected_to: string;
+  public camera_port_path: string;
+  public camera_alias_name: string;
+  public camera_type: CameraType;
+  public intrinsics: Intrinsics;
+  public video_feed: VideoFeed;
+  public camera_processor_config: camera_processor_ttypes.CameraProcessorConfig;
+
+    constructor(args?: { pi_connected_to: string; camera_port_path: string; camera_alias_name: string; camera_type: CameraType; intrinsics: Intrinsics; video_feed: VideoFeed; camera_processor_config: camera_processor_ttypes.CameraProcessorConfig; });
 }
