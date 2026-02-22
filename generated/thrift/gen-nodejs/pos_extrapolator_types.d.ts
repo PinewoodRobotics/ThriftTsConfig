@@ -59,9 +59,8 @@ declare class ImuConfig {
   public use_rotation: boolean;
   public use_position: boolean;
   public use_velocity: boolean;
-  public use_acceleration: boolean;
 
-    constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; use_acceleration: boolean; });
+    constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; });
 }
 
 declare class TagNoiseAdjustConfig {

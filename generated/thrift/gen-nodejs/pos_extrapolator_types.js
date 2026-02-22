@@ -227,7 +227,6 @@ var ImuConfig = module.exports.ImuConfig = function(args) {
   this.use_rotation = null;
   this.use_position = null;
   this.use_velocity = null;
-  this.use_acceleration = null;
   if (args) {
     if (args.use_rotation !== undefined && args.use_rotation !== null) {
       this.use_rotation = args.use_rotation;
@@ -243,11 +242,6 @@ var ImuConfig = module.exports.ImuConfig = function(args) {
       this.use_velocity = args.use_velocity;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_velocity is unset!');
-    }
-    if (args.use_acceleration !== undefined && args.use_acceleration !== null) {
-      this.use_acceleration = args.use_acceleration;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_acceleration is unset!');
     }
   }
 };
@@ -283,13 +277,6 @@ ImuConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 5:
-      if (ftype == Thrift.Type.BOOL) {
-        this.use_acceleration = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -314,11 +301,6 @@ ImuConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.use_velocity !== null && this.use_velocity !== undefined) {
     output.writeFieldBegin('use_velocity', Thrift.Type.BOOL, 3);
     output.writeBool(this.use_velocity);
-    output.writeFieldEnd();
-  }
-  if (this.use_acceleration !== null && this.use_acceleration !== undefined) {
-    output.writeFieldBegin('use_acceleration', Thrift.Type.BOOL, 5);
-    output.writeBool(this.use_acceleration);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
