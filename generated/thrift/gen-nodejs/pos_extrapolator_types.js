@@ -224,15 +224,15 @@ OdomConfig.prototype[Symbol.for("write")] = function(output) {
 };
 
 var ImuConfig = module.exports.ImuConfig = function(args) {
-  this.use_rotation_absolute = null;
+  this.use_rotation = null;
   this.use_position = null;
   this.use_velocity = null;
-  this.use_rotation_velocity = null;
+  this.use_acceleration = null;
   if (args) {
-    if (args.use_rotation_absolute !== undefined && args.use_rotation_absolute !== null) {
-      this.use_rotation_absolute = args.use_rotation_absolute;
+    if (args.use_rotation !== undefined && args.use_rotation !== null) {
+      this.use_rotation = args.use_rotation;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_rotation_absolute is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_rotation is unset!');
     }
     if (args.use_position !== undefined && args.use_position !== null) {
       this.use_position = args.use_position;
@@ -244,10 +244,10 @@ var ImuConfig = module.exports.ImuConfig = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_velocity is unset!');
     }
-    if (args.use_rotation_velocity !== undefined && args.use_rotation_velocity !== null) {
-      this.use_rotation_velocity = args.use_rotation_velocity;
+    if (args.use_acceleration !== undefined && args.use_acceleration !== null) {
+      this.use_acceleration = args.use_acceleration;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_rotation_velocity is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_acceleration is unset!');
     }
   }
 };
@@ -264,7 +264,7 @@ ImuConfig.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.use_rotation_absolute = input.readBool();
+        this.use_rotation = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -283,9 +283,9 @@ ImuConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 4:
+      case 5:
       if (ftype == Thrift.Type.BOOL) {
-        this.use_rotation_velocity = input.readBool();
+        this.use_acceleration = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -301,9 +301,9 @@ ImuConfig.prototype[Symbol.for("read")] = function(input) {
 
 ImuConfig.prototype[Symbol.for("write")] = function(output) {
   output.writeStructBegin('ImuConfig');
-  if (this.use_rotation_absolute !== null && this.use_rotation_absolute !== undefined) {
-    output.writeFieldBegin('use_rotation_absolute', Thrift.Type.BOOL, 1);
-    output.writeBool(this.use_rotation_absolute);
+  if (this.use_rotation !== null && this.use_rotation !== undefined) {
+    output.writeFieldBegin('use_rotation', Thrift.Type.BOOL, 1);
+    output.writeBool(this.use_rotation);
     output.writeFieldEnd();
   }
   if (this.use_position !== null && this.use_position !== undefined) {
@@ -316,9 +316,9 @@ ImuConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeBool(this.use_velocity);
     output.writeFieldEnd();
   }
-  if (this.use_rotation_velocity !== null && this.use_rotation_velocity !== undefined) {
-    output.writeFieldBegin('use_rotation_velocity', Thrift.Type.BOOL, 4);
-    output.writeBool(this.use_rotation_velocity);
+  if (this.use_acceleration !== null && this.use_acceleration !== undefined) {
+    output.writeFieldBegin('use_acceleration', Thrift.Type.BOOL, 5);
+    output.writeBool(this.use_acceleration);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

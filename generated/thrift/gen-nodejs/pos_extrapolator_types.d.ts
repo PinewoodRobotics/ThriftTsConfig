@@ -56,12 +56,12 @@ declare class OdomConfig {
 }
 
 declare class ImuConfig {
-  public use_rotation_absolute: boolean;
+  public use_rotation: boolean;
   public use_position: boolean;
   public use_velocity: boolean;
-  public use_rotation_velocity: boolean;
+  public use_acceleration: boolean;
 
-    constructor(args?: { use_rotation_absolute: boolean; use_position: boolean; use_velocity: boolean; use_rotation_velocity: boolean; });
+    constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; use_acceleration: boolean; });
 }
 
 declare class TagNoiseAdjustConfig {
