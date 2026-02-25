@@ -24,11 +24,10 @@ declare class KalmanFilterSensorConfig {
 }
 
 declare class KalmanFilterConfig {
-  public state_vector: common_ttypes.GenericVector;
+  public initial_state_vector: common_ttypes.GenericVector;
   public uncertainty_matrix: common_ttypes.GenericMatrix;
   public process_noise_matrix: common_ttypes.GenericMatrix;
   public sensors: { [k: number /*KalmanFilterSensorType*/]: { [k: string]: KalmanFilterSensorConfig; }; };
-  public dim_x_z: number[];
 
-    constructor(args?: { state_vector: common_ttypes.GenericVector; uncertainty_matrix: common_ttypes.GenericMatrix; process_noise_matrix: common_ttypes.GenericMatrix; sensors: { [k: number /*KalmanFilterSensorType*/]: { [k: string]: KalmanFilterSensorConfig; }; }; dim_x_z: number[]; });
+    constructor(args?: { initial_state_vector: common_ttypes.GenericVector; uncertainty_matrix: common_ttypes.GenericMatrix; process_noise_matrix: common_ttypes.GenericMatrix; sensors: { [k: number /*KalmanFilterSensorType*/]: { [k: string]: KalmanFilterSensorConfig; }; }; });
 }

@@ -76,16 +76,15 @@ KalmanFilterSensorConfig.prototype[Symbol.for("write")] = function(output) {
 };
 
 var KalmanFilterConfig = module.exports.KalmanFilterConfig = function(args) {
-  this.state_vector = null;
+  this.initial_state_vector = null;
   this.uncertainty_matrix = null;
   this.process_noise_matrix = null;
   this.sensors = null;
-  this.dim_x_z = null;
   if (args) {
-    if (args.state_vector !== undefined && args.state_vector !== null) {
-      this.state_vector = new common_ttypes.GenericVector(args.state_vector);
+    if (args.initial_state_vector !== undefined && args.initial_state_vector !== null) {
+      this.initial_state_vector = new common_ttypes.GenericVector(args.initial_state_vector);
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field state_vector is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field initial_state_vector is unset!');
     }
     if (args.uncertainty_matrix !== undefined && args.uncertainty_matrix !== null) {
       this.uncertainty_matrix = new common_ttypes.GenericMatrix(args.uncertainty_matrix);
@@ -102,11 +101,6 @@ var KalmanFilterConfig = module.exports.KalmanFilterConfig = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field sensors is unset!');
     }
-    if (args.dim_x_z !== undefined && args.dim_x_z !== null) {
-      this.dim_x_z = Thrift.copyList(args.dim_x_z, [null]);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field dim_x_z is unset!');
-    }
   }
 };
 KalmanFilterConfig.prototype = {};
@@ -122,8 +116,8 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.STRUCT) {
-        this.state_vector = new common_ttypes.GenericVector();
-        this.state_vector[Symbol.for("read")](input);
+        this.initial_state_vector = new common_ttypes.GenericVector();
+        this.initial_state_vector[Symbol.for("read")](input);
       } else {
         input.skip(ftype);
       }
@@ -172,21 +166,6 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 5:
-      if (ftype == Thrift.Type.LIST) {
-        this.dim_x_z = [];
-        var _rtmp311 = input.readListBegin();
-        var _size10 = _rtmp311.size || 0;
-        for (var _i12 = 0; _i12 < _size10; ++_i12) {
-          var elem13 = null;
-          elem13 = input.readI32();
-          this.dim_x_z.push(elem13);
-        }
-        input.readListEnd();
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -198,9 +177,9 @@ KalmanFilterConfig.prototype[Symbol.for("read")] = function(input) {
 
 KalmanFilterConfig.prototype[Symbol.for("write")] = function(output) {
   output.writeStructBegin('KalmanFilterConfig');
-  if (this.state_vector !== null && this.state_vector !== undefined) {
-    output.writeFieldBegin('state_vector', Thrift.Type.STRUCT, 1);
-    this.state_vector[Symbol.for("write")](output);
+  if (this.initial_state_vector !== null && this.initial_state_vector !== undefined) {
+    output.writeFieldBegin('initial_state_vector', Thrift.Type.STRUCT, 1);
+    this.initial_state_vector[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.uncertainty_matrix !== null && this.uncertainty_matrix !== undefined) {
@@ -216,34 +195,22 @@ KalmanFilterConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.sensors !== null && this.sensors !== undefined) {
     output.writeFieldBegin('sensors', Thrift.Type.MAP, 4);
     output.writeMapBegin(Thrift.Type.I32, Thrift.Type.MAP, Thrift.objectLength(this.sensors));
-    for (var kiter14 in this.sensors) {
-      if (this.sensors.hasOwnProperty(kiter14)) {
-        var viter15 = this.sensors[kiter14];
-        output.writeI32(kiter14);
-        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(viter15));
-        for (var kiter16 in viter15) {
-          if (viter15.hasOwnProperty(kiter16)) {
-            var viter17 = viter15[kiter16];
-            output.writeString(kiter16);
-            viter17[Symbol.for("write")](output);
+    for (var kiter10 in this.sensors) {
+      if (this.sensors.hasOwnProperty(kiter10)) {
+        var viter11 = this.sensors[kiter10];
+        output.writeI32(kiter10);
+        output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(viter11));
+        for (var kiter12 in viter11) {
+          if (viter11.hasOwnProperty(kiter12)) {
+            var viter13 = viter11[kiter12];
+            output.writeString(kiter12);
+            viter13[Symbol.for("write")](output);
           }
         }
         output.writeMapEnd();
       }
     }
     output.writeMapEnd();
-    output.writeFieldEnd();
-  }
-  if (this.dim_x_z !== null && this.dim_x_z !== undefined) {
-    output.writeFieldBegin('dim_x_z', Thrift.Type.LIST, 5);
-    output.writeListBegin(Thrift.Type.I32, this.dim_x_z.length);
-    for (var iter18 in this.dim_x_z) {
-      if (this.dim_x_z.hasOwnProperty(iter18)) {
-        iter18 = this.dim_x_z[iter18];
-        output.writeI32(iter18);
-      }
-    }
-    output.writeListEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();

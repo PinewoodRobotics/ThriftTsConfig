@@ -13,9 +13,8 @@ enum KalmanFilterSensorType {
 }
 
 struct KalmanFilterConfig {
-    1: required common.GenericVector state_vector,
+    1: required common.GenericVector initial_state_vector,
     2: required common.GenericMatrix uncertainty_matrix,
     3: required common.GenericMatrix process_noise_matrix,
     4: required map<KalmanFilterSensorType, map<string, KalmanFilterSensorConfig>> sensors,
-    5: required list<i32> dim_x_z,
 }
