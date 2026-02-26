@@ -26,32 +26,24 @@ ttypes.OdometryPositionSource = {
 ttypes.TagUseImuRotation = {
   '0' : 'ALWAYS',
   'ALWAYS' : 0,
-  '1' : 'UNTIL_FIRST_NON_TAG_ROTATION',
-  'UNTIL_FIRST_NON_TAG_ROTATION' : 1,
+  '1' : 'WHILE_NO_OTHER_ROTATION_DATA',
+  'WHILE_NO_OTHER_ROTATION_DATA' : 1,
   '2' : 'NEVER',
-  'NEVER' : 2,
-  '3' : 'WHEN_TAG_BASED_DIFFERENT',
-  'WHEN_TAG_BASED_DIFFERENT' : 3
-};
-ttypes.TagDisambiguationMode = {
-  '0' : 'NONE',
-  'NONE' : 0,
-  '1' : 'LEAST_ANGLE',
-  'LEAST_ANGLE' : 1,
-  '2' : 'LEAST_DISTANCE',
-  'LEAST_DISTANCE' : 2,
-  '3' : 'LEAST_ANGLE_AND_DISTANCE',
-  'LEAST_ANGLE_AND_DISTANCE' : 3
+  'NEVER' : 2
 };
 ttypes.TagNoiseAdjustMode = {
   '0' : 'ADD_WEIGHT_PER_M_DISTANCE_TAG',
   'ADD_WEIGHT_PER_M_DISTANCE_TAG' : 0,
-  '1' : 'ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG',
-  'ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG' : 1,
-  '2' : 'ADD_WEIGHT_PER_TAG_CONFIDENCE',
-  'ADD_WEIGHT_PER_TAG_CONFIDENCE' : 2,
-  '3' : 'MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG',
-  'MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG' : 3
+  '1' : 'ADD_WEIGHT_PER_TAG_CONFIDENCE',
+  'ADD_WEIGHT_PER_TAG_CONFIDENCE' : 1
+};
+ttypes.DataSources = {
+  '0' : 'APRIL_TAG',
+  'APRIL_TAG' : 0,
+  '1' : 'ODOMETRY',
+  'ODOMETRY' : 1,
+  '2' : 'IMU',
+  'IMU' : 2
 };
 var PosExtrapolatorMessageConfig = module.exports.PosExtrapolatorMessageConfig = function(args) {
   this.post_tag_input_topic = null;
@@ -312,27 +304,21 @@ var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) 
   this.weight_per_m_from_distance_from_tag = null;
   this.weight_per_degree_from_angle_error_tag = null;
   this.weight_per_confidence_tag = null;
-  this.multiply_coef_m_distance_from_tag = 1.0000000000000000;
-  this.pow_distance_from_tag_coef = 1.0000000000000000;
   if (args) {
     if (args.weight_per_m_from_distance_from_tag !== undefined && args.weight_per_m_from_distance_from_tag !== null) {
       this.weight_per_m_from_distance_from_tag = args.weight_per_m_from_distance_from_tag;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_m_from_distance_from_tag is unset!');
     }
     if (args.weight_per_degree_from_angle_error_tag !== undefined && args.weight_per_degree_from_angle_error_tag !== null) {
       this.weight_per_degree_from_angle_error_tag = args.weight_per_degree_from_angle_error_tag;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_degree_from_angle_error_tag is unset!');
     }
     if (args.weight_per_confidence_tag !== undefined && args.weight_per_confidence_tag !== null) {
       this.weight_per_confidence_tag = args.weight_per_confidence_tag;
-    }
-    if (args.multiply_coef_m_distance_from_tag !== undefined && args.multiply_coef_m_distance_from_tag !== null) {
-      this.multiply_coef_m_distance_from_tag = args.multiply_coef_m_distance_from_tag;
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field multiply_coef_m_distance_from_tag is unset!');
-    }
-    if (args.pow_distance_from_tag_coef !== undefined && args.pow_distance_from_tag_coef !== null) {
-      this.pow_distance_from_tag_coef = args.pow_distance_from_tag_coef;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pow_distance_from_tag_coef is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_confidence_tag is unset!');
     }
   }
 };
@@ -368,20 +354,6 @@ TagNoiseAdjustConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 4:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.multiply_coef_m_distance_from_tag = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 5:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.pow_distance_from_tag_coef = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
       default:
         input.skip(ftype);
     }
@@ -408,16 +380,6 @@ TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeDouble(this.weight_per_confidence_tag);
     output.writeFieldEnd();
   }
-  if (this.multiply_coef_m_distance_from_tag !== null && this.multiply_coef_m_distance_from_tag !== undefined) {
-    output.writeFieldBegin('multiply_coef_m_distance_from_tag', Thrift.Type.DOUBLE, 4);
-    output.writeDouble(this.multiply_coef_m_distance_from_tag);
-    output.writeFieldEnd();
-  }
-  if (this.pow_distance_from_tag_coef !== null && this.pow_distance_from_tag_coef !== undefined) {
-    output.writeFieldBegin('pow_distance_from_tag_coef', Thrift.Type.DOUBLE, 5);
-    output.writeDouble(this.pow_distance_from_tag_coef);
-    output.writeFieldEnd();
-  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
@@ -425,22 +387,15 @@ TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
 
 var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.tag_position_config = null;
-  this.tag_disambiguation_mode = null;
   this.camera_position_config = null;
   this.tag_use_imu_rotation = null;
-  this.disambiguation_time_window_s = null;
-  this.tag_noise_adjust_mode = [];
+  this.noise_change_modes = [];
   this.tag_noise_adjust_config = null;
   if (args) {
     if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
       this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_position_config is unset!');
-    }
-    if (args.tag_disambiguation_mode !== undefined && args.tag_disambiguation_mode !== null) {
-      this.tag_disambiguation_mode = args.tag_disambiguation_mode;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_disambiguation_mode is unset!');
     }
     if (args.camera_position_config !== undefined && args.camera_position_config !== null) {
       this.camera_position_config = Thrift.copyMap(args.camera_position_config, [common_ttypes.Point3]);
@@ -452,15 +407,10 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_use_imu_rotation is unset!');
     }
-    if (args.disambiguation_time_window_s !== undefined && args.disambiguation_time_window_s !== null) {
-      this.disambiguation_time_window_s = args.disambiguation_time_window_s;
+    if (args.noise_change_modes !== undefined && args.noise_change_modes !== null) {
+      this.noise_change_modes = Thrift.copyList(args.noise_change_modes, [null]);
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field disambiguation_time_window_s is unset!');
-    }
-    if (args.tag_noise_adjust_mode !== undefined && args.tag_noise_adjust_mode !== null) {
-      this.tag_noise_adjust_mode = Thrift.copyList(args.tag_noise_adjust_mode, [null]);
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_noise_adjust_mode is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field noise_change_modes is unset!');
     }
     if (args.tag_noise_adjust_config !== undefined && args.tag_noise_adjust_config !== null) {
       this.tag_noise_adjust_config = new ttypes.TagNoiseAdjustConfig(args.tag_noise_adjust_config);
@@ -499,13 +449,6 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 2:
-      if (ftype == Thrift.Type.I32) {
-        this.tag_disambiguation_mode = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
       if (ftype == Thrift.Type.MAP) {
         this.camera_position_config = {};
         var _rtmp36 = input.readMapBegin();
@@ -523,36 +466,29 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 4:
+      case 3:
       if (ftype == Thrift.Type.I32) {
         this.tag_use_imu_rotation = input.readI32();
       } else {
         input.skip(ftype);
       }
       break;
-      case 5:
-      if (ftype == Thrift.Type.DOUBLE) {
-        this.disambiguation_time_window_s = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 6:
+      case 4:
       if (ftype == Thrift.Type.LIST) {
-        this.tag_noise_adjust_mode = [];
+        this.noise_change_modes = [];
         var _rtmp311 = input.readListBegin();
         var _size10 = _rtmp311.size || 0;
         for (var _i12 = 0; _i12 < _size10; ++_i12) {
           var elem13 = null;
           elem13 = input.readI32();
-          this.tag_noise_adjust_mode.push(elem13);
+          this.noise_change_modes.push(elem13);
         }
         input.readListEnd();
       } else {
         input.skip(ftype);
       }
       break;
-      case 7:
+      case 5:
       if (ftype == Thrift.Type.STRUCT) {
         this.tag_noise_adjust_config = new ttypes.TagNoiseAdjustConfig();
         this.tag_noise_adjust_config[Symbol.for("read")](input);
@@ -584,13 +520,8 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeMapEnd();
     output.writeFieldEnd();
   }
-  if (this.tag_disambiguation_mode !== null && this.tag_disambiguation_mode !== undefined) {
-    output.writeFieldBegin('tag_disambiguation_mode', Thrift.Type.I32, 2);
-    output.writeI32(this.tag_disambiguation_mode);
-    output.writeFieldEnd();
-  }
   if (this.camera_position_config !== null && this.camera_position_config !== undefined) {
-    output.writeFieldBegin('camera_position_config', Thrift.Type.MAP, 3);
+    output.writeFieldBegin('camera_position_config', Thrift.Type.MAP, 2);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.camera_position_config));
     for (var kiter16 in this.camera_position_config) {
       if (this.camera_position_config.hasOwnProperty(kiter16)) {
@@ -603,21 +534,16 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeFieldEnd();
   }
   if (this.tag_use_imu_rotation !== null && this.tag_use_imu_rotation !== undefined) {
-    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 4);
+    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 3);
     output.writeI32(this.tag_use_imu_rotation);
     output.writeFieldEnd();
   }
-  if (this.disambiguation_time_window_s !== null && this.disambiguation_time_window_s !== undefined) {
-    output.writeFieldBegin('disambiguation_time_window_s', Thrift.Type.DOUBLE, 5);
-    output.writeDouble(this.disambiguation_time_window_s);
-    output.writeFieldEnd();
-  }
-  if (this.tag_noise_adjust_mode !== null && this.tag_noise_adjust_mode !== undefined) {
-    output.writeFieldBegin('tag_noise_adjust_mode', Thrift.Type.LIST, 6);
-    output.writeListBegin(Thrift.Type.I32, this.tag_noise_adjust_mode.length);
-    for (var iter18 in this.tag_noise_adjust_mode) {
-      if (this.tag_noise_adjust_mode.hasOwnProperty(iter18)) {
-        iter18 = this.tag_noise_adjust_mode[iter18];
+  if (this.noise_change_modes !== null && this.noise_change_modes !== undefined) {
+    output.writeFieldBegin('noise_change_modes', Thrift.Type.LIST, 4);
+    output.writeListBegin(Thrift.Type.I32, this.noise_change_modes.length);
+    for (var iter18 in this.noise_change_modes) {
+      if (this.noise_change_modes.hasOwnProperty(iter18)) {
+        iter18 = this.noise_change_modes[iter18];
         output.writeI32(iter18);
       }
     }
@@ -625,7 +551,7 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeFieldEnd();
   }
   if (this.tag_noise_adjust_config !== null && this.tag_noise_adjust_config !== undefined) {
-    output.writeFieldBegin('tag_noise_adjust_config', Thrift.Type.STRUCT, 7);
+    output.writeFieldBegin('tag_noise_adjust_config', Thrift.Type.STRUCT, 5);
     this.tag_noise_adjust_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
@@ -636,37 +562,23 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
 
 var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
   this.message_config = null;
-  this.enable_imu = null;
-  this.enable_odom = null;
-  this.enable_tags = null;
+  this.enabled_data_sources = null;
   this.april_tag_config = null;
   this.odom_config = null;
   this.imu_config = null;
   this.kalman_filter_config = null;
   this.time_s_between_position_sends = null;
-  this.composite_publish_topic = null;
   this.future_position_prediction_margin_s = null;
-  this.log_relevant_ai_training_data = null;
   if (args) {
     if (args.message_config !== undefined && args.message_config !== null) {
       this.message_config = new ttypes.PosExtrapolatorMessageConfig(args.message_config);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field message_config is unset!');
     }
-    if (args.enable_imu !== undefined && args.enable_imu !== null) {
-      this.enable_imu = args.enable_imu;
+    if (args.enabled_data_sources !== undefined && args.enabled_data_sources !== null) {
+      this.enabled_data_sources = Thrift.copyList(args.enabled_data_sources, [null]);
     } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field enable_imu is unset!');
-    }
-    if (args.enable_odom !== undefined && args.enable_odom !== null) {
-      this.enable_odom = args.enable_odom;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field enable_odom is unset!');
-    }
-    if (args.enable_tags !== undefined && args.enable_tags !== null) {
-      this.enable_tags = args.enable_tags;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field enable_tags is unset!');
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field enabled_data_sources is unset!');
     }
     if (args.april_tag_config !== undefined && args.april_tag_config !== null) {
       this.april_tag_config = new ttypes.AprilTagConfig(args.april_tag_config);
@@ -691,14 +603,8 @@ var PosExtrapolator = module.exports.PosExtrapolator = function(args) {
     if (args.time_s_between_position_sends !== undefined && args.time_s_between_position_sends !== null) {
       this.time_s_between_position_sends = args.time_s_between_position_sends;
     }
-    if (args.composite_publish_topic !== undefined && args.composite_publish_topic !== null) {
-      this.composite_publish_topic = args.composite_publish_topic;
-    }
     if (args.future_position_prediction_margin_s !== undefined && args.future_position_prediction_margin_s !== null) {
       this.future_position_prediction_margin_s = args.future_position_prediction_margin_s;
-    }
-    if (args.log_relevant_ai_training_data !== undefined && args.log_relevant_ai_training_data !== null) {
-      this.log_relevant_ai_training_data = args.log_relevant_ai_training_data;
     }
   }
 };
@@ -721,28 +627,22 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 5:
-      if (ftype == Thrift.Type.BOOL) {
-        this.enable_imu = input.readBool();
+      case 2:
+      if (ftype == Thrift.Type.LIST) {
+        this.enabled_data_sources = [];
+        var _rtmp320 = input.readListBegin();
+        var _size19 = _rtmp320.size || 0;
+        for (var _i21 = 0; _i21 < _size19; ++_i21) {
+          var elem22 = null;
+          elem22 = input.readI32();
+          this.enabled_data_sources.push(elem22);
+        }
+        input.readListEnd();
       } else {
         input.skip(ftype);
       }
       break;
-      case 6:
-      if (ftype == Thrift.Type.BOOL) {
-        this.enable_odom = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 7:
-      if (ftype == Thrift.Type.BOOL) {
-        this.enable_tags = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 8:
+      case 3:
       if (ftype == Thrift.Type.STRUCT) {
         this.april_tag_config = new ttypes.AprilTagConfig();
         this.april_tag_config[Symbol.for("read")](input);
@@ -750,7 +650,7 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 9:
+      case 4:
       if (ftype == Thrift.Type.STRUCT) {
         this.odom_config = new ttypes.OdomConfig();
         this.odom_config[Symbol.for("read")](input);
@@ -758,25 +658,25 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 10:
+      case 5:
       if (ftype == Thrift.Type.MAP) {
         this.imu_config = {};
-        var _rtmp320 = input.readMapBegin();
-        var _size19 = _rtmp320.size || 0;
-        for (var _i21 = 0; _i21 < _size19; ++_i21) {
-          var key22 = null;
-          var val23 = null;
-          key22 = input.readString();
-          val23 = new ttypes.ImuConfig();
-          val23[Symbol.for("read")](input);
-          this.imu_config[key22] = val23;
+        var _rtmp324 = input.readMapBegin();
+        var _size23 = _rtmp324.size || 0;
+        for (var _i25 = 0; _i25 < _size23; ++_i25) {
+          var key26 = null;
+          var val27 = null;
+          key26 = input.readString();
+          val27 = new ttypes.ImuConfig();
+          val27[Symbol.for("read")](input);
+          this.imu_config[key26] = val27;
         }
         input.readMapEnd();
       } else {
         input.skip(ftype);
       }
       break;
-      case 11:
+      case 6:
       if (ftype == Thrift.Type.STRUCT) {
         this.kalman_filter_config = new kalman_filter_ttypes.KalmanFilterConfig();
         this.kalman_filter_config[Symbol.for("read")](input);
@@ -784,30 +684,16 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 12:
+      case 7:
       if (ftype == Thrift.Type.DOUBLE) {
         this.time_s_between_position_sends = input.readDouble();
       } else {
         input.skip(ftype);
       }
       break;
-      case 13:
-      if (ftype == Thrift.Type.STRING) {
-        this.composite_publish_topic = input.readString();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 14:
+      case 8:
       if (ftype == Thrift.Type.DOUBLE) {
         this.future_position_prediction_margin_s = input.readDouble();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 15:
-      if (ftype == Thrift.Type.BOOL) {
-        this.log_relevant_ai_training_data = input.readBool();
       } else {
         input.skip(ftype);
       }
@@ -828,67 +714,54 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
     this.message_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
-  if (this.enable_imu !== null && this.enable_imu !== undefined) {
-    output.writeFieldBegin('enable_imu', Thrift.Type.BOOL, 5);
-    output.writeBool(this.enable_imu);
-    output.writeFieldEnd();
-  }
-  if (this.enable_odom !== null && this.enable_odom !== undefined) {
-    output.writeFieldBegin('enable_odom', Thrift.Type.BOOL, 6);
-    output.writeBool(this.enable_odom);
-    output.writeFieldEnd();
-  }
-  if (this.enable_tags !== null && this.enable_tags !== undefined) {
-    output.writeFieldBegin('enable_tags', Thrift.Type.BOOL, 7);
-    output.writeBool(this.enable_tags);
+  if (this.enabled_data_sources !== null && this.enabled_data_sources !== undefined) {
+    output.writeFieldBegin('enabled_data_sources', Thrift.Type.LIST, 2);
+    output.writeListBegin(Thrift.Type.I32, this.enabled_data_sources.length);
+    for (var iter28 in this.enabled_data_sources) {
+      if (this.enabled_data_sources.hasOwnProperty(iter28)) {
+        iter28 = this.enabled_data_sources[iter28];
+        output.writeI32(iter28);
+      }
+    }
+    output.writeListEnd();
     output.writeFieldEnd();
   }
   if (this.april_tag_config !== null && this.april_tag_config !== undefined) {
-    output.writeFieldBegin('april_tag_config', Thrift.Type.STRUCT, 8);
+    output.writeFieldBegin('april_tag_config', Thrift.Type.STRUCT, 3);
     this.april_tag_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.odom_config !== null && this.odom_config !== undefined) {
-    output.writeFieldBegin('odom_config', Thrift.Type.STRUCT, 9);
+    output.writeFieldBegin('odom_config', Thrift.Type.STRUCT, 4);
     this.odom_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.imu_config !== null && this.imu_config !== undefined) {
-    output.writeFieldBegin('imu_config', Thrift.Type.MAP, 10);
+    output.writeFieldBegin('imu_config', Thrift.Type.MAP, 5);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.imu_config));
-    for (var kiter24 in this.imu_config) {
-      if (this.imu_config.hasOwnProperty(kiter24)) {
-        var viter25 = this.imu_config[kiter24];
-        output.writeString(kiter24);
-        viter25[Symbol.for("write")](output);
+    for (var kiter29 in this.imu_config) {
+      if (this.imu_config.hasOwnProperty(kiter29)) {
+        var viter30 = this.imu_config[kiter29];
+        output.writeString(kiter29);
+        viter30[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
     output.writeFieldEnd();
   }
   if (this.kalman_filter_config !== null && this.kalman_filter_config !== undefined) {
-    output.writeFieldBegin('kalman_filter_config', Thrift.Type.STRUCT, 11);
+    output.writeFieldBegin('kalman_filter_config', Thrift.Type.STRUCT, 6);
     this.kalman_filter_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.time_s_between_position_sends !== null && this.time_s_between_position_sends !== undefined) {
-    output.writeFieldBegin('time_s_between_position_sends', Thrift.Type.DOUBLE, 12);
+    output.writeFieldBegin('time_s_between_position_sends', Thrift.Type.DOUBLE, 7);
     output.writeDouble(this.time_s_between_position_sends);
     output.writeFieldEnd();
   }
-  if (this.composite_publish_topic !== null && this.composite_publish_topic !== undefined) {
-    output.writeFieldBegin('composite_publish_topic', Thrift.Type.STRING, 13);
-    output.writeString(this.composite_publish_topic);
-    output.writeFieldEnd();
-  }
   if (this.future_position_prediction_margin_s !== null && this.future_position_prediction_margin_s !== undefined) {
-    output.writeFieldBegin('future_position_prediction_margin_s', Thrift.Type.DOUBLE, 14);
+    output.writeFieldBegin('future_position_prediction_margin_s', Thrift.Type.DOUBLE, 8);
     output.writeDouble(this.future_position_prediction_margin_s);
-    output.writeFieldEnd();
-  }
-  if (this.log_relevant_ai_training_data !== null && this.log_relevant_ai_training_data !== undefined) {
-    output.writeFieldBegin('log_relevant_ai_training_data', Thrift.Type.BOOL, 15);
-    output.writeBool(this.log_relevant_ai_training_data);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

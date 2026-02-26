@@ -20,23 +20,19 @@ declare enum OdometryPositionSource {
 
 declare enum TagUseImuRotation {
   ALWAYS = 0,
-  UNTIL_FIRST_NON_TAG_ROTATION = 1,
+  WHILE_NO_OTHER_ROTATION_DATA = 1,
   NEVER = 2,
-  WHEN_TAG_BASED_DIFFERENT = 3,
-}
-
-declare enum TagDisambiguationMode {
-  NONE = 0,
-  LEAST_ANGLE = 1,
-  LEAST_DISTANCE = 2,
-  LEAST_ANGLE_AND_DISTANCE = 3,
 }
 
 declare enum TagNoiseAdjustMode {
   ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
-  ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG = 1,
-  ADD_WEIGHT_PER_TAG_CONFIDENCE = 2,
-  MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG = 3,
+  ADD_WEIGHT_PER_TAG_CONFIDENCE = 1,
+}
+
+declare enum DataSources {
+  APRIL_TAG = 0,
+  ODOMETRY = 1,
+  IMU = 2,
 }
 
 declare class PosExtrapolatorMessageConfig {
@@ -64,40 +60,32 @@ declare class ImuConfig {
 }
 
 declare class TagNoiseAdjustConfig {
-  public weight_per_m_from_distance_from_tag?: number;
-  public weight_per_degree_from_angle_error_tag?: number;
-  public weight_per_confidence_tag?: number;
-  public multiply_coef_m_distance_from_tag?: number;
-  public pow_distance_from_tag_coef?: number;
+  public weight_per_m_from_distance_from_tag: number;
+  public weight_per_degree_from_angle_error_tag: number;
+  public weight_per_confidence_tag: number;
 
-    constructor(args?: { weight_per_m_from_distance_from_tag?: number; weight_per_degree_from_angle_error_tag?: number; weight_per_confidence_tag?: number; multiply_coef_m_distance_from_tag?: number; pow_distance_from_tag_coef?: number; });
+    constructor(args?: { weight_per_m_from_distance_from_tag: number; weight_per_degree_from_angle_error_tag: number; weight_per_confidence_tag: number; });
 }
 
 declare class AprilTagConfig {
   public tag_position_config: { [k: number]: common_ttypes.Point3; };
-  public tag_disambiguation_mode: TagDisambiguationMode;
   public camera_position_config: { [k: string]: common_ttypes.Point3; };
   public tag_use_imu_rotation: TagUseImuRotation;
-  public disambiguation_time_window_s: number;
-  public tag_noise_adjust_mode?: TagNoiseAdjustMode[];
+  public noise_change_modes?: TagNoiseAdjustMode[];
   public tag_noise_adjust_config: TagNoiseAdjustConfig;
 
-    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; tag_disambiguation_mode: TagDisambiguationMode; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; disambiguation_time_window_s: number; tag_noise_adjust_mode?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; });
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; noise_change_modes?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; });
 }
 
 declare class PosExtrapolator {
   public message_config: PosExtrapolatorMessageConfig;
-  public enable_imu: boolean;
-  public enable_odom: boolean;
-  public enable_tags: boolean;
+  public enabled_data_sources: DataSources[];
   public april_tag_config: AprilTagConfig;
   public odom_config: OdomConfig;
   public imu_config: { [k: string]: ImuConfig; };
   public kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig;
   public time_s_between_position_sends?: number;
-  public composite_publish_topic?: string;
   public future_position_prediction_margin_s?: number;
-  public log_relevant_ai_training_data?: boolean;
 
-    constructor(args?: { message_config: PosExtrapolatorMessageConfig; enable_imu: boolean; enable_odom: boolean; enable_tags: boolean; april_tag_config: AprilTagConfig; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; time_s_between_position_sends?: number; composite_publish_topic?: string; future_position_prediction_margin_s?: number; log_relevant_ai_training_data?: boolean; });
+    constructor(args?: { message_config: PosExtrapolatorMessageConfig; enabled_data_sources: DataSources[]; april_tag_config: AprilTagConfig; odom_config: OdomConfig; imu_config: { [k: string]: ImuConfig; }; kalman_filter_config: kalman_filter_ttypes.KalmanFilterConfig; time_s_between_position_sends?: number; future_position_prediction_margin_s?: number; });
 }

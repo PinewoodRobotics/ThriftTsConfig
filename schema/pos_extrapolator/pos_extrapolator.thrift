@@ -29,54 +29,42 @@ struct ImuConfig {
 
 enum TagUseImuRotation {
     ALWAYS = 0,
-    UNTIL_FIRST_NON_TAG_ROTATION = 1,
+    WHILE_NO_OTHER_ROTATION_DATA = 1,
     NEVER = 2,
-    WHEN_TAG_BASED_DIFFERENT = 3,
-}
-
-enum TagDisambiguationMode { // TODO
-    NONE = 0,
-    LEAST_ANGLE = 1,
-    LEAST_DISTANCE = 2,
-    LEAST_ANGLE_AND_DISTANCE = 3,
 }
 
 enum TagNoiseAdjustMode {
     ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
-    ADD_WEIGHT_PER_DEGREE_ERROR_ANGLE_TAG = 1,
-    ADD_WEIGHT_PER_TAG_CONFIDENCE = 2,
-    MULTIPLY_POW_BY_M_DISTANCE_FROM_TAG = 3,
+    ADD_WEIGHT_PER_TAG_CONFIDENCE = 1,
 }
 
 struct TagNoiseAdjustConfig {
-    1: optional double weight_per_m_from_distance_from_tag,
-    2: optional double weight_per_degree_from_angle_error_tag,
-    3: optional double weight_per_confidence_tag,
-    4: required double multiply_coef_m_distance_from_tag = 1.0,
-    5: required double pow_distance_from_tag_coef = 1.0,
+    1: required double weight_per_m_from_distance_from_tag,
+    2: required double weight_per_degree_from_angle_error_tag,
+    3: required double weight_per_confidence_tag,
 }
 
 struct AprilTagConfig {
   1: required map<i32, common.Point3> tag_position_config,
-  2: required TagDisambiguationMode tag_disambiguation_mode,
-  3: required map<string, common.Point3> camera_position_config,
-  4: required TagUseImuRotation tag_use_imu_rotation,
-  5: required double disambiguation_time_window_s,
-  6: required list<TagNoiseAdjustMode> tag_noise_adjust_mode = [],
-  7: required TagNoiseAdjustConfig tag_noise_adjust_config,
+  2: required map<string, common.Point3> camera_position_config,
+  3: required TagUseImuRotation tag_use_imu_rotation,
+  4: required list<TagNoiseAdjustMode> noise_change_modes = [],
+  5: required TagNoiseAdjustConfig tag_noise_adjust_config,
+}
+
+enum DataSources {
+    APRIL_TAG = 0,
+    ODOMETRY = 1,
+    IMU = 2,
 }
 
 struct PosExtrapolator {
     1: required PosExtrapolatorMessageConfig message_config,
-    5: required bool enable_imu,
-    6: required bool enable_odom,
-    7: required bool enable_tags,
-    8: required AprilTagConfig april_tag_config,
-    9: required OdomConfig odom_config,
-    10: required map<string, ImuConfig> imu_config,
-    11: required kalman_filter.KalmanFilterConfig kalman_filter_config,
-    12: optional double time_s_between_position_sends,
-    13: optional string composite_publish_topic,
-    14: optional double future_position_prediction_margin_s,
-    15: optional bool log_relevant_ai_training_data,
+    2: required list<DataSources> enabled_data_sources,
+    3: required AprilTagConfig april_tag_config,
+    4: required OdomConfig odom_config,
+    5: required map<string, ImuConfig> imu_config,
+    6: required kalman_filter.KalmanFilterConfig kalman_filter_config,
+    7: optional double time_s_between_position_sends,
+    8: optional double future_position_prediction_margin_s,
 }
