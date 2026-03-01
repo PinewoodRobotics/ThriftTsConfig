@@ -42,6 +42,7 @@ struct TagNoiseAdjustConfig {
     1: required double weight_per_m_from_distance_from_tag,
     2: required double weight_per_degree_from_angle_error_tag,
     3: required double weight_per_confidence_tag,
+    4: required double min_distance_from_tag_to_use_noise_adjustment,
 }
 
 struct AprilTagConfig {

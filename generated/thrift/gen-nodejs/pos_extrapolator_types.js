@@ -304,6 +304,7 @@ var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) 
   this.weight_per_m_from_distance_from_tag = null;
   this.weight_per_degree_from_angle_error_tag = null;
   this.weight_per_confidence_tag = null;
+  this.min_distance_from_tag_to_use_noise_adjustment = null;
   if (args) {
     if (args.weight_per_m_from_distance_from_tag !== undefined && args.weight_per_m_from_distance_from_tag !== null) {
       this.weight_per_m_from_distance_from_tag = args.weight_per_m_from_distance_from_tag;
@@ -319,6 +320,11 @@ var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) 
       this.weight_per_confidence_tag = args.weight_per_confidence_tag;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field weight_per_confidence_tag is unset!');
+    }
+    if (args.min_distance_from_tag_to_use_noise_adjustment !== undefined && args.min_distance_from_tag_to_use_noise_adjustment !== null) {
+      this.min_distance_from_tag_to_use_noise_adjustment = args.min_distance_from_tag_to_use_noise_adjustment;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field min_distance_from_tag_to_use_noise_adjustment is unset!');
     }
   }
 };
@@ -354,6 +360,13 @@ TagNoiseAdjustConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 4:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.min_distance_from_tag_to_use_noise_adjustment = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -378,6 +391,11 @@ TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.weight_per_confidence_tag !== null && this.weight_per_confidence_tag !== undefined) {
     output.writeFieldBegin('weight_per_confidence_tag', Thrift.Type.DOUBLE, 3);
     output.writeDouble(this.weight_per_confidence_tag);
+    output.writeFieldEnd();
+  }
+  if (this.min_distance_from_tag_to_use_noise_adjustment !== null && this.min_distance_from_tag_to_use_noise_adjustment !== undefined) {
+    output.writeFieldBegin('min_distance_from_tag_to_use_noise_adjustment', Thrift.Type.DOUBLE, 4);
+    output.writeDouble(this.min_distance_from_tag_to_use_noise_adjustment);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

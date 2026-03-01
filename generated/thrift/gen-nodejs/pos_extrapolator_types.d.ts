@@ -63,8 +63,9 @@ declare class TagNoiseAdjustConfig {
   public weight_per_m_from_distance_from_tag: number;
   public weight_per_degree_from_angle_error_tag: number;
   public weight_per_confidence_tag: number;
+  public min_distance_from_tag_to_use_noise_adjustment: number;
 
-    constructor(args?: { weight_per_m_from_distance_from_tag: number; weight_per_degree_from_angle_error_tag: number; weight_per_confidence_tag: number; });
+    constructor(args?: { weight_per_m_from_distance_from_tag: number; weight_per_degree_from_angle_error_tag: number; weight_per_confidence_tag: number; min_distance_from_tag_to_use_noise_adjustment: number; });
 }
 
 declare class AprilTagConfig {
