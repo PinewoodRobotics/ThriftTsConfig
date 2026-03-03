@@ -74,8 +74,9 @@ declare class AprilTagConfig {
   public tag_use_imu_rotation: TagUseImuRotation;
   public noise_change_modes?: TagNoiseAdjustMode[];
   public tag_noise_adjust_config: TagNoiseAdjustConfig;
+  public insert_predicted_global_rotation: boolean;
 
-    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; noise_change_modes?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; });
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; noise_change_modes?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; insert_predicted_global_rotation: boolean; });
 }
 
 declare class PosExtrapolator {

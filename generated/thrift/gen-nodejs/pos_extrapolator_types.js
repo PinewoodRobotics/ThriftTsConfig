@@ -409,6 +409,7 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.tag_use_imu_rotation = null;
   this.noise_change_modes = [];
   this.tag_noise_adjust_config = null;
+  this.insert_predicted_global_rotation = null;
   if (args) {
     if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
       this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
@@ -434,6 +435,11 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
       this.tag_noise_adjust_config = new ttypes.TagNoiseAdjustConfig(args.tag_noise_adjust_config);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_noise_adjust_config is unset!');
+    }
+    if (args.insert_predicted_global_rotation !== undefined && args.insert_predicted_global_rotation !== null) {
+      this.insert_predicted_global_rotation = args.insert_predicted_global_rotation;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field insert_predicted_global_rotation is unset!');
     }
   }
 };
@@ -514,6 +520,13 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.BOOL) {
+        this.insert_predicted_global_rotation = input.readBool();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -571,6 +584,11 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.tag_noise_adjust_config !== null && this.tag_noise_adjust_config !== undefined) {
     output.writeFieldBegin('tag_noise_adjust_config', Thrift.Type.STRUCT, 5);
     this.tag_noise_adjust_config[Symbol.for("write")](output);
+    output.writeFieldEnd();
+  }
+  if (this.insert_predicted_global_rotation !== null && this.insert_predicted_global_rotation !== undefined) {
+    output.writeFieldBegin('insert_predicted_global_rotation', Thrift.Type.BOOL, 6);
+    output.writeBool(this.insert_predicted_global_rotation);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
