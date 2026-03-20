@@ -15,22 +15,6 @@ var kalman_filter_ttypes = require('./kalman_filter_types.js');
 
 
 var ttypes = module.exports = {};
-ttypes.OdometryPositionSource = {
-  '0' : 'ABSOLUTE',
-  'ABSOLUTE' : 0,
-  '1' : 'ABS_CHANGE',
-  'ABS_CHANGE' : 1,
-  '2' : 'DONT_USE',
-  'DONT_USE' : 2
-};
-ttypes.TagUseImuRotation = {
-  '0' : 'ALWAYS',
-  'ALWAYS' : 0,
-  '1' : 'WHILE_NO_OTHER_ROTATION_DATA',
-  'WHILE_NO_OTHER_ROTATION_DATA' : 1,
-  '2' : 'NEVER',
-  'NEVER' : 2
-};
 ttypes.TagNoiseAdjustMode = {
   '0' : 'ADD_WEIGHT_PER_M_DISTANCE_TAG',
   'ADD_WEIGHT_PER_M_DISTANCE_TAG' : 0,
@@ -149,20 +133,6 @@ PosExtrapolatorMessageConfig.prototype[Symbol.for("write")] = function(output) {
 };
 
 var OdomConfig = module.exports.OdomConfig = function(args) {
-  this.position_source = null;
-  this.use_rotation = null;
-  if (args) {
-    if (args.position_source !== undefined && args.position_source !== null) {
-      this.position_source = args.position_source;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field position_source is unset!');
-    }
-    if (args.use_rotation !== undefined && args.use_rotation !== null) {
-      this.use_rotation = args.use_rotation;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_rotation is unset!');
-    }
-  }
 };
 OdomConfig.prototype = {};
 OdomConfig.prototype[Symbol.for("read")] = function(input) {
@@ -170,28 +140,10 @@ OdomConfig.prototype[Symbol.for("read")] = function(input) {
   while (true) {
     var ret = input.readFieldBegin();
     var ftype = ret.ftype;
-    var fid = ret.fid;
     if (ftype == Thrift.Type.STOP) {
       break;
     }
-    switch (fid) {
-      case 1:
-      if (ftype == Thrift.Type.I32) {
-        this.position_source = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.BOOL) {
-        this.use_rotation = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      default:
-        input.skip(ftype);
-    }
+    input.skip(ftype);
     input.readFieldEnd();
   }
   input.readStructEnd();
@@ -200,36 +152,14 @@ OdomConfig.prototype[Symbol.for("read")] = function(input) {
 
 OdomConfig.prototype[Symbol.for("write")] = function(output) {
   output.writeStructBegin('OdomConfig');
-  if (this.position_source !== null && this.position_source !== undefined) {
-    output.writeFieldBegin('position_source', Thrift.Type.I32, 1);
-    output.writeI32(this.position_source);
-    output.writeFieldEnd();
-  }
-  if (this.use_rotation !== null && this.use_rotation !== undefined) {
-    output.writeFieldBegin('use_rotation', Thrift.Type.BOOL, 2);
-    output.writeBool(this.use_rotation);
-    output.writeFieldEnd();
-  }
   output.writeFieldStop();
   output.writeStructEnd();
   return;
 };
 
 var ImuConfig = module.exports.ImuConfig = function(args) {
-  this.use_rotation = null;
-  this.use_position = null;
   this.use_velocity = null;
   if (args) {
-    if (args.use_rotation !== undefined && args.use_rotation !== null) {
-      this.use_rotation = args.use_rotation;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_rotation is unset!');
-    }
-    if (args.use_position !== undefined && args.use_position !== null) {
-      this.use_position = args.use_position;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field use_position is unset!');
-    }
     if (args.use_velocity !== undefined && args.use_velocity !== null) {
       this.use_velocity = args.use_velocity;
     } else {
@@ -250,25 +180,14 @@ ImuConfig.prototype[Symbol.for("read")] = function(input) {
     switch (fid) {
       case 1:
       if (ftype == Thrift.Type.BOOL) {
-        this.use_rotation = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 2:
-      if (ftype == Thrift.Type.BOOL) {
-        this.use_position = input.readBool();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 3:
-      if (ftype == Thrift.Type.BOOL) {
         this.use_velocity = input.readBool();
       } else {
         input.skip(ftype);
       }
       break;
+      case 0:
+        input.skip(ftype);
+        break;
       default:
         input.skip(ftype);
     }
@@ -280,18 +199,8 @@ ImuConfig.prototype[Symbol.for("read")] = function(input) {
 
 ImuConfig.prototype[Symbol.for("write")] = function(output) {
   output.writeStructBegin('ImuConfig');
-  if (this.use_rotation !== null && this.use_rotation !== undefined) {
-    output.writeFieldBegin('use_rotation', Thrift.Type.BOOL, 1);
-    output.writeBool(this.use_rotation);
-    output.writeFieldEnd();
-  }
-  if (this.use_position !== null && this.use_position !== undefined) {
-    output.writeFieldBegin('use_position', Thrift.Type.BOOL, 2);
-    output.writeBool(this.use_position);
-    output.writeFieldEnd();
-  }
   if (this.use_velocity !== null && this.use_velocity !== undefined) {
-    output.writeFieldBegin('use_velocity', Thrift.Type.BOOL, 3);
+    output.writeFieldBegin('use_velocity', Thrift.Type.BOOL, 1);
     output.writeBool(this.use_velocity);
     output.writeFieldEnd();
   }
@@ -406,7 +315,6 @@ TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
 var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.tag_position_config = null;
   this.camera_position_config = null;
-  this.tag_use_imu_rotation = null;
   this.noise_change_modes = [];
   this.tag_noise_adjust_config = null;
   this.insert_predicted_global_rotation = null;
@@ -420,11 +328,6 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
       this.camera_position_config = Thrift.copyMap(args.camera_position_config, [common_ttypes.Point3]);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field camera_position_config is unset!');
-    }
-    if (args.tag_use_imu_rotation !== undefined && args.tag_use_imu_rotation !== null) {
-      this.tag_use_imu_rotation = args.tag_use_imu_rotation;
-    } else {
-      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_use_imu_rotation is unset!');
     }
     if (args.noise_change_modes !== undefined && args.noise_change_modes !== null) {
       this.noise_change_modes = Thrift.copyList(args.noise_change_modes, [null]);
@@ -491,13 +394,6 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
       }
       break;
       case 3:
-      if (ftype == Thrift.Type.I32) {
-        this.tag_use_imu_rotation = input.readI32();
-      } else {
-        input.skip(ftype);
-      }
-      break;
-      case 4:
       if (ftype == Thrift.Type.LIST) {
         this.noise_change_modes = [];
         var _rtmp311 = input.readListBegin();
@@ -512,7 +408,7 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 5:
+      case 4:
       if (ftype == Thrift.Type.STRUCT) {
         this.tag_noise_adjust_config = new ttypes.TagNoiseAdjustConfig();
         this.tag_noise_adjust_config[Symbol.for("read")](input);
@@ -520,7 +416,7 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
-      case 6:
+      case 5:
       if (ftype == Thrift.Type.BOOL) {
         this.insert_predicted_global_rotation = input.readBool();
       } else {
@@ -564,13 +460,8 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeMapEnd();
     output.writeFieldEnd();
   }
-  if (this.tag_use_imu_rotation !== null && this.tag_use_imu_rotation !== undefined) {
-    output.writeFieldBegin('tag_use_imu_rotation', Thrift.Type.I32, 3);
-    output.writeI32(this.tag_use_imu_rotation);
-    output.writeFieldEnd();
-  }
   if (this.noise_change_modes !== null && this.noise_change_modes !== undefined) {
-    output.writeFieldBegin('noise_change_modes', Thrift.Type.LIST, 4);
+    output.writeFieldBegin('noise_change_modes', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.I32, this.noise_change_modes.length);
     for (var iter18 in this.noise_change_modes) {
       if (this.noise_change_modes.hasOwnProperty(iter18)) {
@@ -582,12 +473,12 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
     output.writeFieldEnd();
   }
   if (this.tag_noise_adjust_config !== null && this.tag_noise_adjust_config !== undefined) {
-    output.writeFieldBegin('tag_noise_adjust_config', Thrift.Type.STRUCT, 5);
+    output.writeFieldBegin('tag_noise_adjust_config', Thrift.Type.STRUCT, 4);
     this.tag_noise_adjust_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   if (this.insert_predicted_global_rotation !== null && this.insert_predicted_global_rotation !== undefined) {
-    output.writeFieldBegin('insert_predicted_global_rotation', Thrift.Type.BOOL, 6);
+    output.writeFieldBegin('insert_predicted_global_rotation', Thrift.Type.BOOL, 5);
     output.writeBool(this.insert_predicted_global_rotation);
     output.writeFieldEnd();
   }

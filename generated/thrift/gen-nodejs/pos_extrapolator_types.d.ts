@@ -12,18 +12,6 @@ import kalman_filter_ttypes = require('./kalman_filter_types.js');
 
 
 
-declare enum OdometryPositionSource {
-  ABSOLUTE = 0,
-  ABS_CHANGE = 1,
-  DONT_USE = 2,
-}
-
-declare enum TagUseImuRotation {
-  ALWAYS = 0,
-  WHILE_NO_OTHER_ROTATION_DATA = 1,
-  NEVER = 2,
-}
-
 declare enum TagNoiseAdjustMode {
   ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
   ADD_WEIGHT_PER_TAG_CONFIDENCE = 1,
@@ -45,18 +33,12 @@ declare class PosExtrapolatorMessageConfig {
 }
 
 declare class OdomConfig {
-  public position_source: OdometryPositionSource;
-  public use_rotation: boolean;
-
-    constructor(args?: { position_source: OdometryPositionSource; use_rotation: boolean; });
 }
 
 declare class ImuConfig {
-  public use_rotation: boolean;
-  public use_position: boolean;
   public use_velocity: boolean;
 
-    constructor(args?: { use_rotation: boolean; use_position: boolean; use_velocity: boolean; });
+    constructor(args?: { use_velocity: boolean; });
 }
 
 declare class TagNoiseAdjustConfig {
@@ -71,12 +53,11 @@ declare class TagNoiseAdjustConfig {
 declare class AprilTagConfig {
   public tag_position_config: { [k: number]: common_ttypes.Point3; };
   public camera_position_config: { [k: string]: common_ttypes.Point3; };
-  public tag_use_imu_rotation: TagUseImuRotation;
   public noise_change_modes?: TagNoiseAdjustMode[];
   public tag_noise_adjust_config: TagNoiseAdjustConfig;
   public insert_predicted_global_rotation: boolean;
 
-    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; camera_position_config: { [k: string]: common_ttypes.Point3; }; tag_use_imu_rotation: TagUseImuRotation; noise_change_modes?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; insert_predicted_global_rotation: boolean; });
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; camera_position_config: { [k: string]: common_ttypes.Point3; }; noise_change_modes?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; insert_predicted_global_rotation: boolean; });
 }
 
 declare class PosExtrapolator {
