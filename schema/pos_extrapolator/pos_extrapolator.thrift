@@ -35,6 +35,7 @@ struct AprilTagConfig {
   3: required list<TagNoiseAdjustMode> noise_change_modes = [],
   4: required TagNoiseAdjustConfig tag_noise_adjust_config,
   5: required bool insert_predicted_global_rotation,
+  6: optional double apriltag_mahalanobis_gate_threshold,
 }
 
 enum DataSources {

@@ -318,6 +318,7 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.noise_change_modes = [];
   this.tag_noise_adjust_config = null;
   this.insert_predicted_global_rotation = null;
+  this.apriltag_mahalanobis_gate_threshold = null;
   if (args) {
     if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
       this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
@@ -343,6 +344,9 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
       this.insert_predicted_global_rotation = args.insert_predicted_global_rotation;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field insert_predicted_global_rotation is unset!');
+    }
+    if (args.apriltag_mahalanobis_gate_threshold !== undefined && args.apriltag_mahalanobis_gate_threshold !== null) {
+      this.apriltag_mahalanobis_gate_threshold = args.apriltag_mahalanobis_gate_threshold;
     }
   }
 };
@@ -423,6 +427,13 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 6:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.apriltag_mahalanobis_gate_threshold = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -480,6 +491,11 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.insert_predicted_global_rotation !== null && this.insert_predicted_global_rotation !== undefined) {
     output.writeFieldBegin('insert_predicted_global_rotation', Thrift.Type.BOOL, 5);
     output.writeBool(this.insert_predicted_global_rotation);
+    output.writeFieldEnd();
+  }
+  if (this.apriltag_mahalanobis_gate_threshold !== null && this.apriltag_mahalanobis_gate_threshold !== undefined) {
+    output.writeFieldBegin('apriltag_mahalanobis_gate_threshold', Thrift.Type.DOUBLE, 6);
+    output.writeDouble(this.apriltag_mahalanobis_gate_threshold);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
