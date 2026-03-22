@@ -21,6 +21,12 @@ ttypes.TagNoiseAdjustMode = {
   '1' : 'ADD_WEIGHT_PER_TAG_CONFIDENCE',
   'ADD_WEIGHT_PER_TAG_CONFIDENCE' : 1
 };
+ttypes.TagRejectMode = {
+  '0' : 'REJECT_OVER_MAX_DISTANCE_FROM_TAG',
+  'REJECT_OVER_MAX_DISTANCE_FROM_TAG' : 0,
+  '1' : 'REJECT_UNDER_MIN_TAG_CONFIDENCE',
+  'REJECT_UNDER_MIN_TAG_CONFIDENCE' : 1
+};
 ttypes.DataSources = {
   '0' : 'APRIL_TAG',
   'APRIL_TAG' : 0,
@@ -312,6 +318,73 @@ TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
   return;
 };
 
+var TagRejectConfig = module.exports.TagRejectConfig = function(args) {
+  this.max_distance_from_tag = null;
+  this.min_tag_confidence = null;
+  if (args) {
+    if (args.max_distance_from_tag !== undefined && args.max_distance_from_tag !== null) {
+      this.max_distance_from_tag = args.max_distance_from_tag;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field max_distance_from_tag is unset!');
+    }
+    if (args.min_tag_confidence !== undefined && args.min_tag_confidence !== null) {
+      this.min_tag_confidence = args.min_tag_confidence;
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field min_tag_confidence is unset!');
+    }
+  }
+};
+TagRejectConfig.prototype = {};
+TagRejectConfig.prototype[Symbol.for("read")] = function(input) {
+  input.readStructBegin();
+  while (true) {
+    var ret = input.readFieldBegin();
+    var ftype = ret.ftype;
+    var fid = ret.fid;
+    if (ftype == Thrift.Type.STOP) {
+      break;
+    }
+    switch (fid) {
+      case 1:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.max_distance_from_tag = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 2:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.min_tag_confidence = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      default:
+        input.skip(ftype);
+    }
+    input.readFieldEnd();
+  }
+  input.readStructEnd();
+  return;
+};
+
+TagRejectConfig.prototype[Symbol.for("write")] = function(output) {
+  output.writeStructBegin('TagRejectConfig');
+  if (this.max_distance_from_tag !== null && this.max_distance_from_tag !== undefined) {
+    output.writeFieldBegin('max_distance_from_tag', Thrift.Type.DOUBLE, 1);
+    output.writeDouble(this.max_distance_from_tag);
+    output.writeFieldEnd();
+  }
+  if (this.min_tag_confidence !== null && this.min_tag_confidence !== undefined) {
+    output.writeFieldBegin('min_tag_confidence', Thrift.Type.DOUBLE, 2);
+    output.writeDouble(this.min_tag_confidence);
+    output.writeFieldEnd();
+  }
+  output.writeFieldStop();
+  output.writeStructEnd();
+  return;
+};
+
 var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.tag_position_config = null;
   this.camera_position_config = null;
@@ -319,6 +392,8 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
   this.tag_noise_adjust_config = null;
   this.insert_predicted_global_rotation = null;
   this.apriltag_mahalanobis_gate_threshold = null;
+  this.reject_modes = [];
+  this.tag_reject_config = null;
   if (args) {
     if (args.tag_position_config !== undefined && args.tag_position_config !== null) {
       this.tag_position_config = Thrift.copyMap(args.tag_position_config, [common_ttypes.Point3]);
@@ -347,6 +422,16 @@ var AprilTagConfig = module.exports.AprilTagConfig = function(args) {
     }
     if (args.apriltag_mahalanobis_gate_threshold !== undefined && args.apriltag_mahalanobis_gate_threshold !== null) {
       this.apriltag_mahalanobis_gate_threshold = args.apriltag_mahalanobis_gate_threshold;
+    }
+    if (args.reject_modes !== undefined && args.reject_modes !== null) {
+      this.reject_modes = Thrift.copyList(args.reject_modes, [null]);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field reject_modes is unset!');
+    }
+    if (args.tag_reject_config !== undefined && args.tag_reject_config !== null) {
+      this.tag_reject_config = new ttypes.TagRejectConfig(args.tag_reject_config);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field tag_reject_config is unset!');
     }
   }
 };
@@ -434,6 +519,29 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 7:
+      if (ftype == Thrift.Type.LIST) {
+        this.reject_modes = [];
+        var _rtmp315 = input.readListBegin();
+        var _size14 = _rtmp315.size || 0;
+        for (var _i16 = 0; _i16 < _size14; ++_i16) {
+          var elem17 = null;
+          elem17 = input.readI32();
+          this.reject_modes.push(elem17);
+        }
+        input.readListEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
+      case 8:
+      if (ftype == Thrift.Type.STRUCT) {
+        this.tag_reject_config = new ttypes.TagRejectConfig();
+        this.tag_reject_config[Symbol.for("read")](input);
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -448,11 +556,11 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.tag_position_config !== null && this.tag_position_config !== undefined) {
     output.writeFieldBegin('tag_position_config', Thrift.Type.MAP, 1);
     output.writeMapBegin(Thrift.Type.I32, Thrift.Type.STRUCT, Thrift.objectLength(this.tag_position_config));
-    for (var kiter14 in this.tag_position_config) {
-      if (this.tag_position_config.hasOwnProperty(kiter14)) {
-        var viter15 = this.tag_position_config[kiter14];
-        output.writeI32(kiter14);
-        viter15[Symbol.for("write")](output);
+    for (var kiter18 in this.tag_position_config) {
+      if (this.tag_position_config.hasOwnProperty(kiter18)) {
+        var viter19 = this.tag_position_config[kiter18];
+        output.writeI32(kiter18);
+        viter19[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
@@ -461,11 +569,11 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.camera_position_config !== null && this.camera_position_config !== undefined) {
     output.writeFieldBegin('camera_position_config', Thrift.Type.MAP, 2);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.camera_position_config));
-    for (var kiter16 in this.camera_position_config) {
-      if (this.camera_position_config.hasOwnProperty(kiter16)) {
-        var viter17 = this.camera_position_config[kiter16];
-        output.writeString(kiter16);
-        viter17[Symbol.for("write")](output);
+    for (var kiter20 in this.camera_position_config) {
+      if (this.camera_position_config.hasOwnProperty(kiter20)) {
+        var viter21 = this.camera_position_config[kiter20];
+        output.writeString(kiter20);
+        viter21[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
@@ -474,10 +582,10 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.noise_change_modes !== null && this.noise_change_modes !== undefined) {
     output.writeFieldBegin('noise_change_modes', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.I32, this.noise_change_modes.length);
-    for (var iter18 in this.noise_change_modes) {
-      if (this.noise_change_modes.hasOwnProperty(iter18)) {
-        iter18 = this.noise_change_modes[iter18];
-        output.writeI32(iter18);
+    for (var iter22 in this.noise_change_modes) {
+      if (this.noise_change_modes.hasOwnProperty(iter22)) {
+        iter22 = this.noise_change_modes[iter22];
+        output.writeI32(iter22);
       }
     }
     output.writeListEnd();
@@ -496,6 +604,23 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.apriltag_mahalanobis_gate_threshold !== null && this.apriltag_mahalanobis_gate_threshold !== undefined) {
     output.writeFieldBegin('apriltag_mahalanobis_gate_threshold', Thrift.Type.DOUBLE, 6);
     output.writeDouble(this.apriltag_mahalanobis_gate_threshold);
+    output.writeFieldEnd();
+  }
+  if (this.reject_modes !== null && this.reject_modes !== undefined) {
+    output.writeFieldBegin('reject_modes', Thrift.Type.LIST, 7);
+    output.writeListBegin(Thrift.Type.I32, this.reject_modes.length);
+    for (var iter23 in this.reject_modes) {
+      if (this.reject_modes.hasOwnProperty(iter23)) {
+        iter23 = this.reject_modes[iter23];
+        output.writeI32(iter23);
+      }
+    }
+    output.writeListEnd();
+    output.writeFieldEnd();
+  }
+  if (this.tag_reject_config !== null && this.tag_reject_config !== undefined) {
+    output.writeFieldBegin('tag_reject_config', Thrift.Type.STRUCT, 8);
+    this.tag_reject_config[Symbol.for("write")](output);
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -573,12 +698,12 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       case 2:
       if (ftype == Thrift.Type.LIST) {
         this.enabled_data_sources = [];
-        var _rtmp320 = input.readListBegin();
-        var _size19 = _rtmp320.size || 0;
-        for (var _i21 = 0; _i21 < _size19; ++_i21) {
-          var elem22 = null;
-          elem22 = input.readI32();
-          this.enabled_data_sources.push(elem22);
+        var _rtmp325 = input.readListBegin();
+        var _size24 = _rtmp325.size || 0;
+        for (var _i26 = 0; _i26 < _size24; ++_i26) {
+          var elem27 = null;
+          elem27 = input.readI32();
+          this.enabled_data_sources.push(elem27);
         }
         input.readListEnd();
       } else {
@@ -604,15 +729,15 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       case 5:
       if (ftype == Thrift.Type.MAP) {
         this.imu_config = {};
-        var _rtmp324 = input.readMapBegin();
-        var _size23 = _rtmp324.size || 0;
-        for (var _i25 = 0; _i25 < _size23; ++_i25) {
-          var key26 = null;
-          var val27 = null;
-          key26 = input.readString();
-          val27 = new ttypes.ImuConfig();
-          val27[Symbol.for("read")](input);
-          this.imu_config[key26] = val27;
+        var _rtmp329 = input.readMapBegin();
+        var _size28 = _rtmp329.size || 0;
+        for (var _i30 = 0; _i30 < _size28; ++_i30) {
+          var key31 = null;
+          var val32 = null;
+          key31 = input.readString();
+          val32 = new ttypes.ImuConfig();
+          val32[Symbol.for("read")](input);
+          this.imu_config[key31] = val32;
         }
         input.readMapEnd();
       } else {
@@ -660,10 +785,10 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
   if (this.enabled_data_sources !== null && this.enabled_data_sources !== undefined) {
     output.writeFieldBegin('enabled_data_sources', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.I32, this.enabled_data_sources.length);
-    for (var iter28 in this.enabled_data_sources) {
-      if (this.enabled_data_sources.hasOwnProperty(iter28)) {
-        iter28 = this.enabled_data_sources[iter28];
-        output.writeI32(iter28);
+    for (var iter33 in this.enabled_data_sources) {
+      if (this.enabled_data_sources.hasOwnProperty(iter33)) {
+        iter33 = this.enabled_data_sources[iter33];
+        output.writeI32(iter33);
       }
     }
     output.writeListEnd();
@@ -682,11 +807,11 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
   if (this.imu_config !== null && this.imu_config !== undefined) {
     output.writeFieldBegin('imu_config', Thrift.Type.MAP, 5);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.imu_config));
-    for (var kiter29 in this.imu_config) {
-      if (this.imu_config.hasOwnProperty(kiter29)) {
-        var viter30 = this.imu_config[kiter29];
-        output.writeString(kiter29);
-        viter30[Symbol.for("write")](output);
+    for (var kiter34 in this.imu_config) {
+      if (this.imu_config.hasOwnProperty(kiter34)) {
+        var viter35 = this.imu_config[kiter34];
+        output.writeString(kiter34);
+        viter35[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();

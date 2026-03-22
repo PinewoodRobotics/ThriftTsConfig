@@ -22,11 +22,21 @@ enum TagNoiseAdjustMode {
     ADD_WEIGHT_PER_TAG_CONFIDENCE = 1,
 }
 
+enum TagRejectMode {
+    REJECT_OVER_MAX_DISTANCE_FROM_TAG = 0,
+    REJECT_UNDER_MIN_TAG_CONFIDENCE = 1,
+}
+
 struct TagNoiseAdjustConfig {
     1: required double weight_per_m_from_distance_from_tag,
     2: required double weight_per_degree_from_angle_error_tag,
     3: required double weight_per_confidence_tag,
     4: required double min_distance_from_tag_to_use_noise_adjustment,
+}
+
+struct TagRejectConfig {
+    1: required double max_distance_from_tag,
+    2: required double min_tag_confidence,
 }
 
 struct AprilTagConfig {
@@ -36,6 +46,8 @@ struct AprilTagConfig {
   4: required TagNoiseAdjustConfig tag_noise_adjust_config,
   5: required bool insert_predicted_global_rotation,
   6: optional double apriltag_mahalanobis_gate_threshold,
+  7: required list<TagRejectMode> reject_modes = [],
+  8: required TagRejectConfig tag_reject_config,
 }
 
 enum DataSources {

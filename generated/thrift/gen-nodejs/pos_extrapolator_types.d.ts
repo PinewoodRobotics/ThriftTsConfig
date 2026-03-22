@@ -17,6 +17,11 @@ declare enum TagNoiseAdjustMode {
   ADD_WEIGHT_PER_TAG_CONFIDENCE = 1,
 }
 
+declare enum TagRejectMode {
+  REJECT_OVER_MAX_DISTANCE_FROM_TAG = 0,
+  REJECT_UNDER_MIN_TAG_CONFIDENCE = 1,
+}
+
 declare enum DataSources {
   APRIL_TAG = 0,
   ODOMETRY = 1,
@@ -50,6 +55,13 @@ declare class TagNoiseAdjustConfig {
     constructor(args?: { weight_per_m_from_distance_from_tag: number; weight_per_degree_from_angle_error_tag: number; weight_per_confidence_tag: number; min_distance_from_tag_to_use_noise_adjustment: number; });
 }
 
+declare class TagRejectConfig {
+  public max_distance_from_tag: number;
+  public min_tag_confidence: number;
+
+    constructor(args?: { max_distance_from_tag: number; min_tag_confidence: number; });
+}
+
 declare class AprilTagConfig {
   public tag_position_config: { [k: number]: common_ttypes.Point3; };
   public camera_position_config: { [k: string]: common_ttypes.Point3; };
@@ -57,8 +69,10 @@ declare class AprilTagConfig {
   public tag_noise_adjust_config: TagNoiseAdjustConfig;
   public insert_predicted_global_rotation: boolean;
   public apriltag_mahalanobis_gate_threshold?: number;
+  public reject_modes?: TagRejectMode[];
+  public tag_reject_config: TagRejectConfig;
 
-    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; camera_position_config: { [k: string]: common_ttypes.Point3; }; noise_change_modes?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; insert_predicted_global_rotation: boolean; apriltag_mahalanobis_gate_threshold?: number; });
+    constructor(args?: { tag_position_config: { [k: number]: common_ttypes.Point3; }; camera_position_config: { [k: string]: common_ttypes.Point3; }; noise_change_modes?: TagNoiseAdjustMode[]; tag_noise_adjust_config: TagNoiseAdjustConfig; insert_predicted_global_rotation: boolean; apriltag_mahalanobis_gate_threshold?: number; reject_modes?: TagRejectMode[]; tag_reject_config: TagRejectConfig; });
 }
 
 declare class PosExtrapolator {
