@@ -15,6 +15,7 @@ import kalman_filter_ttypes = require('./kalman_filter_types.js');
 declare enum TagNoiseAdjustMode {
   ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
   ADD_WEIGHT_PER_TAG_CONFIDENCE = 1,
+  ADD_ADDITIVE_NOISE_BY_TAG_ID = 2,
 }
 
 declare enum TagRejectMode {
@@ -51,8 +52,9 @@ declare class TagNoiseAdjustConfig {
   public weight_per_degree_from_angle_error_tag: number;
   public weight_per_confidence_tag: number;
   public min_distance_from_tag_to_use_noise_adjustment: number;
+  public additive_noise_by_tag_id: { [k: number]: common_ttypes.GenericVector; };
 
-    constructor(args?: { weight_per_m_from_distance_from_tag: number; weight_per_degree_from_angle_error_tag: number; weight_per_confidence_tag: number; min_distance_from_tag_to_use_noise_adjustment: number; });
+    constructor(args?: { weight_per_m_from_distance_from_tag: number; weight_per_degree_from_angle_error_tag: number; weight_per_confidence_tag: number; min_distance_from_tag_to_use_noise_adjustment: number; additive_noise_by_tag_id: { [k: number]: common_ttypes.GenericVector; }; });
 }
 
 declare class TagRejectConfig {

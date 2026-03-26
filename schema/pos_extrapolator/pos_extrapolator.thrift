@@ -20,6 +20,7 @@ struct ImuConfig {
 enum TagNoiseAdjustMode {
     ADD_WEIGHT_PER_M_DISTANCE_TAG = 0,
     ADD_WEIGHT_PER_TAG_CONFIDENCE = 1,
+    ADD_ADDITIVE_NOISE_BY_TAG_ID = 2,
 }
 
 enum TagRejectMode {
@@ -32,6 +33,7 @@ struct TagNoiseAdjustConfig {
     2: required double weight_per_degree_from_angle_error_tag,
     3: required double weight_per_confidence_tag,
     4: required double min_distance_from_tag_to_use_noise_adjustment,
+    5: required map<i32, common.GenericVector> additive_noise_by_tag_id,
 }
 
 struct TagRejectConfig {

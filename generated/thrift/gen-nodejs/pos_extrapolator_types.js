@@ -19,7 +19,9 @@ ttypes.TagNoiseAdjustMode = {
   '0' : 'ADD_WEIGHT_PER_M_DISTANCE_TAG',
   'ADD_WEIGHT_PER_M_DISTANCE_TAG' : 0,
   '1' : 'ADD_WEIGHT_PER_TAG_CONFIDENCE',
-  'ADD_WEIGHT_PER_TAG_CONFIDENCE' : 1
+  'ADD_WEIGHT_PER_TAG_CONFIDENCE' : 1,
+  '2' : 'ADD_ADDITIVE_NOISE_BY_TAG_ID',
+  'ADD_ADDITIVE_NOISE_BY_TAG_ID' : 2
 };
 ttypes.TagRejectMode = {
   '0' : 'REJECT_OVER_MAX_DISTANCE_FROM_TAG',
@@ -220,6 +222,7 @@ var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) 
   this.weight_per_degree_from_angle_error_tag = null;
   this.weight_per_confidence_tag = null;
   this.min_distance_from_tag_to_use_noise_adjustment = null;
+  this.additive_noise_by_tag_id = null;
   if (args) {
     if (args.weight_per_m_from_distance_from_tag !== undefined && args.weight_per_m_from_distance_from_tag !== null) {
       this.weight_per_m_from_distance_from_tag = args.weight_per_m_from_distance_from_tag;
@@ -240,6 +243,11 @@ var TagNoiseAdjustConfig = module.exports.TagNoiseAdjustConfig = function(args) 
       this.min_distance_from_tag_to_use_noise_adjustment = args.min_distance_from_tag_to_use_noise_adjustment;
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field min_distance_from_tag_to_use_noise_adjustment is unset!');
+    }
+    if (args.additive_noise_by_tag_id !== undefined && args.additive_noise_by_tag_id !== null) {
+      this.additive_noise_by_tag_id = Thrift.copyMap(args.additive_noise_by_tag_id, [common_ttypes.GenericVector]);
+    } else {
+      throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field additive_noise_by_tag_id is unset!');
     }
   }
 };
@@ -282,6 +290,24 @@ TagNoiseAdjustConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 5:
+      if (ftype == Thrift.Type.MAP) {
+        this.additive_noise_by_tag_id = {};
+        var _rtmp31 = input.readMapBegin();
+        var _size0 = _rtmp31.size || 0;
+        for (var _i2 = 0; _i2 < _size0; ++_i2) {
+          var key3 = null;
+          var val4 = null;
+          key3 = input.readI32();
+          val4 = new common_ttypes.GenericVector();
+          val4[Symbol.for("read")](input);
+          this.additive_noise_by_tag_id[key3] = val4;
+        }
+        input.readMapEnd();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -311,6 +337,19 @@ TagNoiseAdjustConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.min_distance_from_tag_to_use_noise_adjustment !== null && this.min_distance_from_tag_to_use_noise_adjustment !== undefined) {
     output.writeFieldBegin('min_distance_from_tag_to_use_noise_adjustment', Thrift.Type.DOUBLE, 4);
     output.writeDouble(this.min_distance_from_tag_to_use_noise_adjustment);
+    output.writeFieldEnd();
+  }
+  if (this.additive_noise_by_tag_id !== null && this.additive_noise_by_tag_id !== undefined) {
+    output.writeFieldBegin('additive_noise_by_tag_id', Thrift.Type.MAP, 5);
+    output.writeMapBegin(Thrift.Type.I32, Thrift.Type.STRUCT, Thrift.objectLength(this.additive_noise_by_tag_id));
+    for (var kiter5 in this.additive_noise_by_tag_id) {
+      if (this.additive_noise_by_tag_id.hasOwnProperty(kiter5)) {
+        var viter6 = this.additive_noise_by_tag_id[kiter5];
+        output.writeI32(kiter5);
+        viter6[Symbol.for("write")](output);
+      }
+    }
+    output.writeMapEnd();
     output.writeFieldEnd();
   }
   output.writeFieldStop();
@@ -449,15 +488,15 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
       case 1:
       if (ftype == Thrift.Type.MAP) {
         this.tag_position_config = {};
-        var _rtmp31 = input.readMapBegin();
-        var _size0 = _rtmp31.size || 0;
-        for (var _i2 = 0; _i2 < _size0; ++_i2) {
-          var key3 = null;
-          var val4 = null;
-          key3 = input.readI32();
-          val4 = new common_ttypes.Point3();
-          val4[Symbol.for("read")](input);
-          this.tag_position_config[key3] = val4;
+        var _rtmp38 = input.readMapBegin();
+        var _size7 = _rtmp38.size || 0;
+        for (var _i9 = 0; _i9 < _size7; ++_i9) {
+          var key10 = null;
+          var val11 = null;
+          key10 = input.readI32();
+          val11 = new common_ttypes.Point3();
+          val11[Symbol.for("read")](input);
+          this.tag_position_config[key10] = val11;
         }
         input.readMapEnd();
       } else {
@@ -467,15 +506,15 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
       case 2:
       if (ftype == Thrift.Type.MAP) {
         this.camera_position_config = {};
-        var _rtmp36 = input.readMapBegin();
-        var _size5 = _rtmp36.size || 0;
-        for (var _i7 = 0; _i7 < _size5; ++_i7) {
-          var key8 = null;
-          var val9 = null;
-          key8 = input.readString();
-          val9 = new common_ttypes.Point3();
-          val9[Symbol.for("read")](input);
-          this.camera_position_config[key8] = val9;
+        var _rtmp313 = input.readMapBegin();
+        var _size12 = _rtmp313.size || 0;
+        for (var _i14 = 0; _i14 < _size12; ++_i14) {
+          var key15 = null;
+          var val16 = null;
+          key15 = input.readString();
+          val16 = new common_ttypes.Point3();
+          val16[Symbol.for("read")](input);
+          this.camera_position_config[key15] = val16;
         }
         input.readMapEnd();
       } else {
@@ -485,12 +524,12 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
       case 3:
       if (ftype == Thrift.Type.LIST) {
         this.noise_change_modes = [];
-        var _rtmp311 = input.readListBegin();
-        var _size10 = _rtmp311.size || 0;
-        for (var _i12 = 0; _i12 < _size10; ++_i12) {
-          var elem13 = null;
-          elem13 = input.readI32();
-          this.noise_change_modes.push(elem13);
+        var _rtmp318 = input.readListBegin();
+        var _size17 = _rtmp318.size || 0;
+        for (var _i19 = 0; _i19 < _size17; ++_i19) {
+          var elem20 = null;
+          elem20 = input.readI32();
+          this.noise_change_modes.push(elem20);
         }
         input.readListEnd();
       } else {
@@ -522,12 +561,12 @@ AprilTagConfig.prototype[Symbol.for("read")] = function(input) {
       case 7:
       if (ftype == Thrift.Type.LIST) {
         this.reject_modes = [];
-        var _rtmp315 = input.readListBegin();
-        var _size14 = _rtmp315.size || 0;
-        for (var _i16 = 0; _i16 < _size14; ++_i16) {
-          var elem17 = null;
-          elem17 = input.readI32();
-          this.reject_modes.push(elem17);
+        var _rtmp322 = input.readListBegin();
+        var _size21 = _rtmp322.size || 0;
+        for (var _i23 = 0; _i23 < _size21; ++_i23) {
+          var elem24 = null;
+          elem24 = input.readI32();
+          this.reject_modes.push(elem24);
         }
         input.readListEnd();
       } else {
@@ -556,11 +595,11 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.tag_position_config !== null && this.tag_position_config !== undefined) {
     output.writeFieldBegin('tag_position_config', Thrift.Type.MAP, 1);
     output.writeMapBegin(Thrift.Type.I32, Thrift.Type.STRUCT, Thrift.objectLength(this.tag_position_config));
-    for (var kiter18 in this.tag_position_config) {
-      if (this.tag_position_config.hasOwnProperty(kiter18)) {
-        var viter19 = this.tag_position_config[kiter18];
-        output.writeI32(kiter18);
-        viter19[Symbol.for("write")](output);
+    for (var kiter25 in this.tag_position_config) {
+      if (this.tag_position_config.hasOwnProperty(kiter25)) {
+        var viter26 = this.tag_position_config[kiter25];
+        output.writeI32(kiter25);
+        viter26[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
@@ -569,11 +608,11 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.camera_position_config !== null && this.camera_position_config !== undefined) {
     output.writeFieldBegin('camera_position_config', Thrift.Type.MAP, 2);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.camera_position_config));
-    for (var kiter20 in this.camera_position_config) {
-      if (this.camera_position_config.hasOwnProperty(kiter20)) {
-        var viter21 = this.camera_position_config[kiter20];
-        output.writeString(kiter20);
-        viter21[Symbol.for("write")](output);
+    for (var kiter27 in this.camera_position_config) {
+      if (this.camera_position_config.hasOwnProperty(kiter27)) {
+        var viter28 = this.camera_position_config[kiter27];
+        output.writeString(kiter27);
+        viter28[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
@@ -582,10 +621,10 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.noise_change_modes !== null && this.noise_change_modes !== undefined) {
     output.writeFieldBegin('noise_change_modes', Thrift.Type.LIST, 3);
     output.writeListBegin(Thrift.Type.I32, this.noise_change_modes.length);
-    for (var iter22 in this.noise_change_modes) {
-      if (this.noise_change_modes.hasOwnProperty(iter22)) {
-        iter22 = this.noise_change_modes[iter22];
-        output.writeI32(iter22);
+    for (var iter29 in this.noise_change_modes) {
+      if (this.noise_change_modes.hasOwnProperty(iter29)) {
+        iter29 = this.noise_change_modes[iter29];
+        output.writeI32(iter29);
       }
     }
     output.writeListEnd();
@@ -609,10 +648,10 @@ AprilTagConfig.prototype[Symbol.for("write")] = function(output) {
   if (this.reject_modes !== null && this.reject_modes !== undefined) {
     output.writeFieldBegin('reject_modes', Thrift.Type.LIST, 7);
     output.writeListBegin(Thrift.Type.I32, this.reject_modes.length);
-    for (var iter23 in this.reject_modes) {
-      if (this.reject_modes.hasOwnProperty(iter23)) {
-        iter23 = this.reject_modes[iter23];
-        output.writeI32(iter23);
+    for (var iter30 in this.reject_modes) {
+      if (this.reject_modes.hasOwnProperty(iter30)) {
+        iter30 = this.reject_modes[iter30];
+        output.writeI32(iter30);
       }
     }
     output.writeListEnd();
@@ -698,12 +737,12 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       case 2:
       if (ftype == Thrift.Type.LIST) {
         this.enabled_data_sources = [];
-        var _rtmp325 = input.readListBegin();
-        var _size24 = _rtmp325.size || 0;
-        for (var _i26 = 0; _i26 < _size24; ++_i26) {
-          var elem27 = null;
-          elem27 = input.readI32();
-          this.enabled_data_sources.push(elem27);
+        var _rtmp332 = input.readListBegin();
+        var _size31 = _rtmp332.size || 0;
+        for (var _i33 = 0; _i33 < _size31; ++_i33) {
+          var elem34 = null;
+          elem34 = input.readI32();
+          this.enabled_data_sources.push(elem34);
         }
         input.readListEnd();
       } else {
@@ -729,15 +768,15 @@ PosExtrapolator.prototype[Symbol.for("read")] = function(input) {
       case 5:
       if (ftype == Thrift.Type.MAP) {
         this.imu_config = {};
-        var _rtmp329 = input.readMapBegin();
-        var _size28 = _rtmp329.size || 0;
-        for (var _i30 = 0; _i30 < _size28; ++_i30) {
-          var key31 = null;
-          var val32 = null;
-          key31 = input.readString();
-          val32 = new ttypes.ImuConfig();
-          val32[Symbol.for("read")](input);
-          this.imu_config[key31] = val32;
+        var _rtmp336 = input.readMapBegin();
+        var _size35 = _rtmp336.size || 0;
+        for (var _i37 = 0; _i37 < _size35; ++_i37) {
+          var key38 = null;
+          var val39 = null;
+          key38 = input.readString();
+          val39 = new ttypes.ImuConfig();
+          val39[Symbol.for("read")](input);
+          this.imu_config[key38] = val39;
         }
         input.readMapEnd();
       } else {
@@ -785,10 +824,10 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
   if (this.enabled_data_sources !== null && this.enabled_data_sources !== undefined) {
     output.writeFieldBegin('enabled_data_sources', Thrift.Type.LIST, 2);
     output.writeListBegin(Thrift.Type.I32, this.enabled_data_sources.length);
-    for (var iter33 in this.enabled_data_sources) {
-      if (this.enabled_data_sources.hasOwnProperty(iter33)) {
-        iter33 = this.enabled_data_sources[iter33];
-        output.writeI32(iter33);
+    for (var iter40 in this.enabled_data_sources) {
+      if (this.enabled_data_sources.hasOwnProperty(iter40)) {
+        iter40 = this.enabled_data_sources[iter40];
+        output.writeI32(iter40);
       }
     }
     output.writeListEnd();
@@ -807,11 +846,11 @@ PosExtrapolator.prototype[Symbol.for("write")] = function(output) {
   if (this.imu_config !== null && this.imu_config !== undefined) {
     output.writeFieldBegin('imu_config', Thrift.Type.MAP, 5);
     output.writeMapBegin(Thrift.Type.STRING, Thrift.Type.STRUCT, Thrift.objectLength(this.imu_config));
-    for (var kiter34 in this.imu_config) {
-      if (this.imu_config.hasOwnProperty(kiter34)) {
-        var viter35 = this.imu_config[kiter34];
-        output.writeString(kiter34);
-        viter35[Symbol.for("write")](output);
+    for (var kiter41 in this.imu_config) {
+      if (this.imu_config.hasOwnProperty(kiter41)) {
+        var viter42 = this.imu_config[kiter41];
+        output.writeString(kiter41);
+        viter42[Symbol.for("write")](output);
       }
     }
     output.writeMapEnd();
