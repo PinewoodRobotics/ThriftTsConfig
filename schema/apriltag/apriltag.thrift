@@ -23,4 +23,5 @@ struct AprilDetectionConfig {
     11: required bool send_stats,
     12: required string stats_topic,
     13: required map<string, SpecialDetectorConfig> pi_name_to_special_detector_config,
+    14: optional double image_edge_reject_margin_percent,
 }

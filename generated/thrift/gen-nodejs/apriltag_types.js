@@ -97,6 +97,7 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
   this.send_stats = null;
   this.stats_topic = null;
   this.pi_name_to_special_detector_config = null;
+  this.image_edge_reject_margin_percent = null;
   if (args) {
     if (args.tag_size !== undefined && args.tag_size !== null) {
       this.tag_size = args.tag_size;
@@ -160,6 +161,9 @@ var AprilDetectionConfig = module.exports.AprilDetectionConfig = function(args) 
       this.pi_name_to_special_detector_config = Thrift.copyMap(args.pi_name_to_special_detector_config, [ttypes.SpecialDetectorConfig]);
     } else {
       throw new Thrift.TProtocolException(Thrift.TProtocolExceptionType.UNKNOWN, 'Required field pi_name_to_special_detector_config is unset!');
+    }
+    if (args.image_edge_reject_margin_percent !== undefined && args.image_edge_reject_margin_percent !== null) {
+      this.image_edge_reject_margin_percent = args.image_edge_reject_margin_percent;
     }
   }
 };
@@ -284,6 +288,13 @@ AprilDetectionConfig.prototype[Symbol.for("read")] = function(input) {
         input.skip(ftype);
       }
       break;
+      case 14:
+      if (ftype == Thrift.Type.DOUBLE) {
+        this.image_edge_reject_margin_percent = input.readDouble();
+      } else {
+        input.skip(ftype);
+      }
+      break;
       default:
         input.skip(ftype);
     }
@@ -373,6 +384,11 @@ AprilDetectionConfig.prototype[Symbol.for("write")] = function(output) {
       }
     }
     output.writeMapEnd();
+    output.writeFieldEnd();
+  }
+  if (this.image_edge_reject_margin_percent !== null && this.image_edge_reject_margin_percent !== undefined) {
+    output.writeFieldBegin('image_edge_reject_margin_percent', Thrift.Type.DOUBLE, 14);
+    output.writeDouble(this.image_edge_reject_margin_percent);
     output.writeFieldEnd();
   }
   output.writeFieldStop();

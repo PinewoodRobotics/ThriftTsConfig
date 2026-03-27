@@ -34,6 +34,7 @@ declare class AprilDetectionConfig {
   public send_stats: boolean;
   public stats_topic: string;
   public pi_name_to_special_detector_config: { [k: string]: SpecialDetectorConfig; };
+  public image_edge_reject_margin_percent?: number;
 
-    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; searchpath: string[]; debug: boolean; post_tag_output_topic?: string; send_stats: boolean; stats_topic: string; pi_name_to_special_detector_config: { [k: string]: SpecialDetectorConfig; }; });
+    constructor(args?: { tag_size: number; family: string; nthreads: number; quad_decimate: number; quad_sigma: number; refine_edges: boolean; decode_sharpening: number; searchpath: string[]; debug: boolean; post_tag_output_topic?: string; send_stats: boolean; stats_topic: string; pi_name_to_special_detector_config: { [k: string]: SpecialDetectorConfig; }; image_edge_reject_margin_percent?: number; });
 }
